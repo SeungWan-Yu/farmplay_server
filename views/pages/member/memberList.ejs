@@ -1,0 +1,138 @@
+
+<script type="text/javascript">
+ $(function(){
+    // $('.delBtn').click(function(){
+    //     var delCheck = confirm("정말 삭제하시겠습니까?")
+    //     if(delCheck){
+    //         var index = $(this).parent().parent().find('.uid').text()
+    //         console.log(index) 
+    //         $(this).prop('href',"/member/memberDel?id="+index+"")
+    //     }else{
+    //         return false
+    //     }
+       
+        
+    // });
+    
+
+    /****************************** 삭제 버튼 클릭이벤트******************************/    
+    var setId = "";     //델버튼 클릭시 선택한 아이디 담는 변수
+    
+    //델버튼 클릭 이벤트 (모달창 띄우기)
+    $('.delBtn').click(function(){
+        var id = $(this).parent().parent().find('.uid').text();
+        console.log(id);
+        $('#clickId').text(id+" 삭제");
+        var msg = $('#message-text').text();  
+        console.log("메세지>>>"+msg);
+        setId = id;
+        
+    });
+    
+    //삭제 모달창안에서 확인 버튼 클릭 이벤트
+    $('.delUser').click(function(){
+        var msg = $('#message-text').val();
+            if(msg=="삭제"){
+                location.href = "/admin/member/memberDel?id="+setId+""
+            }else{
+                
+            };
+    });
+    /****************************** 삭제 버튼 클릭이벤트 끝******************************/  
+
+
+    /****************************** 수정 버튼 클릭이벤트******************************/   
+    $('.editBtn').click(function(){
+        var id = $(this).parent().parent().find('.uid').text();
+        $(this).prop('href',"/admin/member/memberEdit?id="+id+"")
+    })
+
+
+
+});
+
+
+
+</script>
+
+
+
+<!-- 모달창 레이아웃  -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 id="clickId" style="font-weight: bold;"><span id="userId">id001</span> 삭제</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <label for="message-text" class="control-label" style="font-size: 14px;">
+            정말 삭제하실려면 &nbsp;&nbsp; <strong style="text-decoration: underline;">'삭제'</strong> &nbsp;&nbsp; 를 입력후 확인버튼을 눌러주세요!
+        </label>
+        <textarea class="form-control" id="message-text"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary delUser">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- 데이터 테이블 -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800"></h1>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4 class="m-0 font-weight-bold text-primary">회원리스트</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>연락처</th>
+                            <th>주소</th>
+                            <th>상세주소</th>
+                            <th style="width: 7%;">농장코드</th>
+                            <th style="width: 7%;">Edit</th>
+                            <th style="width: 7%;">Del</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i in data){ %>
+                        <tr>
+                            <td class="uid"><%=data[i].user_id%></td>
+                            <td><%=data[i].user_name%></td>
+                            <td><%=data[i].user_phone%></td>
+                            <td><%=data[i].user_adress%></td>
+                            <td><%=data[i].user_adress_detail%></td>
+                            <td><%=data[i].farm_code%></td>
+                            <td style="text-align: center;">
+                                <a href="#" class="btn btn-info editBtn">
+                                    <i class="fas fa-wrench"></i>
+                                </a> 
+                            </td>
+                            <td style="text-align: center;">
+                                <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo">
+                                    <i class="fas fa-trash"></i>
+                                </a>     
+                            </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,80 @@
+<style>
+    .addon{text-align: center;color: white; font-weight: bold; background-color: #797979; padding-top: 14px; width:80px;}
+</style>
+
+<script type="text/javascript">
+
+$(function(){
+
+    $('.btn-user').click(function(){
+        $('form').submit();
+    });
+
+});
+
+</script>
+
+<div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4"><span><%=data[0].user_id%></span>님 정보수정</h1>
+                        </div>
+                        <form class="user" action="/admin/member/editMember" method="POST">
+                            <div class="form-group input-group">
+                                <span class="addon" >아이디 </span>
+                                <input type="text" name="uId" class="form-control form-control-user" value= '<%=data[0].user_id%>' readonly>
+                            </div>
+                        
+                            <div class="form-group input-group">
+                                <span class="addon" >비밀번호 </span>
+                                <input type="password" name="uPw" class="form-control form-control-user" value= '<%=data[0].user_pw%>' readonly>
+                            </div>
+                            
+                            <div class="form-group input-group">
+                                <span class="addon" >이름 </span>
+                                <input type="text" name="uName" class="form-control form-control-user" value= '<%=data[0].user_name%>'>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="addon" >핸드폰 </span>
+                                <input type="text" name="uPhone" class="form-control form-control-user" value= '<%=data[0].user_phone%>'>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="addon" >주소 </span>
+                                <input type="text" name="uAddr" class="form-control form-control-user" value= '<%=data[0].user_adress%>'>
+                                <a href="#" class="btn btn-info editBtn" style="padding-top: 14px;">
+                                    <i class="fas fa-search"></i>
+                                </a>  
+                            </div>
+
+                            <div class="form-group input-group">
+                                <span class="addon" >상세주소 </span>
+                                <input type="text" name="uAddrDetail" class="form-control form-control-user" value= '<%=data[0].user_adress_detail%>'>
+                            </div>
+
+                    
+
+                         
+                           
+                            <div style="margin-top: 100px;">
+                                <hr>
+                                <a class="btn btn-primary btn-user btn-block">
+                                    <span style="font-weight: bold; font-size: 15px;">수정하기</span>
+                                </a>         
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

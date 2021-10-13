@@ -1,0 +1,159 @@
+<style>
+#title{font-size: 16px;}
+#pushFile{display: none;}
+.jb-wrap {
+	width: 50%;
+	position: relative;
+}
+.jb-text {
+	padding: 5px 10px;
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate( -50%, -50% );
+}
+</style>
+
+<script type="text/javascript" charset="utf-8">
+
+$(function(){
+
+    //공지 발송후 성공 실패 확인
+    var para = document.location.href.split("result=");
+    var result = para[1];
+    if(result!=null){
+        if(result=="success"){
+            alert("공지사항 발송 성공!!!");
+        }else if(result=="fail"){
+            alert("공지사항 발송 실패!!!");
+        }
+        location.href = "/admin/member/sendNotice";
+    }
+   
+       
+    //메세지 전송 이벤트 
+    $('#sendBtn').click(function(){
+        var title = $('#title').val();
+        var content = $("#textarea").val();
+
+        console.log("에이>>>>"+content);
+        if(title==""){
+            alert("제목을 입력해주세요!");
+            $('#title').focus();
+            return false;
+        }else if(content==""){
+            alert("내용을 입력해주세요!");
+            $("#textarea").focus();
+            return false;
+        }else{
+            $("form").submit();
+        }
+    });
+    
+    //이미지 미리보기 함수()
+    function setImageFromFile(input, expression) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(expression).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    //푸쉬 이미지 변경되었을때 실행되는 함수
+    $('#pushFile').change(function(){
+        var type = $(this)[0].files[0].type;
+        console.log($(this)[0].files[0]);
+        if(!type.includes("image")){
+            alert("이미지 파일만 업로드 가능");
+            $('#pushFile').val("");
+            return false
+        } 
+        setImageFromFile(this, '.pushImg');        
+    });
+
+    //업로드 삭제 이벤트
+    $('.uploadDel').click(function(){
+        $('.pushImg').attr("src","");  
+        $('#pushFile').val("");
+    });
+
+
+    //푸쉬된이미지 삭제 이벤트
+    $('.delBtn').click(function(){
+        $.ajax({
+				type : "POST",
+				url : '/admin/member/delPushImg ', 
+                async : false, 
+				dataType : "json", 
+				success : function(data) {
+                    if(data.result="s"){
+                        alert("삭제성공!!");
+                    }else{
+                        alert("삭제실패!!");
+                    }
+                    $('#imgLen').text(data.filesLen);
+				},
+				error : function() {
+					alert('에러발생');
+				}
+			}); 
+    });
+
+});
+
+</script>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h4 class="m-0 font-weight-bold text-primary">공지보내기</span></h4>
+    </div>
+    <div class="container">
+
+        <div class="card o-hidden border-0 shadow-lg my-2">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="p-3">
+                            <form  enctype="multipart/form-data" class="user" action="/admin/member/sendNotice" method="POST" >
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="제목">
+                                </div>
+                                <div class="form-group">
+                                    <textarea id="textarea" placeholder="내용을 입력해주세요" class="form-control" rows="10" name="content"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pushFile" class="btn btn-warning">이미지업로드</label> 
+                                     <input type="file" name="pushFile"  id="pushFile" accept="image/jpeg,image/png,image/jpg">
+                                    <button class="btn btn-light uploadDel" type="button" style="color: red;">업로드삭제</button>
+                                    <div>
+                                        <span style="font-size: 12px;color: blue;">가로 : 세로 = 2.3 : 1 비율로 ex) 506:220</span>
+                                    </div>
+                                     <hr>
+                                     <div class="jb-wrap">
+                                        <div class="jb-image"><img class=pushImg height="220" width="506" style="object-fit: cover;"></div>
+                                        <div class="jb-text">
+                                            <p>이미지 미리보기</p>
+                                        </div>
+                                    </div>        
+                                </div>
+                            </form>
+                            <hr>
+                            <span> 푸쉬된이미지: <span id="imgLen"><%=fileLen%></span>개</span>
+                            <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo">
+                                <i class="fas fa-trash"></i>
+                            </a> 
+                            <hr>
+                            <button type="button" class="col-lg-12 btn btn-primary" id="sendBtn">보내기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+ 

@@ -1,0 +1,828 @@
+<style>
+    .hide{display: none;}
+    .addon{text-align: center;color: rgb(0, 0, 0); font-weight: bold;  padding-top: 8px; width: 120px; background-color: rgb(223, 219, 223);}
+    .farmImg{width: 100%;height:500px;object-fit: cover; }	
+    .roomImg {
+    width: 300px;
+    height: 150px;
+    object-fit: cover;
+    }
+    .farmCtl,.recuritCtl{font-weight: bold; background-color:rgb(219, 219, 219); width: 20%;}
+    .area_list01{display: block; margin-top:2%; width:100%; text-align: center;}
+    .area_list01 li{display: block; margin:1.5% 3% 1.5% 0; width:47%; float: left;}
+    .area_list01 li img{display: block; width:100%; height: 240px; object-fit: cover;}
+    .area_list01 li span{position: relative; top:0px; left:0px; display: block;}
+    .farmTable{font-size: 12px;}
+</style>
+
+<script type="text/javascript">
+
+
+ $(function(){
+
+    //넘어온값 
+    var initData = JSON.parse('<%-JSON.stringify(data)%>'); //넘어온 데이터 json으로 변환 
+        
+    //*********************************** 검색 기능 소스 시작 ***********************************//
+
+    var index1=""; //검색1에 선택한 항목 담는 변수
+    var index2=""; //검색2에 선택한 항목 담는 변수
+    
+   
+    //데이터테이블 검색 기능 함수 정의
+    $.fn.dataTable.ext.search.push(
+
+        // 1. 검색항목 선택 후 검색하는 함수 
+        function searchTable( settings, data, dataIndex ) {
+
+            var search1 = $('#search1').val();
+            var search2 = $('#search2').val();
+
+            var row1 =  data[index1]  || "";     
+            var row2 =  data[index2]  || ""; 
+
+
+            if (row1.includes(search1) && row2.includes(search2)){
+                    return true;      
+                }else{
+                    return false;
+                }
+
+        },
+
+        //2. 시작일 종료일 검색해주는 함수
+        function dateSearch( settings, data, dataIndex ) {
+    
+            var sDay = $('#sDay').val();
+            var eDay = $('#eDay').val();
+
+            var row1 =  data[5]  || "";
+            var row2 =  data[6]  || ""; 
+
+            var row1Arr = row1.split('-');
+            var row2Arr = row2.split('-');
+            var sDayArr = sDay.split('-');
+            var eDayArr = eDay.split('-');
+
+            var row1Compare = new Date(row1Arr[0], row1Arr[1], row1Arr[2]);
+            var row2Compare = new Date(row2Arr[0], row2Arr[1], row2Arr[2]);
+            var sDayCompare = new Date(sDayArr[0], sDayArr[1], sDayArr[2]);
+            var eDayCompare = new Date(eDayArr[0], eDayArr[1], eDayArr[2]);
+
+            if ((sDay=="" || eDay=="" )||(sDayArr<=row1Arr && eDayArr>=row2Arr)){
+                    return true;
+                }else{
+                    return false;
+                }
+
+        },
+
+    );
+    
+   
+    $(document).ready(function() {
+    var table = $('#dataTable').DataTable();
+        //1-1.검색어 keyup 이벤트
+        $('#search1, #search2').keyup( function searchTable() {
+            if(index1=="" && index2==""){
+                console.log("여기");
+                return false;
+            }else{
+                console.log("아님");
+                table.draw();
+            }
+            
+        });
+        //1-2. 시작일 종료일 검색이벤트
+        $('#searchDayBtn').click( function dateSearch() {
+            console.log("데이터컬")
+            table.draw();     
+        });
+
+    } );
+
+    // 1.항목검색 테이블 초기화 함수
+    function resetTable(){
+        var table = $('#dataTable').DataTable();
+        table.draw();
+    }
+    
+    //1-1. 검색1번 클릭 값세팅
+    $('.search1C').click(function(){
+        $('#search1').val("");
+        var idVal = $(this).attr("id");
+        index1  = idVal.substring(1,idVal.length);
+        var text = $(this).text();
+        if(text=="선택안함"){ 
+            $('#dropdownButton1').text("검색1");
+            index1 ="";
+        }else{
+            $('#dropdownButton1').text(text);
+        }
+
+        if(index1=="" && index2==""){
+            resetTable();
+        }
+        
+    });
+
+      //1-2. 검색2번 클릭 값세팅
+      $('.search2C').click(function(){
+        $('#search2').val("");
+        var idVal = $(this).attr("id");
+        if(idVal!=""){
+            index2 = idVal.substring(1,idVal.length);
+        }
+        var text = $(this).text();
+        if(text=="선택안함"){ 
+            $('#dropdownButton2').text("검색2");
+            index2 ="";
+        }else{
+            $('#dropdownButton2').text(text);
+        }
+        
+        if(index1=="" && index2==""){
+            resetTable();
+        }
+    });
+
+
+     //2. 데이터피커 디폴트 세팅
+     $.datepicker.setDefaults({
+         changeMonth: true
+        ,changeYear: true
+        ,dateFormat: 'yy-mm-dd' //Input Display Format 변경
+        ,showMonthAfterYear:true //년도 먼저 나오고, 뒤에 월 표시
+        ,monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'] //달력의 월 부분 텍스트
+        ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip 텍스트
+        ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 부분 텍스트
+        ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일']
+    });
+
+    //2. 데이터피커 호출
+    $( "#sDay ,#eDay" ).datepicker();
+
+
+    //2. 체인지 메서드
+    $( "#sDay ,#eDay" ).change(function(){
+        console.log("변경");
+        var sDay = $('#sDay').val();
+        var eDay = $('#eDay').val();
+        if(sDay=="" && eDay==""){
+            resetTable();
+        }
+    });
+
+    // 초기화 버튼 클릭이벤트
+    $('#resetBtn').click(function(){
+        location.href="/admin/recurit/recuritList"
+    });
+    
+    //*********************************** 검색 기능 소스 끝 ***********************************//
+
+    //*********************************** 모달기능 ***********************************//
+
+    //1. 모집코드 클릭시 모집상세내용  - 그안에서 모집참여한 팜플러확인
+    //2. 농장명 클릭시 농장상세내용 - 그안에서 숙소이미지 클릭
+    //3. 모집상태 클릭시 참여한 팜플러 보여주기
+
+    //공통 모달창이 닫었을때 스크롤 위치
+    $('#farmModal').on("shown.bs.modal",function () {
+        $("#farmBody").scrollTop(0);
+    });
+
+    $('#recuritModal').on("shown.bs.modal",function () {
+        $("#recuritBody").scrollTop(0);
+    });
+
+    //1. 모집코드 클릭이벤트
+    $(document).on('click','.recuritInfoBtn',function(){
+        var inHtml = "";
+        $('.recuritInfoDiv').remove();
+        var sindex = $(this).parent().parent().find('.index').text();
+        var index = Number(sindex);
+        inHtml += '<div class="recuritInfoDiv">'
+        inHtml += '<table class="table table-hover table-condensed recuritTable">'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">모집코드</td>'  
+        inHtml += '<td>'+ initData[index].recuritCode+'</td>'         
+        inHtml += '</tr>'  
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">모집상태</td>'  
+        inHtml += '<td>'+ initData[index].recuritState+'</td>'         
+        inHtml += '</tr>'  
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">아이디</td>'  
+        inHtml += '<td>'+ initData[index].recuritUserId+'</td>'         
+        inHtml += '</tr>'  
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">모집시작일</td>'  
+        inHtml += '<td>'+ initData[index].recuritStart+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">모집종료일</td>'  
+        inHtml += '<td>'+ initData[index].recuritEnd+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">작업시작</td>'  
+        inHtml += '<td>'+ initData[index].recuritJobStart+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">작업종료</td>'  
+        inHtml += '<td>'+ initData[index].recuritJobEnd+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">작업내용</td>'  
+        inHtml += '<td>'+ initData[index].recuritJobKind+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">식사제공</td>'  
+        inHtml += '<td>'+ initData[index].recuritMealProvide+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">채식</td>'  
+        inHtml += '<td>'+ initData[index].recuritMealMemo+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">식사메모</td>'  
+        inHtml += '<td>'+ initData[index].recuritMealMemo+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">선호팜플러</td>'  
+        inHtml += '<td>'+ initData[index].recuritChkFampler+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">선호기간</td>'  
+        inHtml += '<td>'+ initData[index].recuritChkPeriod+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">미성년자</td>'  
+        inHtml += '<td>'+ initData[index].recuritChkMinor+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">미성년자메모</td>'  
+        inHtml += '<td>'+ initData[index].recuritChkMinorMemo+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">모집인원</td>'  
+        inHtml += '<td>'+ initData[index].recuritChkMax+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="recuritCtl">한줄평</td>'  
+        inHtml += '<td>'+ initData[index].recuritChkSummary+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '</table">'
+        inHtml += '</div>'
+        $('#recuritBody').append(inHtml);
+
+    });
+
+
+    //2. 농장코드 클릭이벤트 
+    var clickFarmCode;
+    $(document).on('click','.farmInfoBtn',function(){
+        var inHtml = "";
+        $('.farmInfoDiv').remove();
+        var sindex = $(this).parent().parent().find('.index').text();
+        var index = Number(sindex);
+        clickFarmCode = initData[index].recuritFarmCode;
+        inHtml += '<div class="farmInfoDiv">'
+        inHtml += '<img src="http://'+location.host+initData[index].farmImg+'" class="farmImg">'  
+        inHtml += '<table class="table table-hover table-condensed farmTable">'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">농장코드</td>'  
+        inHtml += '<td>'+ initData[index].recuritFarmCode+'</td>'         
+        inHtml += '</tr>'  
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">농장명</td>'  
+        inHtml += '<td>'+ initData[index].farmName+'</td>'         
+        inHtml += '</tr>'  
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">시작연도</td>'  
+        inHtml += '<td>'+ initData[index].farmStartOpen+'</td>'         
+        inHtml += '</tr>'  
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">농작물</td>'  
+        inHtml += '<td>'+ initData[index].farmProduce+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">농장형태</td>'  
+        inHtml += '<td>'+ initData[index].farmType+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">주인소개</td>'  
+        inHtml += '<td>'+ initData[index].farmerIntro+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">농장주소</td>'  
+        inHtml += '<td>'+ initData[index].farmAddr+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">상세주소</td>'  
+        inHtml += '<td>'+ initData[index].farmAddrDetail+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">인터넷</td>'  
+        inHtml += '<td>'+ initData[index].farmRoomInternet+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">숙박위치</td>'  
+        inHtml += '<td>'+ initData[index].farmRoomSite+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">숙소이미지</td>'  
+        inHtml += '<td>'
+        inHtml += '<a href="#" data-toggle="modal"  data-target="#roomImgModal" class="roomImgBtn" > 숙소이미지'
+        inHtml += '</a>'
+        inHtml += '</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">숙박정보</td>'  
+        inHtml += '<td>'+ initData[index].farmRoomInfo+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">방</td>'  
+        inHtml += '<td>'+ initData[index].farmRoom+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">방공용</td>'  
+        inHtml += '<td>'+ initData[index].farmRoomUnisex+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">기타</td>'  
+        inHtml += '<td>'+ initData[index].farmRoomEtc+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">아이디</td>'  
+        inHtml += '<td>'+ initData[index].userName+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '<tr>'  
+        inHtml += '<td class="farmCtl">농장상태</td>'  
+        inHtml += '<td>'+ initData[index].farmState+'</td>'         
+        inHtml += '</tr>'
+        inHtml += '</table">'
+        inHtml += '</div>'
+        $('#farmBody').append(inHtml);
+                 
+    });
+    //2. 숙소이미지 클릭이벤트
+    $(document).on('click','.roomImgBtn',function(){
+        $('.area_list01').remove();
+        var roomList;
+        $.ajax({
+            type : "POST",
+            url : '/admin/farm/farmRoomImgList ', 
+            async : false, 
+            dataType : "json", 
+            data : {farmCode:clickFarmCode},
+            success : function(data) {
+                console.log(data);
+                roomList = data;
+            },
+            error : function() {
+                alert('에러발생');
+            }
+        }); 
+        var inHtml = ""; 
+        inHtml += '<ul class="area_list01">'
+        for(var i=0;i<roomList.length;i++){
+            inHtml += '<li class="imgctl">'
+            inHtml += '<span>'
+            inHtml += '<img src="http://'+location.host +roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">'
+            inHtml += '</span>'
+            inHtml += '</li>'
+        }
+        inHtml += '</ul>'    
+        $('#roomImgBody').append(inHtml);
+    });
+
+    // 3. 모집상태 클릭 이벤트 (팜플러정보)
+    $(document).on('click','.farmplerInfoBtn',function(){
+        $('#farmplerTbody').remove();
+        var farmplerList;
+        var sindex = $(this).parent().parent().find('.index').text();
+        var index = Number(sindex);
+        var recuritCode=  initData[index].recuritCode;
+        alert(recuritCode);
+      
+        $.ajax({
+            type : "POST",
+            url : '/admin/farmpler/farmplerRlist ', 
+            async : false, 
+            dataType : "json", 
+            data : {recuritCode:recuritCode},
+            success : function(data) {
+                console.log(data);
+                farmplerList = data;
+            },
+            error : function() {
+                alert('에러발생');
+            }
+        }); 
+        var inHtml = ''; 
+        inHtml += '<tbody id="farmplerTbody">'
+
+        for(var i=0;i<farmplerList.length;i++){
+            inHtml += '<tr>'
+            inHtml += '<td>'+farmplerList[i].enterCode+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterUserId+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterUserName+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterUserRating+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterReporting+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterStart+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterEnd+'</td>'
+            inHtml += '<td>'+farmplerList[i].enterState+'</td>'
+            inHtml += '</tr>'
+        
+        }    
+
+        inHtml += '</tbody>'
+        $('.farmTable').append(inHtml);
+        console.log(inHtml);
+    });
+
+    /****************************** 삭제 버튼 클릭이벤트******************************/    
+    var setId = "";     //델버튼 클릭시 선택한 아이디 담는 변수
+    
+    //델버튼 클릭 이벤트 (모달창 띄우기)
+    $('.delBtn').click(function(){
+        var id = $(this).parent().parent().find('.uid').text();
+        console.log(id);
+        $('#clickId').text(id+" 삭제");
+        var msg = $('#message-text').text();  
+        console.log("메세지>>>"+msg);
+        setId = id;
+        
+    });
+    
+    //삭제 모달창안에서 확인 버튼 클릭 이벤트
+    $('.delUser').click(function(){
+        var msg = $('#message-text').val();
+            if(msg=="삭제"){
+                location.href = "/admin/member/memberDel?id="+setId+""
+            }else{
+                
+            };
+    });
+    /****************************** 삭제 버튼 클릭이벤트 끝******************************/  
+
+
+    /****************************** 수정 버튼 클릭이벤트******************************/   
+    $('.editBtn').click(function(){
+        var id = $(this).parent().parent().find('.uid').text();
+        $(this).prop('href',"/admin/member/memberEdit?id="+id+"")
+    })
+
+   
+});
+
+
+
+</script>
+
+
+
+<!-- 삭제 모달창 레이아웃  -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 id="clickId" style="font-weight: bold;"><span id="userId">id001</span> 삭제</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <label for="message-text" class="control-label" style="font-size: 14px;">
+            정말 삭제하실려면 &nbsp;&nbsp; <strong style="text-decoration: underline;">'삭제'</strong> &nbsp;&nbsp; 를 입력후 확인버튼을 눌러주세요!
+        </label>
+        <textarea class="form-control" id="message-text"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary delUser">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!--모집정보 모달창 레이아웃  -->
+ <div class="modal fade" id="recuritModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 id="clickId" style="font-weight: bold;">모집정보</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body scroll_st" id="recuritBody" style="height: 750px; overflow: auto;">
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+ <!--농장정보 모달창 레이아웃  -->
+ <div class="modal fade" id="farmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 id="clickId" style="font-weight: bold;">농장정보</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body scroll_st" id="farmBody" style="height: 750px; overflow: auto;">
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!--숙박사진 모달창 레이아웃  -->
+    <div class="modal fade" id="roomImgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h6 style="font-weight: bold;"><span>숙소이미지</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body" id="roomImgBody"  style="height: 600px; overflow: auto;" >
+    
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+    <!--팜플러 모달창 레이아웃  -->
+ <div class="modal fade" id="farmplerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 id="clickId" style="font-weight: bold;">참여팜플러 리스트</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body scroll_st" id="farmplerBody" style="height: 750px; overflow: auto;">
+            <table class="table table-hover table-condensed farmTable">
+                <thead>
+                    <tr>
+                        <th>참여코드</th>
+                        <th>아이디</th>
+                        <th>이름</th>
+                        <th>평점</th>
+                        <th>신청일</th>
+                        <th>시작일</th>
+                        <th>종료일</th>
+                        <th>참여상태</th>
+                    </tr>
+                </thead>
+               
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!-- 데이터 테이블 -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800"></h1>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4 class="m-0 font-weight-bold text-primary">모집리스트</h4>
+        </div>
+        <div class="form-group row" style="margin-left: 10px; margin-top: 5px;">
+            <div class="col-sm-2 input-group">
+                <button class="btn btn-primary dropdown-toggle" type="button"
+                    id="dropdownButton1" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    검색1
+                </button>
+                <div class="dropdown-menu animated--fade-in"
+                    aria-labelledby="dropdownButton1" style="height: 200px; overflow: auto;">
+                     <a class="dropdown-item search1C" href="#" id="fNoChoice" style="color: white;">선택안함</a>
+                    <a class="dropdown-item search1C" href="#" id="f1">모집코드</a>
+                    <a class="dropdown-item search1C" href="#" id="f2">농장코드</a>
+                    <a class="dropdown-item search1C" href="#" id="f3">모집상태</a>
+                    <a class="dropdown-item search1C" href="#" id="f4">아이디</a>
+                    <a class="dropdown-item search1C" href="#" id="f7">작업시작</a>
+                    <a class="dropdown-item search1C" href="#" id="f8">작업종료</a>
+                    <a class="dropdown-item search1C" href="#" id="f9">작업내용</a>
+                    <a class="dropdown-item search1C" href="#" id="f10">식사제공</a>
+                    <a class="dropdown-item search1C" href="#" id="f11">채식</a>
+                    <a class="dropdown-item search1C" href="#" id="f12">식사메모</a>
+                    <a class="dropdown-item search1C" href="#" id="f13">선호팜플러</a>
+                    <a class="dropdown-item search1C" href="#" id="f14">선호기간</a>
+                    <a class="dropdown-item search1C" href="#" id="f15">미성년자</a>
+                    <a class="dropdown-item search1C" href="#" id="f16">미성메모</a>
+                    <a class="dropdown-item search1C" href="#" id="f17">모집인원</a>
+                    <a class="dropdown-item search1C" href="#" id="f18">한줄평</a>
+                    <a class="dropdown-item search1C" href="#" id="f19">농장상태</a>
+                    <a class="dropdown-item search1C" href="#" id="f20">농장신청일</a>
+                    <a class="dropdown-item search1C" href="#" id="f21">농장등록일</a>
+                    <a class="dropdown-item search1C" href="#" id="f22">농장명</a>
+                    <a class="dropdown-item search1C" href="#" id="f23">농장시작</a>
+                    <a class="dropdown-item search1C" href="#" id="f24">농작물</a>
+                    <a class="dropdown-item search1C" href="#" id="f25">농장형태</a>
+                    <a class="dropdown-item search1C" href="#" id="f26">주인소개</a>
+                    <a class="dropdown-item search1C" href="#" id="f27">농장주소</a>
+                    <a class="dropdown-item search1C" href="#" id="f28">상세주소</a>
+                    <a class="dropdown-item search1C" href="#" id="f29">인터넷</a>
+                    <a class="dropdown-item search1C" href="#" id="f30">숙소위치</a>
+                    <a class="dropdown-item search1C" href="#" id="f31">숙소정보</a>
+                    <a class="dropdown-item search1C" href="#" id="f32">방</a>
+                    <a class="dropdown-item search1C" href="#" id="f33">방공용</a>
+                    <a class="dropdown-item search1C" href="#" id="f34">기타</a>
+                </div>
+                <input type="text" class="form-control form-control-user" id="search1">
+            </div>
+            <div class="col-sm-2 input-group">
+                <button class="btn btn-primary dropdown-toggle" type="button"
+                id="dropdownButton2" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                검색2
+                </button>
+                <div class="dropdown-menu animated--fade-in"
+                    aria-labelledby="dropdownButton2" style="height: 200px; overflow: auto;">
+                    <a class="dropdown-item search2C" href="#" id="sNoChoice" style="color: white;">선택안함</a>
+                    <a class="dropdown-item search2C" href="#" id="s1">모집코드</a>
+                    <a class="dropdown-item search2C" href="#" id="s2">농장코드</a>
+                    <a class="dropdown-item search2C" href="#" id="s3">모집상태</a>
+                    <a class="dropdown-item search2C" href="#" id="s4">아이디</a>
+                    <a class="dropdown-item search2C" href="#" id="s7">작업시작</a>
+                    <a class="dropdown-item search2C" href="#" id="s8">작업종료</a>
+                    <a class="dropdown-item search2C" href="#" id="s9">작업내용</a>
+                    <a class="dropdown-item search2C" href="#" id="s10">식사제공</a>
+                    <a class="dropdown-item search2C" href="#" id="s11">채식</a>
+                    <a class="dropdown-item search2C" href="#" id="s12">식사메모</a>
+                    <a class="dropdown-item search2C" href="#" id="s13">선호팜플러</a>
+                    <a class="dropdown-item search2C" href="#" id="s14">선호기간</a>
+                    <a class="dropdown-item search2C" href="#" id="s15">미성년자</a>
+                    <a class="dropdown-item search2C" href="#" id="s16">미성메모</a>
+                    <a class="dropdown-item search2C" href="#" id="s17">모집인원</a>
+                    <a class="dropdown-item search2C" href="#" id="s18">한줄평</a>
+                    <a class="dropdown-item search2C" href="#" id="s19">농장상태</a>
+                    <a class="dropdown-item search2C" href="#" id="s20">농장신청일</a>
+                    <a class="dropdown-item search2C" href="#" id="s21">농장등록일</a>
+                    <a class="dropdown-item search2C" href="#" id="s22">농장명</a>
+                    <a class="dropdown-item search2C" href="#" id="s23">농장시작</a>
+                    <a class="dropdown-item search2C" href="#" id="s24">농작물</a>
+                    <a class="dropdown-item search2C" href="#" id="s25">농장형태</a>
+                    <a class="dropdown-item search2C" href="#" id="s26">주인소개</a>
+                    <a class="dropdown-item search2C" href="#" id="s27">농장주소</a>
+                    <a class="dropdown-item search2C" href="#" id="s28">상세주소</a>
+                    <a class="dropdown-item search2C" href="#" id="s29">인터넷</a>
+                    <a class="dropdown-item search2C" href="#" id="s30">숙소위치</a>
+                    <a class="dropdown-item search2C" href="#" id="s31">숙소정보</a>
+                    <a class="dropdown-item search2C" href="#" id="s32">방</a>
+                    <a class="dropdown-item search2C" href="#" id="s33">방공용</a>
+                    <a class="dropdown-item search2C" href="#" id="s34">기타</a>
+                </div>
+                <input type="text" class="form-control form-control-user" id="search2">
+            </div>
+            <div class="col-sm-4 input-group">
+                <span class="btn btn-primary">시작일-종료일 </span>
+                <input type="text" class="form-control form-control-user seDay" id="sDay" placeholder="시작일">
+                <input type="text" class="form-control form-control-user seDay" id="eDay" placeholder="종료일">
+                <button class="btn btn-primary" type="button" id="searchDayBtn">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+
+            <div class="col-sm-4 input-group">
+                <button class="btn btn-warning" type="button" id="resetBtn">
+                    새로고침              
+                </button>
+            </div>
+
+        </div>
+       
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th class="hide">인덱스</th>
+                            <th style="width: 7%;">rCode</th>
+                            <th class="hide">농장코드</th>
+                            <th>모집상태</th>
+                            <th>아이디</th>
+                            <th>시작일</th>
+                            <th>종료일</th>
+                            <th class="hide">작업시작</th>
+                            <th class="hide">작업종료</th>
+                            <th class="hide">작업내용</th>
+                            <th class="hide">식사제공</th>
+                            <th class="hide">채식</th>
+                            <th class="hide">식사메모</th>
+                            <th class="hide">선호팜플러</th>
+                            <th class="hide">선호기간</th>
+                            <th class="hide">미성년자</th>
+                            <th class="hide">미성년자메모</th>
+                            <th class="hide">모집인원</th>
+                            <th class="hide">한줄</th>
+                            <th class="hide">농장상태</th>
+                            <th class="hide">농장신청일</th>
+                            <th class="hide">농장등록일</th>
+                            <th>농장명</th>
+                            <th class="hide">농장시작</th>
+                            <th>농작물</th>
+                            <th>농장형태</th>
+                            <th class="hide">주인소개</th>
+                            <th>농장주소</th>
+                            <th class="hide">상세주소</th>
+                            <th class="hide">인터넷</th>
+                            <th class="hide">숙소위치</th>
+                            <th class="hide">숙소정보</th>
+                            <th class="hide">방</th>
+                            <th class="hide">방공용</th>
+                            <th class="hide">기타</th>
+                            <th style="width: 7%;">Edit</th>
+                            <th style="width: 7%;">Del</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <% for(var i in data){ %>
+                        <tr>
+                            <td class="hide index"><%=i%></td>
+                            <td>
+                                <a href="#"  data-toggle="modal"  data-target="#recuritModal" class="recuritInfoBtn" >
+                                    <%=data[i].recuritCode%>
+                                </a>
+                            </td>
+                            <td class="hide farmCode"><%=data[i].recuritFarmCode%></td>
+                            <td>
+                                <a href="#"  data-toggle="modal"  data-target="#farmplerModal" class="farmplerInfoBtn" >
+                                    <%=data[i].recuritState%>
+                                </a>
+                            </td>
+                            <td><%=data[i].recuritUserId%></td>
+                            <td><%=data[i].recuritStart%></td>
+                            <td><%=data[i].recuritEnd%></td>
+                            <td class="hide"><%=data[i].recuritJobStart%></td>
+                            <td class="hide"><%=data[i].recuritJobEnd%></td>
+                            <td class="hide"><%=data[i].recuritJobKind%></td>
+                            <td class="hide"><%=data[i].recuritMealProvide%></td>
+                            <td class="hide"><%=data[i].recuritMealVeget%></td>
+                            <td class="hide"><%=data[i].recuritMealMemo%></td>
+                            <td class="hide"><%=data[i].recuritChkFampler%></td>
+                            <td class="hide"><%=data[i].recuritChkPeriod%></td>
+                            <td class="hide"><%=data[i].recuritChkMinor%></td>
+                            <td class="hide"><%=data[i].recuritChkMinorMemo%></td>
+                            <td class="hide"><%=data[i].recuritChkMax%></td>
+                            <td class="hide"><%=data[i].recuritChkSummary%></td>
+                            <td class="hide"><%=data[i].farmState%></td>
+                            <td class="hide"><%=data[i].farmAskDate%></td>
+                            <td class="hide"><%=data[i].farmRegDate%></td>
+                            <td>
+                                <a href="#"  data-toggle="modal"  data-target="#farmModal" class="farmInfoBtn" >
+                                    <%=data[i].farmName%>
+                                </a>
+                            </td>
+                            <td class="hide"><%=data[i].farmStartOpen%></td>
+                            <td><%=data[i].farmProduce%></td>
+                            <td><%=data[i].farmType%></td>
+                            <td class="hide"><%=data[i].farmerIntro%></td>
+                            <td><%=data[i].farmAddr%></td>
+                            <td class="hide"><%=data[i].farmAddrDetail%></td>
+                            <td class="hide"><%=data[i].farmRoomInternet%></td>
+                            <td class="hide"><%=data[i].farmRoomSite%></td>
+                            <td class="hide"><%=data[i].farmRoomInfo%></td>
+                            <td class="hide"><%=data[i].farmRoom%></td>
+                            <td class="hide"><%=data[i].farmRoomUnisex%></td>
+                            <td class="hide"><%=data[i].farmRoomEtc%></td>
+                            <td style="text-align: center;">
+                                <a href="#" class="btn btn-info editBtn">
+                                    <i class="fas fa-wrench"></i>
+                                </a> 
+                            </td>
+                            <td style="text-align: center;">
+                                <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo">
+                                    <i class="fas fa-trash"></i>
+                                </a>     
+                            </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

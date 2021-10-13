@@ -1,0 +1,389 @@
+
+<style>
+    .hide{display: none;}
+    .farmImg{width: 100%;height:500px;object-fit: cover; }	
+    .roomImg {
+    width: 300px;
+    height: 150px;
+    object-fit: cover;
+    }
+    .farmCtl{font-weight: bold; background-color:rgb(219, 219, 219);}
+    .area_list01{display: block; margin-top:2%; width:100%; text-align: center;}
+    .area_list01 li{display: block; margin:1.5% 3% 1.5% 0; width:47%; float: left;}
+    .area_list01 li img{display: block; width:100%; height: 240px; object-fit: cover;}
+    .area_list01 li span{position: relative; top:0px; left:0px; display: block;}
+    .delctl{display: none;}
+
+</style>
+
+<script type="text/javascript">
+    $(function(){
+
+        /**************************** 삭제 실패경우 알림창 받기****************************/  
+        var para = document.location.href.split("result=");
+        var result = para[1];
+        var pageChk = "<%=chk%>"    //페이지 체크  ask이면 신청페이지, 공란이면 리스트페이지
+        if(pageChk=="ask"){
+            $('#tSubject').text("농가신청리스트");
+        }
+
+        console.log("화면>>>"+pageChk);
+
+        //삭제후 확인해주는 
+
+        if(result=="false"){
+            alert("에러발생하여 삭제되지 않았습니다.관리자에게 문의 하십시오. (rollback)"); 
+            if(pageChk=="ask"){
+                location.href = "/admin/farm/farmAskList";
+            }else{
+                location.href = "/admin/farm/farmList";
+            }
+        }else if(result=="true"){
+            alert("삭제되었습니다");
+            if(pageChk=="ask"){
+                location.href = "/admin/farm/farmAskList";
+            }else{
+                location.href = "/admin/farm/farmList";
+            }
+        }
+
+
+
+
+        /****************************** 삭제 버튼 클릭이벤트******************************/    
+        var setFarmCode = "";     //델버튼 클릭시 선택한 아이디 담는 변수
+
+        //델버튼 클릭 이벤트 (모달창 띄우기)
+        $(document).on('click','.delBtn',function(){
+            var farmCodeString = $(this).parent().parent().find('.farmCode').text();
+            var farmName =  $(this).parent().parent().find('.farmName').text();
+            var farmCode = Number(farmCodeString);
+            console.log(farmCode);
+            $('#farmNameDel').text(farmName);
+            setFarmCode = farmCode;  
+        });
+       
+        //삭제 모달창안에서 확인 버튼 클릭 이벤트
+        $('.delFarm').click(function(){
+            var msg = $('#message-text').val();
+                if(msg=="삭제"){
+                    location.href = "/admin/farm/farmDel?farmCode="+setFarmCode+"&&chk="+pageChk+""
+                }else{
+                    
+                };
+        });
+   
+   
+        /****************************** 수정 버튼 클릭이벤트******************************/   
+        $(document).on('click','.editBtn',function(){
+            var farmCodeString = $(this).parent().parent().find('.farmCode').text();
+            var farmCode = Number(farmCodeString);
+            $(this).prop('href',"/admin/farm/farmEdit?farmCode="+farmCode+"&&chk="+pageChk+"");
+        })
+       
+
+        /****************************** 농장정보(농장코드) 버튼 클릭이벤트******************************/ 
+        //모달창이 닫었을때 스크롤 위치
+        $('#farmModal').on("shown.bs.modal",function () {
+            $("#farmBody").scrollTop(0);
+        });
+
+        var gFarmCode;
+        //농장코드 클릭이벤트
+        $(document).on('click','.farmInfoBtn',function(){
+            $("#farmBody").scrollTop(0);
+            var inHtml = "";
+            $('.farmInfoDiv').remove();
+            var sindex = $(this).parent().parent().find('.index').text();
+            var index = Number(sindex);
+            var initData = JSON.parse('<%-JSON.stringify(data)%>'); //넘어온 데이터 json으로 변환 
+            gFarmCode = initData[index].farmCode;
+            console.log(initData[index])
+            inHtml += '<div class="farmInfoDiv">'
+            inHtml += '<img src="http://'+location.host+initData[index].farmImg+'" class="farmImg">'  
+            inHtml += '<table class="table table-hover table-condensed farmTable">'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">농장코드</td>'  
+            inHtml += '<td>'+ initData[index].farmCode+'</td>'         
+            inHtml += '</tr>'  
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">농장명</td>'  
+            inHtml += '<td>'+ initData[index].farmName+'</td>'         
+            inHtml += '</tr>'  
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">시작연도</td>'  
+            inHtml += '<td>'+ initData[index].farmStartOpen+'</td>'         
+            inHtml += '</tr>'  
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">농작물</td>'  
+            inHtml += '<td>'+ initData[index].farmProduce+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">농장형태</td>'  
+            inHtml += '<td>'+ initData[index].farmType+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">주인소개</td>'  
+            inHtml += '<td>'+ initData[index].farmerIntro+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">농장주소</td>'  
+            inHtml += '<td>'+ initData[index].farmAddr+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">상세주소</td>'  
+            inHtml += '<td>'+ initData[index].farmAddrDetail+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">인터넷</td>'  
+            inHtml += '<td>'+ initData[index].farmRoomInternet+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">숙박위치</td>'  
+            inHtml += '<td>'+ initData[index].farmRoomSite+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">숙박정보</td>'  
+            inHtml += '<td>'+ initData[index].farmRoomInfo+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">방</td>'  
+            inHtml += '<td>'+ initData[index].farmRoom+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">방공용</td>'  
+            inHtml += '<td>'+ initData[index].farmRoomUnisex+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">기타</td>'  
+            inHtml += '<td>'+ initData[index].farmRoomEtc+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">아이디</td>'  
+            inHtml += '<td>'+ initData[index].userName+'</td>'         
+            inHtml += '</tr>'
+            inHtml += '<tr>'  
+            inHtml += '<td class="farmCtl">농장상태</td>'  
+            inHtml += '<td>'+ initData[index].farmState+'</td>'         
+            inHtml += '</tr>'
+            if(pageChk=="ask"){
+                inHtml += '<tr>' 
+                inHtml += '<td colspan="2">'
+                inHtml += '<a class="btn btn-primary btn-block confirmBtn">'
+                inHtml += '<span style="font-weight: bold; font-size: 20px;">승인하기</span>'
+                inHtml += '</a>'
+                inHtml += '</td>' 
+                inHtml += '</tr>' 
+            }
+            inHtml += '</table">'
+            inHtml += '</div>'
+            $('#farmBody').append(inHtml);
+                 
+        });
+
+        /****************************** 숙소이미지 클릭 이벤트 ******************************/ 
+        var roomImgClick = [];  //숙소이미지 클릭하면 해당 팜코드를 배열에 담아 숙소이미지를 보았는지 확인한다.
+        $(document).on('click','.btnRoomImg',function(){
+            $('.area_list01').remove();
+            var farmCodeString = $(this).parent().parent().find('.farmCode').text();
+            var farmCode = Number(farmCodeString);
+            var roomList;
+            roomImgClick.push(farmCode);      //클릭한 숙소이미지의 팜코드를 배열에 담는다. 
+
+            $.ajax({
+				type : "POST",
+				url : '/admin/farm/farmRoomImgList ', 
+                async : false, 
+				dataType : "json", 
+				data : {farmCode:farmCode},
+				success : function(data) {
+					console.log(data);
+					roomList = data;
+				},
+				error : function() {
+					alert('에러발생');
+				}
+			}); 
+            console.log("아래확인");
+            var inHtml = ""; 
+            inHtml += '<ul class="area_list01">'
+            for(var i=0;i<roomList.length;i++){
+                inHtml += '<li class="imgctl">'
+                inHtml += '<span>'
+                inHtml += '<img src="http://'+location.host +roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">'
+                inHtml += '</span>'
+                inHtml += '</li>'
+            }
+            inHtml += '</ul>'    
+            $('#roomImgBody').append(inHtml);
+        })
+
+
+        /****************************** 승인하기 버튼 이벤트 ******************************/ 
+        //1.숙소이미지 클릭하면 배열에 담는 작업
+        $(document).on('click','.confirmBtn',function(){
+            var cnt = 0;
+            for(var i=0;i<roomImgClick.length;i++){
+                if(roomImgClick[i]==gFarmCode){
+                    cnt++;
+                }
+            }
+            
+            if(cnt==0){
+                alert("숙소이미지를 확인 후 승인 부탁드립니다.")
+                return false;
+            }else if(cnt==1){
+                var conf = confirm("농장을 승인하시겠습니까?");
+                if(conf){
+                    $.ajax({
+                        type : "POST",
+                        url : '/admin/farm/farmConfirm ', 
+                        async : false, 
+                        dataType : "json", 
+                        data : {farmCodeList:gFarmCode},
+                        success : function(data) {
+                            location.href  = "/admin/farm/farmAskList"
+                        },
+                        error : function() {
+                            alert('에러발생');
+                        }
+                    }); 
+                }else{
+                    return false;
+                }        
+            }
+        });
+    
+   });
+   
+   
+   
+</script>
+   
+   <!--농장정보 모달창 레이아웃  -->
+   <div class="modal fade" id="farmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 id="clickId" style="font-weight: bold;">농장정보</h6>
+          <form enctype="multipart/form-data" method="post" id="uploadForm">
+          </form>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body scroll_st" id="farmBody" style="height: 750px; overflow: auto;">
+         
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+
+     <!--숙박사진 모달창 레이아웃  -->
+   <div class="modal fade" id="roomImgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 style="font-weight: bold;"><span>숙소이미지</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body" id="roomImgBody"  style="height: 700px; overflow: auto;" >
+    
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+   
+   
+   <!--삭제 모달창 레이아웃  -->
+   <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h6 style="font-weight: bold;"><span id="farmNameDel">농장명</span> 삭제</h6>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+         </div>
+         <div class="modal-body">
+           <label for="message-text" class="control-label" style="font-size: 14px;">
+               정말 삭제하실려면 &nbsp;&nbsp; <strong style="text-decoration: underline;">'삭제'</strong> &nbsp;&nbsp; 를 입력후 확인버튼을 눌러주세요!
+           </label>
+           <textarea class="form-control" id="message-text"></textarea>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+           <button type="button" class="btn btn-primary delFarm">확인</button>
+         </div>
+       </div>
+     </div>
+   </div>
+   
+   
+   
+   
+   
+   <!-- 데이터 테이블 -->
+   <div class="container-fluid">
+   
+       <!-- Page Heading -->
+       <h1 class="h3 mb-2 text-gray-800"></h1>
+   
+       <!-- DataTales Example -->
+       <div class="card shadow mb-4">
+           <div class="card-header py-3">
+               <h4 class="m-0 font-weight-bold text-primary" id="tSubject">농가리스트</h4>
+           </div>
+           <div class="card-body">
+               <div class="table-responsive">
+                   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                       <thead>
+                           <tr>
+                               <th class="hide">인덱스</th>
+                               <th>농장코드</th>
+                               <th>농장명</th>
+                               <th>농장주소</th>
+                               <th>숙소위치</th>
+                               <th>숙소이미지</th>
+                               <th>아이디</th>
+                               <th style="width: 7%;">Edit</th>
+                               <th style="width: 7%;">Del</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <% for(var i in data){ %>
+                           <tr>
+                               <td class="hide index"><%=i%></td>
+                               <td class="farmCode">
+                                    <a href="#"  data-toggle="modal"  data-target="#farmModal" class="farmInfoBtn" >
+                                        <%=data[i].farmCode%>
+                                    </a>
+                                </td>
+                               <td class="farmName"><%=data[i].farmName%></td>
+                               <td><%=data[i].farmAddr%></td>
+                               <td><%=data[i].farmRoomSite%></td>
+                               <td><a href="#" data-toggle="modal"  data-target="#roomImgModal" class="btnRoomImg">숙소이미지</a></td>
+                               <td><%=data[i].userName%></td>
+                               <td style="text-align: center;">
+                                    <a href="#" class="btn btn-info editBtn">
+                                        <i class="fas fa-wrench"></i>
+                                    </a> 
+                                </td>
+                                <td style="text-align: center;">
+                                    <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#delModal">
+                                        <i class="fas fa-trash"></i>
+                                    </a>     
+                                </td>
+                           </tr>
+                           <% } %>
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+       </div>
+   
+   </div>

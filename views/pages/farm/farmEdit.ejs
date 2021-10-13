@@ -1,0 +1,596 @@
+<style>
+    th{ color: #4e73df;}
+    #dropdownButton{border: 1px solid #ebebeb;}
+    #warpDiv{width: 80%; margin: auto;}
+    .editBtn{margin-top: 30px;}
+    .hide{display: none !important;}
+    .addon{text-align: center;color: rgb(0, 0, 0); font-weight: bold;  padding-top: 14px; width: 100px; background-color: rgb(223, 219, 223);}
+    .form-control-user{border-radius: 0 !important;}
+    #reBtn{margin:5px; float: right; font-size: 12px;}
+    .editBorder{border-color:royalblue !important;}
+    .farmImg{width: 100%; height: 80%;object-fit: cover; }
+    .upload-name {
+        display: inline-block;
+        height: 35px;
+        font-size:16px; 
+        padding: 0 10px;
+        vertical-align: middle;
+        background-color: #f5f5f5;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+    }
+    .fileLabel{
+        display: inline-block;
+        padding: 10px 20px;
+        color: #999;
+        vertical-align: middle;
+        background-color: #fdfdfd;
+        cursor: pointer;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+    }
+    .farmCtl{font-weight: bold; background-color:rgb(219, 219, 219);}
+    .area_list01{display: block; margin-top:2%; width:100%; text-align: center;}
+    .area_list01 li{display: block; margin:1.5% 3% 1.5% 0; width:47%; float: left;}
+    .area_list01 li img{display: block; width:100%; height: 240px; object-fit: cover;}
+    .area_list01 li span{position: relative; top:0px; left:0px; display: block;}
+    .area_list01 li span u{position: absolute; opacity: 0.5; bottom:0px; left:0px; width:100%; height:100%; background-color:#000; z-index: 1; text-decoration: none;}
+    .area_list01 li span i{position: absolute; bottom: calc(50% - 30px); color: #fff; z-index: 2; border-radius: 50%; padding: 15px; left: calc(50% - 23px); font-size: 30px; border: 1px solid #aaa;}
+    .delctl{display: none;}
+</style>
+
+
+<script>
+
+    $(function(){
+
+        var initData = JSON.parse('<%-JSON.stringify(data)%>')[0]; //넘어온 데이터 json으로 변환 
+        console.log(initData);
+        var gFarmCode= initData.farmCode;   //팜코드 전역변수
+
+        //농가신청페이지 인지 농가리스트인지 구분
+        var pageChk = "<%=chk%>"    //페이지 체크  ask이면 신청페이지, 공란이면 리스트페이지
+        
+
+        //농가신청페이지 경우 농장상태 변경불가 ,,, 농장리스트경우 농장상태 변경 가능
+        if(pageChk=="ask"){
+            $('input[name=farmState]').removeClass("hide");
+            $('input[name=farmState]').attr("readonly","true");
+            $('#dropdownButton').addClass("hide");
+        }
+
+        //수정에러 alert창
+        var para = document.location.href.split("err=");
+        var err = para[1];
+        if(err=="fileDel"){
+            alert("수정에러(파일삭제가 되지 않았습니다)");
+            location.href = "/admin/farm/farmEdit?farmCode="+gFarmCode+"";
+        }
+
+        // 새로고침 함수
+        $('#reBtn').click(function(){
+            location.reload();
+        });
+
+
+      
+        // 전달받은 값과 수정한값이 같은지 다른지 확인하는 함수
+        function valChk(a,b,t){
+            if(a!=b){
+                t.addClass("editBorder");
+                
+            }else{
+                t.removeClass("editBorder");
+            }
+        }
+        $('#dropdownButton').off('click');
+
+
+        //농장상태 드롭다운 이벤트
+        $('.search2C').click(function(){
+            var text = $(this).text();
+            var farmState = '<%=data[0].farmState%>'
+            $('#dropdownButton').text(text);
+            $('input[name=farmState]').val(text);
+
+            if(text!=farmState){
+                $('input[name=farmState]').addClass('editBorder');
+                $('#dropdownButton').addClass('editBorder');
+            }else{
+                $('input[name=farmState]').removeClass('editBorder');
+                $('#dropdownButton').removeClass('editBorder');
+            }
+        });
+        
+        //입력폼 값이 변했을때 체크해주는 함수
+        $('.form-control-user').change(function(){
+            $('.form-control-user').each(function(i){
+                var t = $(this);  
+                var val = $(this).val();
+                console.log("i값>>>"+i);
+                switch(i){
+                    case 0 : valChk(val,initData.farmCode,t);break;
+                    case 1 : valChk(val,initData.farmName,t);break;
+                    case 2 : valChk(val,initData.farmStartOpen,t);break;
+                    case 3 : valChk(val,initData.farmProduce,t);break;
+                    case 4 : valChk(val,initData.farmType,t);break;
+                    case 5 : valChk(val,initData.farmerIntro,t);break;
+                    case 6 : valChk(val,initData.farmAddr,t);break;
+                    case 7 : valChk(val,initData.farmAddrDetail,t);break;
+                    case 8 : valChk(val,initData.farmRoomInternet,t);break;
+                    case 9 : valChk(val,initData.farmRoomSite,t);break;
+                    case 10 : valChk(val,initData.farmRoomInfo,t);break;
+                    case 11 : valChk(val,initData.farmRoom,t);break;
+                    case 12 : valChk(val,initData.farmRoomUnisex,t);break;
+                    case 13 : valChk(val,initData.farmRoomEtc,t);break;
+                    case 14 : valChk(val,initData.userName,t);break;
+                    case 15 : valChk(val,initData.farmState,t);break;
+                }
+            });
+   
+        });
+
+        //수정하기 버튼 클릭이벤트
+        $('.editBtn').click(function(){
+            var cnt = 0; //수정갯수 체크
+            $('.form-control-user').each(function(i){
+               if($(this).hasClass("editBorder")){
+                    cnt++;
+               }
+            })
+            if(cnt==0){
+                alert("수정항목이 없습니다.");
+                return false
+            }else{
+                var con = confirm(cnt+"가지 항목을 수정하시겠습니까?");
+                if(con){
+                    $('form').submit();
+                }else{
+                    return false;
+                }
+            }
+
+        });
+
+        /**************************농가 이미지 수정 이벤트****************************/
+        var conChk = 0 ;  //확인버튼 클릭 확인 이벤트
+        //이미지 edit버튼 클릭 이벤트
+        $('.imgEditBtn').click(function(){
+            $('.uploadDel').addClass("hide");
+            $('.area_list01').addClass("hide");
+            $('#labelRoomFile').addClass("hide");
+            $('#labelFarmFile').removeClass("hide");
+            $('#farmFile').attr("multiple",false);
+            $('.rimgChoiceBtn').addClass("imgChoiceBtn");
+            $('.rimgChoiceBtn').removeClass("rimgChoiceBtn");
+            $('.farmImg').removeClass("hide");
+            var fileVal = $('#farmFile').val();
+
+            if(conChk==0){
+                var farmImg = '<%=data[0].farmImg%>'
+                $('.farmImg').attr("src","http://"+location.host+farmImg+"");
+                $('#farmFile').val("");
+                $('.upload-name').val("파일선택");
+            }
+
+            
+            // if(fileVal==""){
+            //     var farmImg = '<%=data[0].farmImg%>'
+            //     $('.farmImg').attr("src","http://"+location.host+farmImg+"");
+            // }
+            
+        });
+        
+     
+        //농장 이미지 미리보기 함수()
+        function setImageFromFile(input, expression) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(expression).attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        //농장이미지 변경되었을때 실행되는 함수
+        $('#farmFile').change(function(){
+            imgLen = $(this)[0].files.length;
+            alert(imgLen);
+            if(imgLen==0){
+                $('.upload-name').val("파일선택");
+            }else if(imgLen==1){
+                $('.upload-name').val($(this)[0].files[0].name);
+            }
+            for(var i=0;i<imgLen;i++){
+                var type = $(this)[0].files[i].type;
+                if(!type.includes("image")){
+                    alert("이미지 파일만 업로드 가능");
+                    $('#farmFile').val("");
+                    $('.upload-name').val("파일선택");
+                    return false
+                }
+            }   
+            setImageFromFile(this, '.farmImg');        
+        });
+
+        //파일 선택 후 확인 버튼 클릭 이벤트
+        $(document).on('click','.imgChoiceBtn',function(){
+            var file = $('#farmFile');
+            var fileVal = $('#farmFile').val();
+            if(fileVal==""){
+                alert("수정내용이 없습니다");
+                return false;
+            }else{
+                $('input[name=farmImg]').addClass("editBorder")      //수정되었으면 파란줄
+                var fileName =  $('#farmFile')[0].files[0].name;
+                $('input[name=farmImg]').val(fileName);
+                setImageFromFile(file, '.farmImg');   
+                conChk = 1;
+                $('input[name=dFarmImgChk]').val('t');
+            }
+        });
+      
+
+        /**************************숙소 이미지 수정 이벤트****************************/
+        
+        //숙소 edit버튼 클릭 이벤트
+        var reditChk= 0;
+        var delImgList = [];
+        var conDelImgList = [];
+
+        $('.rimgEditBtn').click(function(){
+            $('.uploadDel').removeClass("hide");
+            $('#labelRoomFile').removeClass("hide");
+            $('#labelFarmFile').addClass("hide");
+            $('.farmImg').addClass("hide");         //농가이미지 숨기기
+            $('.area_list01').removeClass("hide");  //숙소리스트 보이기
+            $('.imgChoiceBtn').addClass("rimgChoiceBtn");   //버튼클래스 변경
+            $('.imgChoiceBtn').removeClass("imgChoiceBtn");
+            delImgList = [];
+            if(reditChk==0){
+                $('.imgctl').remove();
+                $('#roomFile').val("");
+                $('.upload-name').val("파일선택");
+
+                //숙소이미지 리스트 불러오는 ajax
+                $.ajax({
+                    type : "POST",
+                    url : '/admin/farm/farmRoomImgList ', 
+                    async : false, 
+                    dataType : "json", 
+                    data : {farmCode:gFarmCode},
+                    success : function(data) {
+                        console.log(data);
+                        roomList = data;
+                    },
+                    error : function() {
+                        alert('에러발생');
+                    }
+                }); 
+                console.log("아래확인");
+                console.log(roomList[0].roomImgCode);
+                var inHtml = ""; 
+                for(var i=0;i<roomList.length;i++){
+                    inHtml += '<li class="imgctl">'
+                    inHtml += '<span>'
+                    inHtml += '<div class="delctl">'
+                    inHtml += '<i class="fas fa-trash delImgBtn"></i>'
+                    inHtml += '<u></u>'
+                    inHtml += '</div>'
+                    inHtml += '<img src="http://'+location.host +roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">'
+                    inHtml += '</span>'
+                    inHtml += '</li>'
+                }    
+                $('.area_list01').append(inHtml);
+
+            }else{
+                $('.imgctl').removeClass("hide");
+                for(var i=0;i<conDelImgList.length;i++){
+                    $('.'+conDelImgList[i]+'').parent().parent().addClass("hide");
+                }
+            }
+        });
+        
+        //숙소 이미지 미리보기 함수()
+        function setImageFromMultiFile(e){
+            
+            var files = e.files;
+            var filesArr = Array.prototype.slice.call(files);
+            
+            filesArr.forEach(function(f){
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var inHtml ='';
+                    inHtml += '<li class="imgctl newImg">'
+                    inHtml += '<span>'
+                    inHtml += '<img src="'+e.target.result+'">'
+                    inHtml += '</span>'
+                    inHtml += '</li>'
+                     $('.area_list01').append(inHtml);   
+                }  
+                reader.readAsDataURL(f);
+            });
+        }
+
+        //숙소이미지 파일 선택했을때 실행되는 함수
+        $('#roomFile').change(function(){
+            $('.newImg').remove();
+            imgLen = $(this)[0].files.length;
+            alert(imgLen);
+            if(imgLen==0){
+                $('.upload-name').val("파일선택");
+            }else if(imgLen==1){
+                $('.upload-name').val($(this)[0].files[0].name);
+            }else{
+                $('.upload-name').val($(this)[0].files[0].name+" 외"+(imgLen-1)+"개");
+            }
+        
+            for(var i=0;i<imgLen;i++){
+                var type = $(this)[0].files[i].type;
+                if(!type.includes("image")){
+                    alert("이미지 파일만 업로드 가능");
+                    $('#roomFile').val("");
+                    $('.upload-name').val("파일선택");
+                    return false
+                }
+            }     
+            setImageFromMultiFile(this);
+             
+        });
+        
+        //업로드이미지 삭제버튼
+        $('.uploadDel').click(function(){
+            $('.newImg').remove();
+            $('#roomFile').val("");
+            $('.upload-name').val("파일선택");
+        });
+               
+      
+
+         /****************************** 숙소이미지 hover 이벤트 ******************************/ 
+         $(document).on({
+		    mouseenter: function(){
+                $(this).find('.delctl').css("display","block")
+                console.log("호버")
+		    },
+		    mouseleave: function(){
+                $(this).find('.delctl').css("display","none")
+		    }
+	    }, '.imgctl');
+        
+
+        /****************************** db 숙소이미지 hover 후 삭제이벤트******************************/ 
+       
+        $(document).on('click','.delImgBtn',function(){
+            var roomImgCode = $(this).parent().parent().find('img').attr("class");
+            var t = $(this);
+            var delChk = confirm("삭제 예정입니까?");
+            if(delChk){
+                t.parent().parent().parent().addClass("hide");
+                delImgList.push(roomImgCode);
+            }else{
+                return false;
+            }
+ 
+            // console.log(roomImgCode)
+            // var delChk = confirm("정말삭제 하시겠습니까?");
+            // console.log(delChk);
+            // if(delChk){
+            //     $.ajax({
+			// 	type : "POST",
+			// 	url : '/farm/farmRoomImgDel ', 
+            //     async : false, 
+			// 	dataType : "json", 
+			// 	data : {roomImgCode:roomImgCode},
+			// 	success : function(data) {
+			// 		console.log(data);
+			// 		roomList = data;
+            //         t.parent().parent().parent().remove();
+			// 	},
+			// 	error : function() {
+			// 		alert('에러발생');
+			// 	}
+			// });
+            // }else{
+            //     return false;
+            // }
+            
+        });
+
+
+
+         /****************************** 숙소이미지 수정 확인 클릭이벤트******************************/ 
+        $(document).on('click','.rimgChoiceBtn',function(){
+           
+            var dmImgLen = '<%=rImgLeng[0].cnt%>'
+            var uploadLen = $('#roomFile')[0].files.length;
+            var delImgLen = delImgList.length;
+            var roomFileVal = $('#roomFile').val();
+            
+            //확인클릭시 삭제할 이미지의 키값을 conDelImgList 에 담는다.
+            if(delImgLen>0){
+                for(var i=0;i<delImgLen;i++){
+                conDelImgList.push(delImgList[i]);
+                }
+            }
+            $('input[name=delRimgList]').val(conDelImgList);    //삭제할 이미지키값을 input에 담는다.
+            
+            // if(roomFileVal==""){
+            //     $('.imgctlUpload').remove();
+            // }
+            $('input[name=roomImg]').val((dmImgLen-conDelImgList.length+uploadLen)+"개");   //수정된 총 이미지 갯수를 input에 표시한다.
+
+            //수정된 내용이 있을때 없을때
+            if(uploadLen>0 || conDelImgList.length >0 ){
+                $('input[name=roomImg]').addClass("editBorder")      //수정되었으면 파란줄
+            }else{
+                alert("수정된 내용이 없습니다");
+            } 
+            reditChk = 1;
+        });
+
+    });
+
+</script>
+
+
+
+<div id="warpDiv">
+    <div class="card-header py-3">
+        <h4 class="m-0 font-weight-bold text-primary">농가수정</h4>
+    </div>
+    <div class="card o-hidden border-0 shadow-lg" >
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <button id="reBtn" class="btn btn-primary">새로고침</button>
+                    <div class="p-5">
+                        <form enctype="multipart/form-data" class="user" action="/admin/farm/editFarm" method="post">
+                             <!----------------------이미지수정 모달창 레이아웃  ------------------------>
+                            <div class="modal fade" id="imgEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">  
+                                        <div class="singleUpload">
+                                            <label for="farmFile" class="btn btn-warning" id="labelFarmFile">업로드</label> 
+                                            <input type="file" name="farmImgFile"  id="farmFile" accept="image/jpeg, image/png, image/jpg" style="display: none;">
+                                            <label for="roomFile" class="btn btn-warning" id="labelRoomFile">업로드</label> 
+                                            <input type="file" name="roomImgFile" multiple id="roomFile" accept="image/jpeg, image/png, image/jpg" style="display: none;">
+                                            <input class="upload-name" value="파일선택" readonly>    
+                                            <button class="btn btn-light uploadDel" type="button" style="color: red;">업로드삭제</button>
+                                        </div>
+                                     
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    </div>
+                                    <div class="modal-body" id="farmBody" style="height: 750px; overflow: auto;">
+                                        <img class=farmImg>
+                                        <ul class="area_list01">
+                                        </ul>
+                                        <button type="button" class="btn btn-primary btn-block imgChoiceBtn" style="margin-top: 20px;" data-dismiss="modal">확인</button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                             <!----------------------이미지수정 모달창 레이아웃 끝  ------------------------>
+
+
+                            <input type="hidden" name="chk" value= '<%=chk%>'>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >농장코드 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmCode" value= '<%=data[0].farmCode%>' readonly>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >농장명 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmName" value= '<%=data[0].farmName%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >시작연도 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmStartOpen" value= '<%=data[0].farmStartOpen%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >농장물 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmProduce" value= '<%=data[0].farmProduce%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >농장형태 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmType" value= '<%=data[0].farmType%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >주인소개 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmerIntro" value= '<%=data[0].farmerIntro%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >농장주소 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmAddr" value= '<%=data[0].farmAddr%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >상세주소 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmAddrDetail" value= '<%=data[0].farmAddrDetail%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >인터넷 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmRoomInternet" value= '<%=data[0].farmRoomInternet%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >숙소위치 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmRoomSite" value= '<%=data[0].farmRoomSite%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >숙박정보 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmRoomInfo" value= '<%=data[0].farmRoomInfo%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >방 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmRoom" value= '<%=data[0].farmRoom%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >방공용 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmRoomUnisex" value= '<%=data[0].farmRoomUnisex%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >기타 </span>
+                                    <input type="text" class="form-control form-control-user" name="farmRoomEtc" value= '<%=data[0].farmRoomEtc%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >아이디 </span>
+                                    <input type="text" class="form-control form-control-user" name="userName" value= '<%=data[0].userName%>'>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >농장상태 </span>
+                                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownButton"data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                        <%=data[0].farmState%>
+                                    </button>
+                                    <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownButton">
+                                        <a class="dropdown-item search2C" href="#" id="s1">신청중</a>
+                                        <a class="dropdown-item search2C" href="#" id="s2">등록완료</a>
+                                    </div>
+                                    <input type="text" class="form-control form-control-user hide" name="farmState" value= '<%=data[0].farmState%>'>
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="col-sm-6 mb-3 mb-sm-0 input-group">
+                                    <span class="addon" >농장이미지 </span>
+                                    <input type="hidden" name="dFarmImgChk"  value= 'f'> 
+                                    <input type="hidden" name="dFarmImg"  value= '<%=data[0].farmImg%>'>  
+                                    <input type="text" class="form-control form-control-user" name="farmImg" value= '<%=data[0].farmImg%>' readonly>
+                                    <button class="btn btn-warning imgEditBtn" type="button"  data-toggle="modal"  data-target="#imgEditModal" >Edit</button>
+                                </div>
+                                <div class="col-sm-6 input-group">
+                                    <span class="addon" >숙소이미지 </span>
+                                    <input type="hidden" name="delRimgList"> 
+                                    <input type="text" class="form-control form-control-user" name="roomImg" value= '<%=rImgLeng[0].cnt%>개' readonly>
+                                    <button class="btn btn-warning rimgEditBtn" type="button"  data-toggle="modal"  data-target="#imgEditModal" >Edit</button>
+                                </div>
+                            </div>
+                            <a class="btn btn-primary btn-block editBtn">
+                                <span style="font-weight: bold; font-size: 20px;">수정하기</span>
+                            </a>  
+                        </form>           
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
