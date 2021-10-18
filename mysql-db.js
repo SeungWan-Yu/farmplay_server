@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
     // dateStrings: 'date',      // mysql 데이터베이스
     // multipleStatements: true
     
-    host: 'localhost',
+    host: '14.63.223.217',
     post: 3306,
     user: 'dshive',
     password: 'dshive!@#$',       
