@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    // host     : 'localhost',    // 호스트 주소
+    // host     : 'localhost',    // 호스트 주소11
     // user     : 'root',           // mysql user
     // password : '1234',       // mysql password
     // database : 'farmplay', 
