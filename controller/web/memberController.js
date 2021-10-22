@@ -73,12 +73,15 @@ exports.editMember = async function (req, res) {
 }
 
 exports.sendNotice = function (req, res) {
-    console.log("공지보내기");
+    console.log("공지보내기11");
+
+   
     const fs = require( "fs" );
     const file = fs.readdirSync("public/uploads_push","utf8")
     
 
     console.log("파일길이>>"+file.length);
+    
     res.render("../pages/member/sendNotice",{fileLen:file.length});
 }
 
@@ -87,8 +90,13 @@ exports.noticeSend = async function (req, res) {
     console.log("공지보내기");
     var title  = req.param("title");
     var content  = req.param("content");
+    var imgurl = "";
     console.log("파일");
-    console.log(req.file.filename)
+    if(req.file != null){
+        //imgurl = "http://192.168.1.245:3000/public/uploads_push/"+req.file.filename;  -- 로컬작업용
+        imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
+    }
+   
 
     console.log("타이틀>>>"+title);
     console.log("내용>>>"+content);
@@ -107,7 +115,7 @@ exports.noticeSend = async function (req, res) {
                     channel: '10',
                     title: title,
                     content: content,
-                    imgUrl : "http://14.63.223.217/public/uploads_push/"+req.file.filename,
+                    imgUrl : imgurl,
                 })
             }
     };
