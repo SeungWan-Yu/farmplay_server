@@ -69,3 +69,34 @@ module.exports.post = ( req,res,next) => {
     });
   
 }
+
+
+module.exports.farmUpdate = ( req,res,next) => {
+    console.log("업데이트화면")
+    var farm = req.body
+    console.log(req)
+    
+    var results = {
+        result : ""
+    }
+    var sql = "UPDATE farm SET farmState='신청중', farmAskDate=NOW(), farmRegDate='', farmImg='', farmName=?, farmStartOpen=?, farmProduce=?, farmType=?, farmerIntro=?, farmAddr=?, farmAddrDetail=?, farmRoomInternet=?, farmRoomSite=?, farmRoomInfo=?,farmRoom=?,farmRoomUnisex=?,farmRoomEtc=?,userName=? WHERE farmCode=?"
+
+    var params1 = [farm.farmname,farm.farmbegin,farm.farmcrop,farm.farmform,farm.farmerinfo,farm.farmadress,farm.adressdetail,
+    farm.internet,farm.roomadress,farm.roominfo,farm.room,farm.roompublic,farm.roometc,farm.username,farm.farmCode  
+    ]
+
+    mysqlDB.query(sql,params1, function (err, rows, fields) {
+        if (!err) {
+            console.log(rows);
+            console.log(fields);
+            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
+                'fields : ' + JSON.stringify(fields);
+                results.result = "success"
+            res.send(results);
+        } else {
+            console.log('query error : ' + err);
+            res.send(err);
+        }
+    });
+  
+}

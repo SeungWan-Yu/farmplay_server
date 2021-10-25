@@ -33,4 +33,7 @@ router.route('/user')
 router.route('/user')
 .post(controller4.post)
 
+router.route('/update')
+.post(controller.farmUpdate)
+
 module.exports = router;

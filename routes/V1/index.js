@@ -67,4 +67,6 @@ router.use('/farmpler', require('./farmpler.route'))
 
 router.use('/kakaouser', require('./kakaouser.route'))
 
+router.use('/review', require('./review.route'))
+
 module.exports = router;

@@ -93,8 +93,8 @@ exports.noticeSend = async function (req, res) {
     var imgurl = "";
     console.log("파일");
     if(req.file != null){
-        //imgurl = "http://192.168.1.245:3000/public/uploads_push/"+req.file.filename;  -- 로컬작업용
-        imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
+        imgurl = "http://192.168.1.245:3000/public/uploads_push/"+req.file.filename; 
+        //imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
     }
    
 
