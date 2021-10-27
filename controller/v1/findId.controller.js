@@ -24,6 +24,7 @@ module.exports.post = (req, res, next) => {
             'fields : ' + JSON.stringify(fields);
             if(JSON.stringify(rows)== "[]"){
                 results.result = "empty"
+                res.send(results);
             }else{
               results.result = "exist"
               results.id = rows[0].user_id

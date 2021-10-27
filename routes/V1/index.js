@@ -19,7 +19,7 @@ router.use('/thdata', require('./thdata.route'))
 
 router.use('/signup', require('./signup.route'))
 
-router.use('/fileupload', require('./fileupload.route'))
+// router.use('/fileupload', require('./fileupload.route'))
 
 router.use('/cummu', require('./cummu.route'))
 
