@@ -55,7 +55,7 @@ const result =
             result : "성공"
         }
 
-router.post('/upload',upload.single('uploaded_file'),function(req,res){
+router.post('/imgupload',upload.single('uploaded_file'),function(req,res){
 res.send(result)
 console.log(req.file)
 })
