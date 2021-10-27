@@ -70,9 +70,8 @@ exports.farmRoomImgInsert = function (req, res) {
 
 
 exports.farmDel = function (req, res) {
-
-    var farmCode = req.param("farmCode");
-    var chk = req.param("chk");
+    var farmCode = req.query.farmCode;
+    var chk = req.query.chk;
     console.log("팜코드>>>"+farmCode);
     console.log("체크>>>"+chk);
     var result = "false";
@@ -99,8 +98,9 @@ exports.farmDel = function (req, res) {
 }
 
 exports.farmEdit =async function(req,res){
-    var farmCode = req.param("farmCode");
-    var chk = req.param("chk"); //농가리스트인지 농가승인리스트인지 구분해주는 변수
+    var farmCode = req.query.farmCode;
+    var chk = req.query.chk; //농가리스트인지 농가승인리스트인지 구분해주는 변수
+    console.log("파람스 확인");
     console.log("수정 팜코드>>>"+farmCode);
     var data = await  farmModel.getOneFarm(farmCode);
     var rImgLeng = await  farmModel.getFarmRoomImgCnt(farmCode);
@@ -166,7 +166,6 @@ exports.editFarm =async function(req,res){
     }).catch(function(err){
         console.log("캐칭에러 아래 에러출력");
         console.log(err);
-public
 
         //업데이트가 되지 않았다면 업로드한 농가이미지 삭제
         if(farmImg!=null){
@@ -195,7 +194,7 @@ public
 
 
 exports.farmAskList = async function (req, res) {
-    console.log("팜컨트롤러")
+    console.log("팜컨트롤러23123")
     var data = await farmModel.getFarmAskList();
     res.render("../pages/farm/farmList",{data:data,chk:"ask"});
    
@@ -203,11 +202,19 @@ exports.farmAskList = async function (req, res) {
 
 
 exports.farmConfirm = function (req, res) {
+    console.log("확인 컨트롤러");
+    console.log(req.body);
     var farmCodeList = req.body.farmCodeList;
+    var userId = req.body.userId;
     console.log("팜리스트>>>"+farmCodeList.length);
-    farmModel.UpdateFarmConfirm(farmCodeList).then(function(data){
-        console.log(data)
-        res.json(data)
+    console.log("유저아이디>>>"+userId);
+    farmModel.UpdateFarmConfirm(farmCodeList,userId).then(function(data){
+        console.log(data);
+        res.json("등록되었습니다.");
+    }).catch(function(err){
+        console.log("캐치에러");
+        console.log(err); 
+        res.json("등록실패하였습니다. 관리자에게 문의");
     });
    
 }

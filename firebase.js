@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 
-var serviceAccount = require('../farmplay_server/serviceAccountKey.json');
+var serviceAccount = require('../farmplay/serviceAccountKey.json');
 
   admin.initializeApp(
     {

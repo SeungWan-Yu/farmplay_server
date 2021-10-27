@@ -15,7 +15,7 @@ var app = express();
 // view engine setup
 
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+//app.set('view engine', 'pug');
 app.set('view engine', 'ejs') // express 의 view 엔진을 ejs 로 세팅 
 app.set('views', __dirname + '/views/ejs') // 디폴트 view 경로세팅   
 app.set('layout', 'layout');

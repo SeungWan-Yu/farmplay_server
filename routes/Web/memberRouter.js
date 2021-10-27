@@ -23,6 +23,8 @@ const multer  = require('multer');
 // 파일 경로 및 이름 설정 옵션
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        console.log("경로는 잡힘")
+        console.log(file.filename)
         cb(null, __dirname+'/../../public/uploads_push') // 파일 업로드 경로
     },
     filename: function (req, file, cb) {
@@ -41,15 +43,12 @@ const upload = multer({
 
 
 
-
-
-
 router.get('/memberList', memberController.memberList) 
 router.get('/memberDel', memberController.memberDel) 
 router.get('/memberEdit', memberController.memberEdit) //수정페이지
 router.post('/editMember', memberController.editMember) //수정에서 수정버튼 클릭할때 
 router.get('/sendNotice', memberController.sendNotice)   //공지보내기
-router.post('/sendNotice',upload.single('pushFile'), memberController.noticeSend)   //공지보낼때
+router.post('/noticeSend',upload.single('pushFile'),memberController.noticeSend)   //공지보낼때
 router.post('/delPushImg', memberController.delPushImg) //수정에서 수정버튼 클릭할때 
 
 module.exports = router // 이렇게 내보내면 부모 router 에 자동으로 연결됩니다.
