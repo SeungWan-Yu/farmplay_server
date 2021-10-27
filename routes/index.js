@@ -36,6 +36,10 @@ router.post('/v2', function(req, res, next)  {
   res.send(req.body)
 });
 
+router.get('/', (req, res, next) => {
+  return res.render("../pages/main");
+});
+
 
 var now = new Date();
 var date = now.toString()
@@ -49,6 +53,7 @@ var date = now.toString()
 
 router.use('/v1', require('./V1'))
 router.use('/admin', require('./Web'))
+
 
 const result = 
         {

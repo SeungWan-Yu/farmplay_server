@@ -1,13 +1,14 @@
 var con = require('../../mysql-db');
 const mysql2  = require('mysql2/promise');
 const db = {
-    host     : 'localhost',    // 호스트 주소
+    host: '14.63.223.217',
     post: 3306,
-    user     : 'dshive',           // mysql user
-    password : 'dshive!@#$',       // mysql password
-    database : 'farmplay', 
-    dateStrings: 'date',      // mysql 데이터베이스
-    multipleStatements: true  ,
+    user: 'dshive',
+    password: 'dshive!@#$',       
+    database: 'farmplay',
+    datastrings: "date",
+    timezone: 'utc',
+    multipleStatements: true
   }
 
 module.exports = {
@@ -202,19 +203,44 @@ module.exports = {
         });
     },
 
-    UpdateFarmConfirm : function(farmCodeList){
-        return new Promise((resolve,reject) =>{          
-            console.log("결과1>>"+con)
-            con.query("UPDATE farm SET farmState='등록완료' WHERE farmCode IN("+farmCodeList+")", 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            }); 
-        });
+    UpdateFarmConfirm :async function(farmCodeList,userId){
+        const pool  = mysql2.createPool(db);
+        const connection = await pool.getConnection(async conn=>conn);
+
+        try{
+            await connection.beginTransaction();
+            var r1 = await connection.query("SELECT IFNULL(farm_code,0) AS farm_code FROM users WHERE user_id =?",userId);
+            var result1  = r1[0][0].farm_code;
+            console.log("r1>>"+r1);
+            if(result1==0){
+                var params2 = [farmCodeList,userId];
+                var r2 = await connection.query("UPDATE users SET farm_code=?, farm_state=2 WHERE user_id=?",params2);
+                console.log("r2>>"+r2);
+            }
+            var r3 = await connection.query("UPDATE farm SET farmState='등록완료' WHERE farmCode IN("+farmCodeList+")");
+            console.log("r3>>"+r3);
+            await connection.commit();
+            console.log("트랜잭션성공");
+        }catch(err){
+            console.log("에러발생 롤백");
+            await connection.rollback();
+            throw err;
+        }finally{
+            connection.release();
+        }
+
+        // return new Promise((resolve,reject) =>{          
+        //     console.log("결과1>>"+con)
+        //     con.query("UPDATE farm SET farmState='등록완료' WHERE farmCode IN("+farmCodeList+")", 
+        //     function (err, result, fields) {
+        //         if(err){
+        //             reject(err)
+        //         }else{
+        //             console.log("결과>>"+result)
+        //             resolve(result)
+        //         }
+        //     }); 
+        // });
     },
 
 

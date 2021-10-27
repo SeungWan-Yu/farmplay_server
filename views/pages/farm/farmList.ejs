@@ -89,6 +89,7 @@
         });
 
         var gFarmCode;
+        var gUserId;
         //농장코드 클릭이벤트
         $(document).on('click','.farmInfoBtn',function(){
             $("#farmBody").scrollTop(0);
@@ -98,6 +99,7 @@
             var index = Number(sindex);
             var initData = JSON.parse('<%-JSON.stringify(data)%>'); //넘어온 데이터 json으로 변환 
             gFarmCode = initData[index].farmCode;
+            gUserId = initData[index].userName;
             console.log(initData[index])
             inHtml += '<div class="farmInfoDiv">'
             inHtml += '<img src="http://'+location.host+initData[index].farmImg+'" class="farmImg">'  
@@ -230,6 +232,7 @@
             }
             
             if(cnt==0){
+                console.log(gUserId);
                 alert("숙소이미지를 확인 후 승인 부탁드립니다.")
                 return false;
             }else if(cnt==1){
@@ -240,8 +243,9 @@
                         url : '/admin/farm/farmConfirm ', 
                         async : false, 
                         dataType : "json", 
-                        data : {farmCodeList:gFarmCode},
+                        data :  {farmCodeList:gFarmCode,userId:gUserId},
                         success : function(data) {
+                            alert(data);
                             location.href  = "/admin/farm/farmAskList"
                         },
                         error : function() {

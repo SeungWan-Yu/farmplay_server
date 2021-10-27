@@ -87,22 +87,28 @@ exports.sendNotice = function (req, res) {
 
 
 exports.noticeSend = async function (req, res) {
-    console.log("공지보내기");
-    var title  = req.param("title");
-    var content  = req.param("content");
+    console.log("공지보내기시작");
+    var body = req.body;
+    var title  = body.title;
+    var content  =  body.content
     var imgurl = "";
     console.log("파일");
+    console.log(req.file)
+
     if(req.file != null){
-        imgurl = "http://192.168.1.245:3000/public/uploads_push/"+req.file.filename; 
-        //imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
+        console.log(req.file.filename)
+        //imgurl = "http://192.168.1.245:3000/public/uploads_push/"+req.file.filename; 
+        imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
     }
    
 
     console.log("타이틀>>>"+title);
     console.log("내용>>>"+content);
-  
-    var admin = require('../../firebase');
+    console.log("이미지 경로>>>"+imgurl);
 
+    var admin = require('../../firebase');
+    console.log("테스트1");
+   
     const options = {
         priority: "high",     //메시지 중요도 설정 
         timeToLive: 60 * 60 * 2 ////메시지 Live Time 설정
@@ -120,18 +126,19 @@ exports.noticeSend = async function (req, res) {
             }
     };
     
-    var result;
-    admin.messaging().sendToTopic('notices', message, options).then(function(response) {
+    var result = "";
+    console.log("여기테스트")
+    await admin.messaging().sendToTopic('notices', message, options).then(function(response) {
             console.log("Successfully sent message:", response);
             result = "success";
-            res.redirect("/admin/member/sendNotice?result="+result);
+           
     })
     .catch(function(error) {
             console.log("Error sending message:", error);
             result = "fail";
-            res.redirect("/admin/member/sendNotice?result="+result);
     });
 
+    res.redirect("/admin/member/sendNotice?result="+result);
 }
 
 
