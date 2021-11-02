@@ -36,6 +36,4 @@ module.exports.post = (req, res, next) => {
         res.send(err);
     }
 });
-
-
 }
