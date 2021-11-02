@@ -1,17 +1,43 @@
-var mysqlDB = require('../../mysql-db');
 
-module.exports.userReviewInsert = ( req,res,next) => {
-    mysqlDB.query('select * from farm where farmstate = 1', function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-            res.send(JSON.stringify(rows));
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
-        }
+const reviewModel = require("../../models/v1/reviewModel");
+
+
+exports.addReview = function (req, res) {
+    console.log("에드리뷰컨트롤러");
+    var review = req.body
+    console.log("받아온 리퀘스트값>>>");
+
+    console.log(review);
+    var results = {
+        result : ""
+    }
+    reviewModel.addReview(review).then(function(data){
+        results.result = "success"
+        res.send(results);
+    }).catch(function(err){
+        console.log("캐치에러");
+        console.log(err);
+        results.result = "fail"
+        res.json(results);
     });
+
 }
 
+
+exports.getReview = function (req, res) {
+    console.log("겟리뷰컨트롤러");
+    var query = req.query
+    console.log("받아온 리퀘스트값>>>");
+   
+    console.log(query.recuritCode,query.enterUserId,query.reviewStandard);
+
+    reviewModel.getReview(query).then(function(data){
+        console.log("성공");
+        console.log(data);
+        res.send(data);
+    }).catch(function(err){
+        console.log("캐치에러");
+        console.log(err);
+    });
+
+}

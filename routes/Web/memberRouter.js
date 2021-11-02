@@ -36,6 +36,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
     storage : storage,
+    
     dest: __dirname+'/../../public/uploads_push', // 이미지 업로드 경로
     //limits: limits, // 이미지 업로드 제한 설정
     fileFilter : fileFilter // 이미지 업로드 필터링 설정
