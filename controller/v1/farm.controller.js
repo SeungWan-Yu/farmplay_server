@@ -1,4 +1,6 @@
 var mysqlDB = require('../../mysql-db');
+const farmModel = require("../../models/v1/farmModel");
+
 
 module.exports.get = ( req,res,next) => {
     mysqlDB.query('select * from farm where farmstate = "등록완료"', function (err, rows, fields) {
@@ -99,4 +101,22 @@ module.exports.farmUpdate = ( req,res,next) => {
         }
     });
   
+}
+
+
+
+exports.getEnterList = function (req, res) {
+    console.log("팜컨트롤러 전근영");
+    var query = req.query
+    console.log("받아온 리퀘스트값>>>");
+    console.log(query);
+    farmModel.getEnterList(query).then(function(data){
+        console.log("성공");
+        console.log(data);
+        res.send(data);
+    }).catch(function(err){
+        console.log("캐치에러");``
+        console.log(err);
+    });
+
 }

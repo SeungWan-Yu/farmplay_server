@@ -9,6 +9,13 @@ router.route('/')
 router.route('/')
 .post(controller.post)
 
+router.route('/update')
+.post(controller.farmUpdate)
+
+
+router.route('/recruit')
+.post(controller.getEnterList)
+
 const controller2 = require('../../controller/v1/farmname.controller')
 
 router.route('/name')
@@ -33,7 +40,6 @@ router.route('/user')
 router.route('/user')
 .post(controller4.post)
 
-router.route('/update')
-.post(controller.farmUpdate)
+
 
 module.exports = router;

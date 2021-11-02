@@ -1,3 +1,6 @@
+const reviewModel = require('./reviewModel')
+
+
 'use strict';
 
 const fs = require('fs');
@@ -35,3 +38,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+
+module.exports = {
+  db,
+  reviewModel,
+}
