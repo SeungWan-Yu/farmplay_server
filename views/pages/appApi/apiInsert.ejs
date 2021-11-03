@@ -29,241 +29,31 @@
             }else if(apiId=="joinRecruit"){
                 $('.apiInfoViewBody').eq(2).css('display','block');
             }             
+            $('.p-3_result').text("");
+            $('.p-3_return').text("");
         });
 
+        //ajax
+
         //유저등록 전송버튼 클릭이벤트
-        $('#signupBtn').click(function(){
-            let id              = $('#id').val();
-            let pw              = $('#pw').val();
-            let name            = $('#name').val();
-            let phone           = $('#phone').val();
-            let adress          = $('#adress').val();
-            let adressdetail    = $('#adressdetail').val();
-            let token           = $('#token').val();
-
-            let sendData = {
-                "id"            : id,
-                "pw"            : pw,
-                "name"          : name,
-                "phone"         : phone,
-                "adress"        : adress,
-                "adressdetail"  : adressdetail,
-                "token"         : token
-            }
-
-            $.ajax({
-                contentType: "application/json; charset=utf-8",
-                type:"post",
-                dataType:'json',
-                data: JSON.stringify(sendData),
-                url: '/v1/signup',
-                success: function(data) {
-                    $('.p-3_result').text(data.result);
-                    $('.p-3_return').text(JSON.stringify(data.message));
-                },
-                error: function searchError(xhr, err) {
-                    alert("에러");
-                    alert(err);
-                }
-            });
-        });//유저등록 전송버튼 클릭이벤트 종료
+        <%-include('ajaxSignup')%>
 
         //농장등록 전송버튼 클릭이벤트
-        $('#farmBtn').click(function(){
-            let farmImg             = $('#farmImg').val();
-            let farmName            = $('#farmName').val();
-            let farmStartOpen       = $('#farmStartOpen').val();
-            let farmProduce         = $('#farmProduce').val();
-            let farmType            = $('farmType').val();
-            let farmerIntro         = $('#farmerIntro').val();
-            let farmAddr            = $('#farmAddr').val();
-            let farmAddrDetail      = $('#farmAddrDetail').val();
-            let farmRoomInternet    = $('#farmRoomInternet').val();
-            let farmRoomSite        = $('#farmRoomSite').val();
-            let farmRoomInfo        = $('#farmRoomInfo').val();
-            let farmRoom            = $('#farmRoom').val();
-            let farmRoomUnisex      = $('#farmRoomUnisex').val();
-            let farmRoomEtc         = $('#farmRoomEtc').val();
-            let username            = $('#username').val();
-
-            let sendData = {
-                "farmImg"           : farmImg,
-                "farmName"          : farmName,
-                "farmStartOpen"     : farmStartOpen,
-                "farmProduce"       : farmProduce,
-                "farmType"          : farmType,
-                "farmerIntro"       : farmerIntro,
-                "farmAddr"          : farmAddr,
-                "farmAddrDetail"    : farmAddrDetail,
-                "farmRoomInternet"  : farmRoomInternet,
-                "farmRoomSite"      : farmRoomSite,
-                "farmRoomInfo"      : farmRoomInfo,
-                "farmRoom"          : farmRoom,
-                "farmRoomUnisex"    : farmRoomUnisex,
-                "farmRoomEtc"       : farmRoomEtc,  
-                "username"          : username
-            }
-
-            $.ajax({
-                contentType: "application/json; charset=utf-8",
-                type:"post",
-                dataType:'json',
-                data: JSON.stringify(sendData),
-                url: '/v1/farm',
-                success: function(data) {
-                    $('.p-3_result').text(data.result);
-                    $('.p-3_return').text(JSON.stringify(data.message));
-                },
-                error: function searchError(xhr, err) {
-                    alert("에러");
-                    alert(err);
-                }
-            });
-        });//농장등록 전송버튼 클릭이벤트 종료
+        <%-include('ajaxJoinFarm')%>
 
         //모집등록 전송버튼 클릭이벤트
-        $('#recruitBtn').click(function(){
-            let recuritFarmCode         = $('#recuritFarmCode').val();
-            let recuritState            = $('#recuritState').val();
-            let recuritUserId           = $('#recuritUserId').val();
-            let recuritStart            = $('#recuritStart').val();
-            let recuritEnd              = $('recuritEnd').val();
-            let recuritJobStart         = $('#recuritJobStart').val();
-            let recuritJobEnd           = $('#recuritJobEnd').val();
-            let recuritJobKind          = $('#recuritJobKind').val();
-            let recuritMealProvide      = $('#recuritMealProvide').val();
-            let recuritMealVeget        = $('#recuritMealVeget').val();
-            let recuritMealMemo         = $('#recuritMealMemo').val();
-            let recuritChkFampler       = $('#recuritChkFampler').val();
-            let recuritChkPeriod        = $('#recuritChkPeriod').val();
-            let recuritChkMinor         = $('#recuritChkMinor').val();
-            let recuritChkMinorMemo     = $('#recuritChkMinorMemo').val();
-            let recuritChkMax           = $('#recuritChkMax').val();
-            let recuritChkSummary       = $('#recuritChkSummary').val();
-
-            let sendData = {
-                "recuritFarmCode"       : recuritFarmCode,
-                "recuritState"          : recuritState,
-                "recuritUserId"         : recuritUserId,
-                "recuritStart"          : recuritStart,
-                "recuritEnd"            : recuritEnd,
-                "recuritJobStart"       : recuritJobStart,
-                "recuritJobEnd"         : recuritJobEnd,
-                "recuritJobKind"        : recuritJobKind,
-                "recuritMealProvide"    : recuritMealProvide,
-                "recuritMealVeget"      : recuritMealVeget,
-                "recuritMealMemo"       : recuritMealMemo,
-                "recuritChkFampler"     : recuritChkFampler,
-                "recuritChkPeriod"      : recuritChkPeriod,
-                "recuritChkMinor"       : recuritChkMinor,  
-                "recuritChkMinorMemo"   : recuritChkMinorMemo,
-                "recuritChkMax"         : recuritChkMax,
-                "recuritChkSummary"     : recuritChkSummary
-            }
-
-            $.ajax({
-                contentType: "application/json; charset=utf-8",
-                type:"post",
-                dataType:'json',
-                data: JSON.stringify(sendData),
-                url: '/v1/recruit',
-                success: function(data) {
-                    $('.p-3_result').text(data.result);
-                    $('.p-3_return').text(JSON.stringify(data.message));
-                },
-                error: function searchError(xhr, err) {
-                    alert("에러");
-                    alert(err);
-                }
-            });
-        });//모집등록 전송버튼 클릭이벤트 종료
+        <%-include('ajaxJoinRecruit')%>
 
     });
 </script>
 
 <h1>회원api</h1>
-<%-include('ebs')%>
+
 <div class="row">
 
     <!-- 왼쪽 api 선택영역 -->
-    <div class="col-lg-3" id="selectView">
-        <!-- Circle Buttons -->
-        <div class="card shadow mb-4">
-            <table id="selectTable">
-                <thead>
-                    <tr>
-                        <th><div class="p-3 apiName">api명</div></th>
-                    <th><div class="p-3 apiExplain">api설명</div></th>
-                    </tr>
+    <%-include('selectView')%>
     
-                </thead>
-                <tbody>
-                    <tr class="bg-gray-100 apiLine getApiCls" id="singupApi">
-                        <td><div class="p-3 apiName">singup</div></td>
-                        <td><div class="p-3 apiExplain">유저등록</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls" id="joinFarm">
-                        <td><div class="p-3 apiName">joinFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장등록</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls" id="joinRecruit">
-                        <td><div class="p-3 apiName">joinRecruit</div></td>
-                        <td><div class="p-3 apiExplain">모집등록</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                </tbody> 
-            </table>
-        </div>
-
-    </div>
-
     <!-- 오른쪽 영역 -->
     <div class="col-lg-9">
         <!-- api정보화면 insert,update,delete는 입력값, select는 테이블  -->
@@ -272,196 +62,20 @@
             <!-- 선택한 api별로 변경되는 부분 아래로 쭉이어서 쓰면된다. -->
 
             <!-- 1번 유저등록화면  -->
-            <div class="apiInfoViewBody">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">아이디</div></td>
-                            <td><div class="p-3"><input type="text" id="id"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">비번</div></td>
-                            <td><div class="p-3"><input type="text" id="pw"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">이름</div></td>
-                            <td><div class="p-3"><input type="text" id="name"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">연락처</div></td>
-                            <td><div class="p-3"><input type="text" id="phone"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">주소</div></td>
-                            <td><div class="p-3"><input type="text" id="adress"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">상세주소</div></td>
-                            <td><div class="p-3"><input type="text" id="adressdetail"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">토큰</div></td>
-                            <td><div class="p-3"><input type="text" id="token"></div></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="p-3 apiExplain"><button type="button" id="signupBtn" class="btn btn-primary">전송</button></div>
-            </div>
+            <%-include('joinUser')%>
                    
             <!-- 2번 농장등록화면  -->
-            <div class="apiInfoViewBody">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 이미지</div></td>
-                            <td><div class="p-3"><input type="text" id="farmImg"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 이름</div></td>
-                            <td><div class="p-3"><input type="text" id="farmName"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 설립일</div></td>
-                            <td><div class="p-3"><input type="text" id="farmStartOpen"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 생산품</div></td>
-                            <td><div class="p-3"><input type="text" id="farmProduce"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 종류</div></td>
-                            <td><div class="p-3"><input type="text" id="farmType"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 소개</div></td>
-                            <td><div class="p-3"><input type="text" id="farmerIntro"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 주소</div></td>
-                            <td><div class="p-3"><input type="text" id="farmAddr"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 상세주소</div></td>
-                            <td><div class="p-3"><input type="text" id="farmAddrDetail"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소 인터넷 여부</div></td>
-                            <td><div class="p-3"><input type="text" id="farmRoomInternet"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소 주소</div></td>
-                            <td><div class="p-3"><input type="text" id="farmRoomSite"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소 정보</div></td>
-                            <td><div class="p-3"><input type="text" id="farmRoomInfo"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소</div></td>
-                            <td><div class="p-3"><input type="text" id="farmRoom"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소 남여 공용 여부</div></td>
-                            <td><div class="p-3"><input type="text" id="farmRoomUnisex"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소 기타정보</div></td>
-                            <td><div class="p-3"><input type="text" id="farmRoomEtc"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장주 이름</div></td>
-                            <td><div class="p-3"><input type="text" id="username"></div></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="p-3 apiExplain"><button type="button" id="farmBtn" class="btn btn-primary">전송</button></div>
-            </div>
+            <%-include('joinFarm')%>
 
             <!-- 3번 모집등록화면  -->
-            <div class="apiInfoViewBody">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 농장 코드</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritFarmCode"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 상태</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritState"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 유저 아이디</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritUserId"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 시작일</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritStart"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 마감일</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritEnd"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">일 시작일</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritJobStart"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">일 종료일</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritJobEnd"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">일 종류</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritJobKind"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">식사 제공 여부</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritMealProvide"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">채식 제공 여부</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritMealVeget"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">식사 정보</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritMealMemo"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모침 체크 팜플러</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritChkFampler"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 체크 주기</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritChkPeriod"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">농장 숙소 기타정보</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritChkMinor"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 체크 메모</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritChkMinorMemo"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 체크 max</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritChkMax"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">모집 체크 요약</div></td>
-                            <td><div class="p-3"><input type="text" id="recuritChkSummary"></div></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="p-3 apiExplain"><button type="button" id="recruitBtn" class="btn btn-primary">전송</button></div>
-            </div>
-
-        </div>
+            <%-include('joinRecruit')%>
+            
 
          <!-- 통신결과 보여주는 영역  -->
         <div class="card shadow mb-4">           
             <div class="p-3 apiName">● 결과 : <p class="p-3_result"></p></div>
             <div class="p-3 apiName">● 리턴값: <p class="p-3_return"></p></div>
         </div>
+    </div><!-- class//col-lg-9 -->
 
-    </div>
-
-</div>
+</div><!-- class//row -->
