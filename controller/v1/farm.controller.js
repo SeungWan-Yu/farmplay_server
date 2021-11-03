@@ -48,10 +48,11 @@ module.exports.get = ( req,res,next) => {
 
 module.exports.post = ( req,res,next) => {
 
-    console.log(req)
+    console.log(req.body)
     
     var results = {
-        result : ""
+        result  : "",
+        massage : ""
     }
     mysqlDB.query('insert into farm (farmImg,farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
     +req.body.farmImg+'","'+req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
@@ -66,6 +67,8 @@ module.exports.post = ( req,res,next) => {
             res.send(results);
         } else {
             console.log('query error : ' + err);
+            results.result = "fail";
+            results.message = err;
             res.send(err);
         }
     });

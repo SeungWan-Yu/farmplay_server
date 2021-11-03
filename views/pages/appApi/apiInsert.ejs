@@ -10,9 +10,8 @@
 </style>
 
 <script type="text/javascript">
+
     $(function(){
-        
-      
         //api명 또는 설명 클릭이벤트
         $('.getApiCls').click(function(){
             //리셋
@@ -27,28 +26,27 @@
                 $('.apiInfoViewBody').eq(0).css('display','block');
             }else if(apiId=="getFarm"){
                 $('.apiInfoViewBody').eq(1).css('display','block');
-            }
-            
+            } 
         });
 
         //유저등록 전송버튼 클릭이벤트
         $('#signupBtn').click(function(){
-            var id = $('#id').val();
-            var pw = $('#pw').val();
-            var name = $('#name').val();
-            var phone = $('#phone').val();
-            var adress = $('#adress').val();
-            var adressdetail = $('#adressdetail').val();
-            var token = $('#token').val();
+            let id              = $('#id').val();
+            let pw              = $('#pw').val();
+            let name            = $('#name').val();
+            let phone           = $('#phone').val();
+            let adress          = $('#adress').val();
+            let adressdetail    = $('#adressdetail').val();
+            let token           = $('#token').val();
 
-            var sendData= {
-                "id" : id,
-                "pw" : pw,
-                "name" : name,
-                "phone" : phone,
-                "adress" : adress,
-                "adressdetail" : adressdetail,
-                "token" : token
+            let sendData = {
+                "id"            : id,
+                "pw"            : pw,
+                "name"          : name,
+                "phone"         : phone,
+                "adress"        : adress,
+                "adressdetail"  : adressdetail,
+                "token"         : token
             }
 
             $.ajax({
@@ -58,21 +56,78 @@
                 data: JSON.stringify(sendData),
                 url: '/v1/signup',
                 success: function(data) {
-                    alert("성공");
-                    console.log(data);
+                    let dataReturn  = JSON.stringify(data);
+                    let dataSplit   = dataReturn.split('"message":');
+                    let passFail    = dataSplit[0].split(':');
+                    passFail        = passFail[1].split('"');
+                    $('.p-3_result').text(passFail[1]);
+                    $('.p-3_return').text(dataSplit[1]);
                 },
                 error: function searchError(xhr, err) {
                     alert("에러");
                     alert(err);
-                    console.error("Error on ajax call: " + err);
-                    console.log(JSON.stringify(xhr));
                 }
             });
+        });//유저등록 전송버튼 클릭이벤트 종료
 
+        //농장등록 전송버튼 클릭이벤트
+        $('#farmBtn').click(function(){
+            let farmImg             = $('#farmImg').val();
+            let farmName            = $('#farmName').val();
+            let farmStartOpen       = $('#farmStartOpen').val();
+            let farmProduce         = $('#farmProduce').val();
+            let farmType            = $('farmType').val();
+            let farmerIntro         = $('#farmerIntro').val();
+            let farmAddr            = $('#farmAddr').val();
+            let farmAddrDetail      = $('#farmAddrDetail').val();
+            let farmRoomInternet    = $('#farmRoomInternet').val();
+            let farmRoomSite        = $('#farmRoomSite').val();
+            let farmRoomInfo        = $('#farmRoomInfo').val();
+            let farmRoom            = $('#farmRoom').val();
+            let farmRoomUnisex      = $('#farmRoomUnisex').val();
+            let farmRoomEtc         = $('#farmRoomEtc').val();
+            let username            = $('#username').val();
 
+            let sendData = {
+                "farmImg"           : farmImg,
+                "farmName"          : farmName,
+                "farmStartOpen"     : farmStartOpen,
+                "farmProduce"       : farmProduce,
+                "farmType"          : farmType,
+                "farmerIntro"       : farmerIntro,
+                "farmAddr"          : farmAddr,
+                "farmAddrDetail"    : farmAddrDetail,
+                "farmRoomInternet"  : farmfarmRoomInternetAddr,
+                "farmRoomSite"      : farmRoomSite,
+                "farmRoomInfo"      : farmRoomInfo,
+                "farmRoom"          : farmRoom,
+                "farmRoomUnisex"    : farmRoomUnisex,
+                "farmRoomEtc"       : farmRoomEtc,  
+                "username"          : username
+            }
 
+            alert("test ");
 
-        });
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                type:"post",
+                dataType:'json',
+                data: JSON.stringify(sendData),
+                url: '/v1/farm',
+                success: function(data) {
+                    let dataReturn  = JSON.stringify(data);
+                    let dataSplit   = dataReturn.split('"message":');
+                    let passFail    = dataSplit[0].split(':');
+                    passFail        = passFail[1].split('"');
+                    $('.p-3_result').text(passFail[1]);
+                    $('.p-3_return').text(dataSplit[1]);
+                },
+                error: function searchError(xhr, err) {
+                    alert("에러");
+                    alert(err);
+                }
+            });
+        });//농장등록 전송버튼 클릭이벤트 종료
 
     });
 </script>
@@ -100,7 +155,7 @@
                     </tr>
                     <tr class="bg-gray-100 apiLine getApiCls" id="getFarm">
                         <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
+                        <td><div class="p-3 apiExplain">농장등록</div></td>
                     </tr>
                     <tr class="bg-gray-100 apiLine getApiCls">
                         <td><div class="p-3 apiName">getFarm</div></td>
@@ -203,23 +258,84 @@
                 </table>
                 <div class="p-3 apiExplain"><button type="button" id="signupBtn" class="btn btn-primary">전송</button></div>
             </div>
-
+                   
             <!-- 2번 아직  -->
             <div class="apiInfoViewBody">
-                <div class="p-3">겟팜</div>
-                <div class="p-3 apiExplain"><button type="button" id="signupBtn" class="btn btn-primary">전송</button></div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 이미지</div></td>
+                            <td><div class="p-3"><input type="text" id="farmImg"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 이름</div></td>
+                            <td><div class="p-3"><input type="text" id="farmName"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 설립일</div></td>
+                            <td><div class="p-3"><input type="text" id="farmStartOpen"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 생산품</div></td>
+                            <td><div class="p-3"><input type="text" id="farmProduce"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 종류</div></td>
+                            <td><div class="p-3"><input type="text" id="farmType"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 소개</div></td>
+                            <td><div class="p-3"><input type="text" id="farmerIntro"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 주소</div></td>
+                            <td><div class="p-3"><input type="text" id="farmAddr"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 상세주소</div></td>
+                            <td><div class="p-3"><input type="text" id="farmAddrDetail"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 숙소 인터넷 여부</div></td>
+                            <td><div class="p-3"><input type="text" id="farmRoomInternet"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 숙소 주소</div></td>
+                            <td><div class="p-3"><input type="text" id="farmRoomSite"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 숙소 정보</div></td>
+                            <td><div class="p-3"><input type="text" id="farmRoomInfo"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 숙소</div></td>
+                            <td><div class="p-3"><input type="text" id="farmRoom"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 숙소 남여 공용 여부</div></td>
+                            <td><div class="p-3"><input type="text" id="farmRoomUnisex"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장 숙소 기타정보</div></td>
+                            <td><div class="p-3"><input type="text" id="farmRoomEtc"></div></td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-2"><div class="p-3">농장주 이름</div></td>
+                            <td><div class="p-3"><input type="text" id="username"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="p-3 apiExplain"><button type="button" id="farmBtn" class="btn btn-primary">전송</button></div>
             </div>
-           
+
         </div>
-        
+
          <!-- 통신결과 보여주는 영역  -->
         <div class="card shadow mb-4">           
-            <div class="p-3 apiName">● 정상</div>
-            <div class="p-3 apiName">● 리턴값</div>
-            <div class="p-3 apiName">- ㄴ망ㅁㄴ암ㄴ암ㄴㅇ만암낭만암ㄴ암넝마ㅓㄴ아먼암너이ㅏㅁ너임나ㅓㅇ미ㅏ넝미나ㅓ이머아ㅣㅁ넝</div>
+            <div class="p-3 apiName">● 결과 : <p class="p-3_result"></p></div>
+            <div class="p-3 apiName">● 리턴값: <p class="p-3_return"></p></div>
         </div>
 
     </div>
 
 </div>
-
