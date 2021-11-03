@@ -24,10 +24,10 @@ module.exports.post = ( req,res,next) => {
         token : req.body.token
     }
 
-    console.log(signupuser)
+    console.log(signupuser);
     const results = {
         result : "",
-        msg : ""
+        message : ""
     }
     console.log(signupuser);
     mysqlDB.query('insert into users (user_id,user_pw,user_name,user_phone,user_adress,user_adress_detail,token) values ("'+signupuser.id+'","'+signupuser.pw+'","'+signupuser.name+'","'+signupuser.phone+'","'+signupuser.adress+'","'+signupuser.adressdetail+'","'+signupuser.token+'");', function (err, rows, fields) {
@@ -40,8 +40,8 @@ module.exports.post = ( req,res,next) => {
             res.send(results);
         } else {
             console.log('query error : ' + err);
-            results.result = "fail"
-            results.msg = err
+            results.result = "fail";
+            results.message = err;
             res.send(results);
         }
     });
