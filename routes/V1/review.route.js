@@ -9,5 +9,7 @@ router.route('/addReview')
 router.route('/getReview')
 .post(controller.getReview)
 
+router.route('/getReviewRating')
+.post(controller.getReviewRating)
 
 module.exports = router;

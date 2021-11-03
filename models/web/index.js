@@ -3,6 +3,7 @@ const memberModel = require('./memberModel')
 const farmModel = require('./farmModel')
 const recuritModel = require('./recuritModel')
 const farmplerModel = require('./farmplerModel')
+const appApiModel = require('./appApiModel')
 
 module.exports = {
     mainModel,
@@ -10,4 +11,5 @@ module.exports = {
     farmModel,
     recuritModel,
     farmplerModel,
+    appApiModel,
 }
