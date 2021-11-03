@@ -23,6 +23,7 @@ module.exports.post = ( req,res,next) => {
         adressdetail : req.body.adressdetail,
         token : req.body.token
     }
+    err
     console.log(signupuser)
     const results = {
         result : ""

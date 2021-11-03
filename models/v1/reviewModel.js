@@ -98,7 +98,36 @@ module.exports = {
             resolve(r1)
  
         });
-    }
+    },
+
+    getReviewRating :async function(query){
+        console.log("모델확인");
+        console.log(query);
+        const connection = await con;
+        var farmcode = query.farmcode;
+        var farmstate = query.farmstate;
+        var userid = query.userid;
+        var r ="";
+        try{
+            if(farmstate==1){
+                var sql = "SELECT userRating, userReviewCnt FROM users WHERE user_id =?"
+                var param  = [userid];
+                [r] = await connection.query(sql,param);
+            }else if(farmstate==2){
+                var sql = "SELECT f.farmCode ,u.userRating, u.userReviewCnt,f.farmRating,f.farmReviewCnt FROM users AS u LEFT JOIN farm AS f ON u.user_id = f.userName WHERE u.user_id = ? AND farmCode = ?"
+                var param  = [userid,farmcode];
+                [r] = await connection.query(sql,param);``
+            }
+            console.log("결과값")
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return new Promise((resolve,reject) =>{    
+            resolve(r[0])
+        });
+    },
 
 
 }
