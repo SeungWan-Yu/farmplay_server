@@ -36,13 +36,13 @@
         //ajax
 
         //유저등록 전송버튼 클릭이벤트
-        <%-include('ajaxSignup')%>
+        <%-include('./ajax/signUp')%>
 
         //농장등록 전송버튼 클릭이벤트
-        <%-include('ajaxJoinFarm')%>
+        <%-include('./ajax/joinFarm')%>
 
         //모집등록 전송버튼 클릭이벤트
-        <%-include('ajaxJoinRecruit')%>
+        <%-include('./ajax/joinRecruit')%>
 
     });
 </script>
@@ -52,7 +52,7 @@
 <div class="row">
 
     <!-- 왼쪽 api 선택영역 -->
-    <%-include('selectView')%>
+    <%-include('./view/selectView')%>
     
     <!-- 오른쪽 영역 -->
     <div class="col-lg-9">
@@ -62,13 +62,13 @@
             <!-- 선택한 api별로 변경되는 부분 아래로 쭉이어서 쓰면된다. -->
 
             <!-- 1번 유저등록화면  -->
-            <%-include('joinUser')%>
+            <%-include('./view/joinUser')%>
                    
             <!-- 2번 농장등록화면  -->
-            <%-include('joinFarm')%>
+            <%-include('./view/joinFarm')%>
 
             <!-- 3번 모집등록화면  -->
-            <%-include('joinRecruit')%>
+            <%-include('./view/joinRecruit')%>
             
 
          <!-- 통신결과 보여주는 영역  -->
