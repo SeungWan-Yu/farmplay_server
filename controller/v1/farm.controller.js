@@ -48,11 +48,10 @@ module.exports.get = ( req,res,next) => {
 
 module.exports.post = ( req,res,next) => {
 
-    console.log(req.body)
+    console.log(req)
     
     var results = {
-        result  : "",
-        massage : ""
+        result : ""
     }
     mysqlDB.query('insert into farm (farmImg,farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
     +req.body.farmImg+'","'+req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
@@ -67,8 +66,6 @@ module.exports.post = ( req,res,next) => {
             res.send(results);
         } else {
             console.log('query error : ' + err);
-            results.result = "fail";
-            results.message = err;
             res.send(err);
         }
     });
@@ -109,6 +106,22 @@ module.exports.farmUpdate = ( req,res,next) => {
 
 
 exports.getEnterList = function (req, res) {
+    console.log("팜컨트롤러 전근영");
+    var query = req.query
+    console.log("받아온 리퀘스트값>>>");
+    console.log(query);
+    farmModel.getEnterList(query).then(function(data){
+        console.log("성공");
+        console.log(data);
+        res.send(data);
+    }).catch(function(err){
+        console.log("캐치에러");``
+        console.log(err);
+    });
+
+}
+
+exports.getRecruitList = function (req, res) {
     console.log("팜컨트롤러 전근영");
     var query = req.query
     console.log("받아온 리퀘스트값>>>");

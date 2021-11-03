@@ -55,3 +55,17 @@ exports.getReviewRating = function (req, res) {
     });
 
 }
+
+exports.getRecruitList = function (req, res) {
+    console.log("모집리스트");
+    var query = req.query
+    farmModel.getRecruitList(query).then(function(data){
+        console.log("성공");
+        console.log(data);
+        res.send(data);
+    }).catch(function(err){
+        console.log("캐치에러");
+        console.log(err);
+    });
+
+}
