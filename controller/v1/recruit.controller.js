@@ -17,7 +17,8 @@ module.exports.get = ( req,res,next) => {
 
 module.exports.post = ( req,res,next) => {
     var results = {
-        result : ""
+        result  : "",
+        message : ""
     }
     mysqlDB.query('insert into recruit (recuritFarmCode,recuritState,recuritUserId,recuritStart,recuritEnd,recuritJobStart,recuritJobEnd,recuritJobKind,recuritMealProvide,recuritMealVeget,recuritMealMemo,recuritChkFampler,recuritChkPeriod,recuritChkMinor,recuritChkMinorMemo,recuritChkMax,recuritChkSummary) values ("'
     +req.body.recuritFarmCode+'","'+req.body.recuritState+'","'+req.body.recuritUserId+
@@ -34,6 +35,8 @@ module.exports.post = ( req,res,next) => {
             res.send(results);
         } else {
             console.log('query error : ' + err);
+            results.result = "fail";
+            results.message = err;
             res.send(err);
         }
     });
