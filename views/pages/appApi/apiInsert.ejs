@@ -12,6 +12,7 @@
 <script type="text/javascript">
     $(function(){
         
+      
         //api명 또는 설명 클릭이벤트
         $('.getApiCls').click(function(){
             //리셋
@@ -55,7 +56,7 @@
                 type:"post",
                 dataType:'json',
                 data: JSON.stringify(sendData),
-                url: './v1/signup',
+                url: '/v1/signup',
                 success: function(data) {
                     alert("성공");
                     console.log(data);
@@ -63,7 +64,7 @@
                 error: function searchError(xhr, err) {
                     alert("에러");
                     alert(err);
-                    console.log("Error on ajax call: " + err);
+                    console.error("Error on ajax call: " + err);
                     console.log(JSON.stringify(xhr));
                 }
             });
@@ -213,9 +214,9 @@
         
          <!-- 통신결과 보여주는 영역  -->
         <div class="card shadow mb-4">           
-            <div class="p-3 apiName" id="result">● 성공</div>
+            <div class="p-3 apiName">● 정상</div>
             <div class="p-3 apiName">● 리턴값</div>
-            <div class="p-3 apiName" id="msg">- ㄴ망ㅁㄴ암ㄴ암ㄴㅇ만암낭만암ㄴ암넝마ㅓㄴ아먼암너이ㅏㅁ너임나ㅓㅇ미ㅏ넝미나ㅓ이머아ㅣㅁ넝</div>
+            <div class="p-3 apiName">- ㄴ망ㅁㄴ암ㄴ암ㄴㅇ만암낭만암ㄴ암넝마ㅓㄴ아먼암너이ㅏㅁ너임나ㅓㅇ미ㅏ넝미나ㅓ이머아ㅣㅁ넝</div>
         </div>
 
     </div>

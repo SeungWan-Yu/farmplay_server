@@ -13,8 +13,11 @@ router.route('/update')
 .post(controller.farmUpdate)
 
 
-router.route('/recruit')
+router.route('/recruitFampler')
 .post(controller.getEnterList)
+
+router.route('/recruit')
+.post(controller.getRecruitList)
 
 const controller2 = require('../../controller/v1/farmname.controller')
 
