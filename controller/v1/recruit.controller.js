@@ -37,7 +37,7 @@ module.exports.post = ( req,res,next) => {
             console.log('query error : ' + err);
             results.result = "fail";
             results.message = err;
-            res.send(err);
+            res.send(results);
         }
     });
   
