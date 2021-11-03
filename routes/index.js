@@ -57,10 +57,12 @@ router.use('/admin', require('./Web'))
 
 const result = 
         {
-            result : "성공"
+            result : "성공",
+            imgName : ""
         }
 
 router.post('/imgupload',upload.single('uploaded_file'),function(req,res){
+result.imgName = req.file.filename
 res.send(result)
 console.log(req.file)
 })

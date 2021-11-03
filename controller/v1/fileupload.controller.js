@@ -15,7 +15,7 @@ module.exports.get = ( req,res,next) => {
     }
 }
 
-module.exports.post = ( req,res,next) => {
+module.exports.post('/imgupload',upload.single('uploaded_file'),function(req,res){
     const results = {
         result : "네네네네네네"
     }
@@ -27,4 +27,4 @@ module.exports.post = ( req,res,next) => {
     } catch(err){
         next(err)
     }
-}
+})

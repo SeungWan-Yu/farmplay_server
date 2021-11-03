@@ -53,8 +53,8 @@ module.exports.post = ( req,res,next) => {
     var results = {
         result : ""
     }
-    mysqlDB.query('insert into farm (farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
-    +req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
+    mysqlDB.query('insert into farm (farmImg,farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
+    +req.body.farmImg+'","'+req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
     '","'+req.body.farmerinfo+'","'+req.body.farmadress+'","'+req.body.adressdetail+'","'+req.body.internet+'","'+req.body.roomadress+'","'+req.body.roominfo+'","'+req.body.room+'","'+req.body.roompublic+
     '","'+req.body.roometc+'","'+req.body.username+'");', function (err, rows, fields) {
         if (!err) {
