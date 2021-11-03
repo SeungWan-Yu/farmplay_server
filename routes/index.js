@@ -55,17 +55,26 @@ router.use('/v1', require('./V1'))
 router.use('/admin', require('./Web'))
 
 
-const result = 
-        {
-            result : "성공",
-            imgName : ""
-        }
+var response = [
+  results = {
+    result : "성공",
+    farmImgName : ""
+},
+roomImgArray = new Array()
+]
 
-router.post('/imgupload',upload.single('uploaded_file'),function(req,res){
-result.imgName = req.file.filename
-res.send(result)
-console.log(req.file)
+router.post('/imgupload',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),function(req,res){
+  var farmImg = req.files.farmImgFile
+  results.farmImgName = farmImg[0].filename
+  var roomImg = req.files.roomImgFile
+  for(var i=0; i<roomImg.length; i++){
+    roomImgArray[i] = roomImg[i].filename
+  }
+  roomImg = roomImgArray
+res.send(response)
+console.log(response)
 })
+
 
 module.exports = router;
 console.log("Server Start")
