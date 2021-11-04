@@ -12,6 +12,8 @@ router.route('/')
 router.route('/update')
 .post(controller.farmUpdate)
 
+router.route('/multiTest')
+.post(controller.multiTest)
 
 router.route('/recruitFampler')
 .post(controller.getEnterList)

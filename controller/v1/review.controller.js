@@ -25,12 +25,11 @@ exports.addReview = function (req, res) {
 
 exports.getReview = function (req, res) {
     console.log("겟리뷰컨트롤러");
-    var query = req.query
+    var params = req.query
     console.log("받아온 리퀘스트값>>>");
    
-    console.log(query.recuritCode,query.enterUserId,query.reviewStandard);
 
-    reviewModel.getReview(query).then(function(data){
+    reviewModel.getReview(params).then(function(data){
         console.log("성공");
         console.log(data);
         res.send(data);
@@ -44,8 +43,9 @@ exports.getReview = function (req, res) {
 
 exports.getReviewRating = function (req, res) {
     console.log("겟리뷰컨트롤러 확인");
-    var query = req.query
-    reviewModel.getReviewRating(query).then(function(data){
+    var params = req.query
+    console.log(params);
+    reviewModel.getReviewRating(params).then(function(data){
         console.log("성공여기여기");
         console.log(data);
         res.send(data);
@@ -58,8 +58,8 @@ exports.getReviewRating = function (req, res) {
 
 exports.getRecruitList = function (req, res) {
     console.log("모집리스트");
-    var query = req.query
-    farmModel.getRecruitList(query).then(function(data){
+    var body = req.body
+    farmModel.getRecruitList(body).then(function(data){
         console.log("성공");
         console.log(data);
         res.send(data);
@@ -69,3 +69,4 @@ exports.getRecruitList = function (req, res) {
     });
 
 }
+

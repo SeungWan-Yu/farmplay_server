@@ -19,10 +19,10 @@ module.exports.post = ( req,res,next) => {
     var results = {
         result : "zz"
     }
-    mysqlDB.query('insert into farmpler (enterfarmCode,enterRecuritCode,enterUserId,enterUserName,enterStart,enterEnd,enterEditStart,enterEditEnd,enterFarmplerIntro,enterCancelReson,enterEditReson,enterState,enterReview) values("'
+    mysqlDB.query('insert into farmpler (enterfarmCode,enterRecuritCode,enterUserId,enterUserName,enterStart,enterEnd,enterEditStart,enterEditEnd,enterFarmplerIntro,enterEditReson,enterState,enterReview) values("'
     +req.body.enterFarmCode+'","'+req.body.enterRecuritCode+'","'+req.body.enterUserId+'","'+req.body.enterUserName+'","'
     +req.body.enterStart+'","'+req.body.enterEnd+'","'+req.body.enterEditStart+'","'
-    +req.body.enterEditEnd+'","'+req.body.enterFarmplerIntro+'","'+req.body.enterCancelReson+'","'
+    +req.body.enterEditEnd+'","'+req.body.enterFarmplerIntro+'","'
     +req.body.enterEditReson+'","'+req.body.enterState+'","'+req.body.enterReview+'")', function (err, rows, fields) {
         if (!err) {
             console.log(rows);

@@ -79,11 +79,11 @@ module.exports = {
 
     },
 
-    getReview :async function(query){
+    getReview :async function(params){
         const connection = await con;
-        var reviewStandard = query.reviewStandard;
-        var recuritCode = query.recuritCode;
-        var enterUserId = query.enterUserId;
+        var reviewStandard = params.reviewStandard;
+        var recuritCode = params.recuritCode;
+        var enterUserId = params.enterUserId;
         try{
             var sql1 = "SELECT reviewCode, reviewStandard, reviewFpId, reviewFarmCode, reviewRecuritCode, reviewRating, reviewApplicatDay, reviewAttendanceDay, reviewContent, reviewRegDate FROM review WHERE reviewStandard = ? AND reviewFpId=? AND reviewRecuritCode = ?";
             var param1 = [reviewStandard,enterUserId,recuritCode];
@@ -100,13 +100,13 @@ module.exports = {
         });
     },
 
-    getReviewRating :async function(query){
+    getReviewRating :async function(params){
         console.log("모델확인");
-        console.log(query);
+        console.log(params);
         const connection = await con;
-        var farmcode = query.farmcode;
-        var farmstate = query.farmstate;
-        var userid = query.userid;
+        var farmcode = params.farmcode;
+        var farmstate = params.farmstate;
+        var userid = params.userid;
         var r ="";
         try{
             if(farmstate==1){

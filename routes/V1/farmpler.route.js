@@ -9,6 +9,11 @@ router.route('/')
 router.route('/')
 .post(controller.post)
 
+
+router.route('/enterState')
+.post(controller.updateEnterState)
+
+
 const controller2 = require('../../controller/v1/farmplerrecruit.controller')
 
 router.route('/recruit')

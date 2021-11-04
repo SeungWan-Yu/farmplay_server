@@ -107,10 +107,10 @@ module.exports.farmUpdate = ( req,res,next) => {
 
 exports.getEnterList = function (req, res) {
     console.log("팜컨트롤러 전근영");
-    var query = req.query
+    var params = req.query
     console.log("받아온 리퀘스트값>>>");
-    console.log(query);
-    farmModel.getEnterList(query).then(function(data){
+    console.log(params);
+    farmModel.getEnterList(params).then(function(data){
         console.log("성공");
         console.log(data);
         res.send(data);
@@ -123,10 +123,10 @@ exports.getEnterList = function (req, res) {
 
 exports.getRecruitList = function (req, res) {
     console.log("팜컨트롤러 전근영");
-    var query = req.query
+    var params = req.query
     console.log("받아온 리퀘스트값>>>");
-    console.log(query);
-    farmModel.getEnterList(query).then(function(data){
+    console.log(params);
+    farmModel.getRecruitList(params).then(function(data){
         console.log("성공");
         console.log(data);
         res.send(data);
@@ -135,4 +135,23 @@ exports.getRecruitList = function (req, res) {
         console.log(err);
     });
 
+}
+
+
+exports.multiTest = function (req, res) {
+    console.log("--------------------데이터 체크");
+    var params = req.params
+    var body = req.body
+    var query = req.query
+    console.log(params)
+    console.log(body)
+    console.log(query)
+    console.log("폼체크1");
+    var multiparty = require('multiparty');
+    console.log("폼체크2");
+    var results = {
+        result : ""
+    }
+    res.send(results);
+   
 }
