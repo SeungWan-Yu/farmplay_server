@@ -51,18 +51,21 @@ module.exports.post = ( req,res,next) => {
     console.log(req)
     
     var results = {
-        result : ""
+        result : "",
+        farmcode : 0
     }
-    mysqlDB.query('insert into farm (farmImg,farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
-    +req.body.farmImg+'","'+req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
+    mysqlDB.query('insert into farm (farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
+    +req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
     '","'+req.body.farmerinfo+'","'+req.body.farmadress+'","'+req.body.adressdetail+'","'+req.body.internet+'","'+req.body.roomadress+'","'+req.body.roominfo+'","'+req.body.room+'","'+req.body.roompublic+
     '","'+req.body.roometc+'","'+req.body.username+'");', function (err, rows, fields) {
         if (!err) {
-            console.log(rows);
-            console.log(fields);
+            // console.log(rows);
+            // console.log(fields);
             var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
                 'fields : ' + JSON.stringify(fields);
                 results.result = "success"
+                results.farmcode = rows.insertId
+            console.log(results)
             res.send(results);
         } else {
             console.log('query error : ' + err);

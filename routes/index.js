@@ -1,3 +1,4 @@
+var mysqlDB = require('../mysql-db');
 var express = require('express');
 var multer = require('multer'); // multer모듈 적용 (for 파일업로드)
 var storage = multer.diskStorage({
@@ -55,26 +56,42 @@ router.use('/v1', require('./V1'))
 router.use('/admin', require('./Web'))
 
 
-var response = [
-  results = {
-    result : "성공",
-    farmImgName : ""
-},
-roomImgArray = new Array()
-]
+var results = {
+    result : "성공"
+  }
+
 
 router.post('/imgupload',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),function(req,res){
+  console.log("loglog/ farmcode = "+req.body.farmcode)
   var farmImg = req.files.farmImgFile
-  results.farmImgName = farmImg[0].filename
   var roomImg = req.files.roomImgFile
-  for(var i=0; i<roomImg.length; i++){
-    roomImgArray[i] = roomImg[i].filename
-  }
-  roomImg = roomImgArray
-res.send(response)
-console.log(response)
+  console.log("숙소 이미지 길이 = "+roomImg.length+" / "+farmImg[0].filename)
+  console.log("----------------------------")
+  //farm update
+  mysqlDB.query('update farm set farmImg = "'+farmImg[0].filename+'" where farmCode = '+req.body.farmcode+';' , function (err, rows, fields) {
+    if (!err) {
+      console.log("farm img update success----------------")
+      console.log(rows)
+      for(var i=0; i<roomImg.length; i++){
+        mysqlDB.query('insert into farm_room_img (roomImgFarmCode, roomImgUrl) values ('
+        +req.body.farmcode+',"'+roomImg[i].filename+'");', function (err, rows, fields) {
+        if (!err) {
+            console.log("room img insert success----------------")
+            console.log(rows)
+        }
+        else{
+            console.log("err"+err)
+        }
+    })
+      }
+    }else{
+      console.log(err)
+      res.send("err")
+    }
+  })
+res.send(results)
+// console.log(results)
 })
-
 
 module.exports = router;
 console.log("Server Start")
