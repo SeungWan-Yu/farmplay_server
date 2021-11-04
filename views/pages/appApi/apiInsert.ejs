@@ -10,8 +10,8 @@
 </style>
 
 <script type="text/javascript">
+
     $(function(){
-        
         //api명 또는 설명 클릭이벤트
         $('.getApiCls').click(function(){
             //리셋
@@ -24,141 +24,36 @@
             //가져온 아이디값에 따른 설정부분
             if(apiId=="singupApi"){
                 $('.apiInfoViewBody').eq(0).css('display','block');
-            }else if(apiId=="getFarm"){
+            }else if(apiId=="joinFarm"){
                 $('.apiInfoViewBody').eq(1).css('display','block');
-            }
-            
+            }else if(apiId=="joinRecruit"){
+                $('.apiInfoViewBody').eq(2).css('display','block');
+            }             
+            $('.p-3_result').text("");
+            $('.p-3_return').text("");
         });
+
+        //ajax
 
         //유저등록 전송버튼 클릭이벤트
-        $('#signupBtn').click(function(){
-            var id = $('#id').val();
-            var pw = $('#pw').val();
-            var name = $('#name').val();
-            var phone = $('#phone').val();
-            var adress = $('#adress').val();
-            var adressdetail = $('#adressdetail').val();
-            var token = $('#token').val();
+        <%-include('./ajax/signUp')%>
 
-            var sendData= {
-                "id" : id,
-                "pw" : pw,
-                "name" : name,
-                "phone" : phone,
-                "adress" : adress,
-                "adressdetail" : adressdetail,
-                "token" : token
-            }
+        //농장등록 전송버튼 클릭이벤트
+        <%-include('./ajax/joinFarm')%>
 
-            $.ajax({
-                contentType: "application/json; charset=utf-8",
-                type:"post",
-                dataType:'json',
-                data: JSON.stringify(sendData),
-                url: './v1/signup',
-                success: function(data) {
-                    alert("성공");
-                    console.log(data);
-                },
-                error: function searchError(xhr, err) {
-                    alert("에러");
-                    alert(err);
-                    console.log("Error on ajax call: " + err);
-                    console.log(JSON.stringify(xhr));
-                }
-            });
-
-
-
-
-        });
+        //모집등록 전송버튼 클릭이벤트
+        <%-include('./ajax/joinRecruit')%>
 
     });
 </script>
 
 <h1>회원api</h1>
-<%-include('ebs')%>
+
 <div class="row">
 
     <!-- 왼쪽 api 선택영역 -->
-    <div class="col-lg-3" id="selectView">
-        <!-- Circle Buttons -->
-        <div class="card shadow mb-4">
-            <table id="selectTable">
-                <thead>
-                    <tr>
-                        <th><div class="p-3 apiName">api명</div></th>
-                    <th><div class="p-3 apiExplain">api설명</div></th>
-                    </tr>
+    <%-include('./view/selectView')%>
     
-                </thead>
-                <tbody>
-                    <tr class="bg-gray-100 apiLine getApiCls" id="singupApi">
-                        <td><div class="p-3 apiName">singup</div></td>
-                        <td><div class="p-3 apiExplain">유저등록</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls" id="getFarm">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                    <tr class="bg-gray-100 apiLine getApiCls">
-                        <td><div class="p-3 apiName">getFarm</div></td>
-                        <td><div class="p-3 apiExplain">농장가져오기</div></td>
-                    </tr>
-                </tbody> 
-            </table>
-        </div>
-
-    </div>
-
     <!-- 오른쪽 영역 -->
     <div class="col-lg-9">
         <!-- api정보화면 insert,update,delete는 입력값, select는 테이블  -->
@@ -167,58 +62,20 @@
             <!-- 선택한 api별로 변경되는 부분 아래로 쭉이어서 쓰면된다. -->
 
             <!-- 1번 유저등록화면  -->
-            <div class="apiInfoViewBody">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">아이디</div></td>
-                            <td><div class="p-3"><input type="text" id="id"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">비번</div></td>
-                            <td><div class="p-3"><input type="text" id="pw"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">이름</div></td>
-                            <td><div class="p-3"><input type="text" id="name"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">연락처</div></td>
-                            <td><div class="p-3"><input type="text" id="phone"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">주소</div></td>
-                            <td><div class="p-3"><input type="text" id="adress"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">상세주소</div></td>
-                            <td><div class="p-3"><input type="text" id="adressdetail"></div></td>
-                        </tr>
-                        <tr>
-                            <td class="col-lg-2"><div class="p-3">토큰</div></td>
-                            <td><div class="p-3"><input type="text" id="token"></div></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="p-3 apiExplain"><button type="button" id="signupBtn" class="btn btn-primary">전송</button></div>
-            </div>
+            <%-include('./view/joinUser')%>
+                   
+            <!-- 2번 농장등록화면  -->
+            <%-include('./view/joinFarm')%>
 
-            <!-- 2번 아직  -->
-            <div class="apiInfoViewBody">
-                <div class="p-3">겟팜</div>
-                <div class="p-3 apiExplain"><button type="button" id="signupBtn" class="btn btn-primary">전송</button></div>
-            </div>
-           
-        </div>
-        
+            <!-- 3번 모집등록화면  -->
+            <%-include('./view/joinRecruit')%>
+            
+
          <!-- 통신결과 보여주는 영역  -->
         <div class="card shadow mb-4">           
-            <div class="p-3 apiName" id="result">● 성공</div>
-            <div class="p-3 apiName">● 리턴값</div>
-            <div class="p-3 apiName" id="msg">- ㄴ망ㅁㄴ암ㄴ암ㄴㅇ만암낭만암ㄴ암넝마ㅓㄴ아먼암너이ㅏㅁ너임나ㅓㅇ미ㅏ넝미나ㅓ이머아ㅣㅁ넝</div>
+            <div class="p-3 apiName">● 결과 : <p class="p-3_result"></p></div>
+            <div class="p-3 apiName">● 리턴값: <p class="p-3_return"></p></div>
         </div>
+    </div><!-- class//col-lg-9 -->
 
-    </div>
-
-</div>
-
+</div><!-- class//row -->

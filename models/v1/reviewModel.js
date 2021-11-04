@@ -95,7 +95,7 @@ module.exports = {
             connection.release();
         }
         return new Promise((resolve,reject) =>{    
-            resolve(r1)
+            resolve(r1[0])
  
         });
     },

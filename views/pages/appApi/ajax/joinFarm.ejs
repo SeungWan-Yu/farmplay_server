@@ -1,0 +1,51 @@
+$('#farmBtn').click(function(){
+    let farmImg             = $('#farmImg').val();
+    let farmName            = $('#farmName').val();
+    let farmStartOpen       = $('#farmStartOpen').val();
+    let farmProduce         = $('#farmProduce').val();
+    let farmType            = $('farmType').val();
+    let farmerIntro         = $('#farmerIntro').val();
+    let farmAddr            = $('#farmAddr').val();
+    let farmAddrDetail      = $('#farmAddrDetail').val();
+    let farmRoomInternet    = $('#farmRoomInternet').val();
+    let farmRoomSite        = $('#farmRoomSite').val();
+    let farmRoomInfo        = $('#farmRoomInfo').val();
+    let farmRoom            = $('#farmRoom').val();
+    let farmRoomUnisex      = $('#farmRoomUnisex').val();
+    let farmRoomEtc         = $('#farmRoomEtc').val();
+    let username            = $('#username').val();
+
+    let sendData = {
+        "farmImg"           : farmImg,
+        "farmName"          : farmName,
+        "farmStartOpen"     : farmStartOpen,
+        "farmProduce"       : farmProduce,
+        "farmType"          : farmType,
+        "farmerIntro"       : farmerIntro,
+        "farmAddr"          : farmAddr,
+        "farmAddrDetail"    : farmAddrDetail,
+        "farmRoomInternet"  : farmRoomInternet,
+        "farmRoomSite"      : farmRoomSite,
+        "farmRoomInfo"      : farmRoomInfo,
+        "farmRoom"          : farmRoom,
+        "farmRoomUnisex"    : farmRoomUnisex,
+        "farmRoomEtc"       : farmRoomEtc,  
+        "username"          : username
+    }
+
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        type:"post",
+        dataType:'json',
+        data: JSON.stringify(sendData),
+        url: '/v1/farm',
+        success: function(data) {
+            $('.p-3_result').text(data.result);
+            $('.p-3_return').text(JSON.stringify(data.message));
+        },
+        error: function searchError(xhr, err) {
+            alert("에러");
+            alert(err);
+        }
+    });
+});
