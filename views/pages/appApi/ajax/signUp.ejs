@@ -1,0 +1,35 @@
+$('#signupBtn').click(function(){
+    let id              = $('#id').val();
+    let pw              = $('#pw').val();
+    let name            = $('#name').val();
+    let phone           = $('#phone').val();
+    let adress          = $('#adress').val();
+    let adressdetail    = $('#adressdetail').val();
+    let token           = $('#token').val();
+
+    let sendData = {
+        "id"            : id,
+        "pw"            : pw,
+        "name"          : name,
+        "phone"         : phone,
+        "adress"        : adress,
+        "adressdetail"  : adressdetail,
+        "token"         : token
+    }
+
+    $.ajax({
+        contentType: "application/json; charset=utf-8",
+        type:"post",
+        dataType:'json',
+        data: JSON.stringify(sendData),
+        url: '/v1/signup',
+        success: function(data) {
+            $('.p-3_result').text(data.result);
+            $('.p-3_return').text(JSON.stringify(data.message));
+        },
+        error: function searchError(xhr, err) {
+            alert("에러");
+            alert(err);
+        }
+    });
+});

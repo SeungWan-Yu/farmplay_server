@@ -46,5 +46,4 @@ router.route('/user')
 .post(controller4.post)
 
 
-
 module.exports = router;

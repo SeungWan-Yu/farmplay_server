@@ -25,7 +25,7 @@ app.set("layout extractStyles", true); //style태그 매핑 (레이아웃 위치
 app.use('/public',express.static(__dirname +'/public')); //정적 폴더 세팅
 app.use(expressLayouts); // express-ejs-layouts 사용하기 설정
 app.use(cors());
-// app.use(logger('dev'));
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

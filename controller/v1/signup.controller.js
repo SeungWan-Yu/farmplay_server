@@ -26,7 +26,7 @@ module.exports.post = ( req,res,next) => {
 
     console.log(signupuser);
     const results = {
-        result : "",
+        result  : "",
         message : ""
     }
     console.log(signupuser);
