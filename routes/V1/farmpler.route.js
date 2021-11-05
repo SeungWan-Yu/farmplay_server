@@ -13,6 +13,9 @@ router.route('/')
 router.route('/enterState')
 .post(controller.updateEnterState)
 
+router.route('/editConfirm')
+.post(controller.updateEnterConfirmCancel)
+
 
 const controller2 = require('../../controller/v1/farmplerrecruit.controller')
 

@@ -214,10 +214,10 @@ module.exports = {
             console.log("r1>>"+r1);
             if(result1==0){
                 var params2 = [farmCodeList,userId];
-                var r2 = await connection.query("UPDATE users SET farm_code=?, farm_state=2 WHERE user_id=?",params2);
+                var r2 = await connection.query("UPDATE users SET farm_code=? ,farm_state=2 WHERE user_id=?",params2);
                 console.log("r2>>"+r2);
             }
-            var r3 = await connection.query("UPDATE farm SET farmState='등록완료' WHERE farmCode IN("+farmCodeList+")");
+            var r3 = await connection.query("UPDATE farm SET farmState='등록완료',farmRegDate=NOW() WHERE farmCode IN("+farmCodeList+")");
             console.log("r3>>"+r3);
             await connection.commit();
             console.log("트랜잭션성공");

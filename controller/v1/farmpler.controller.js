@@ -37,17 +37,43 @@ module.exports.post = ( req,res,next) => {
 }
 
 exports.updateEnterState = function (req, res) {
-    console.log("팜플러컨트롤러");
     var body = req.body
     console.log("받아온 리퀘스트값>>>");
-    console.log(body.userId);
+    console.log(body);
   
+    var results = {
+        result : ""
+    }
+
     farmplerModel.updateEnterState(body).then(function(data){
         console.log("성공");
         console.log(data);
-        res.send(data);
+        results.result = "success"
+        res.send(results);
     }).catch(function(err){
-        console.log("캐치에러");``
+        console.log("캐치에러");
+        console.log(err);
+        console.log("에러메세지끝");
+    });
+
+}
+
+exports.updateEnterConfirmCancel = function (req, res) {
+    var body = req.body
+    console.log("받아온 리퀘스트값>>>");
+    console.log(body);
+
+    var results = {
+        result : ""
+    }
+    farmplerModel.updateEnterConfirmCancel(body).then(function(data){
+        console.log("성공");
+        console.log(data);
+        results.result = "success"
+        res.send(results);
+    res.send(results);
+    }).catch(function(err){
+        console.log("캐치에러");
         console.log(err);
         console.log("에러메세지끝");
     });
