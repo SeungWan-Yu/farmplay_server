@@ -9,6 +9,12 @@ router.route('/')
 router.route('/')
 .post(controller.post)
 
+router.route('/edit')
+.post(controller.updateReruit)
+
+router.route('/end')
+.post(controller.endReruit)
+
 const controller2 = require('../../controller/v1/recruitname.controller')
 
 router.route('/name')

@@ -118,7 +118,7 @@ exports.getEnterList = function (req, res) {
         console.log(data);
         res.send(data);
     }).catch(function(err){
-        console.log("캐치에러");``
+        console.log("캐치에러");
         console.log(err);
     });
 
@@ -134,7 +134,7 @@ exports.getRecruitList = function (req, res) {
         console.log(data);
         res.send(data);
     }).catch(function(err){
-        console.log("캐치에러");``
+        console.log("캐치에러");
         console.log(err);
     });
 

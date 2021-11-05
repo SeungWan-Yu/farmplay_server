@@ -1,4 +1,5 @@
 var mysqlDB = require('../../mysql-db');
+const reruitModel = require("../../models/v1/reruitModel");
 
 module.exports.get = ( req,res,next) => {
     mysqlDB.query('select * from farm where farmstate = 1', function (err, rows, fields) {
@@ -41,4 +42,45 @@ module.exports.post = ( req,res,next) => {
         }
     });
   
+}
+
+exports.updateReruit = function (req, res) {
+    console.log("팜컨트롤러 전근영");
+    var body = req.body
+    console.log("받아온 리퀘스트값>>>");
+    console.log(body);
+    var results = {
+        result  : "",
+    }
+    reruitModel.updateReruit(body).then(function(data){
+        console.log("성공");
+        results.result = "success"
+        console.log(data);
+        res.send(results);
+    }).catch(function(err){
+        console.log("캐치에러");
+        console.log(err);
+    });
+
+}
+
+
+exports.endReruit = function (req, res) {
+    console.log("팜마감하기컨트롤러 전근영");
+    var query = req.query
+    console.log("받아온 리퀘스트값>>>");
+    console.log(query);
+    var results = {
+        result  : "",
+    }
+    reruitModel.endReruit(query).then(function(data){
+        console.log("성공");
+        results.result = "success"
+        console.log(data);
+        res.send(results);
+    }).catch(function(err){
+        console.log("캐치에러");
+        console.log(err);
+    });
+
 }
