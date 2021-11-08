@@ -1,6 +1,6 @@
 const mysql2  = require('mysql2/promise');
 const db = {
-    host: '14.63.223.217',
+  host: '14.63.223.217',
     user: 'dshive',
     password: 'dshive!@#$',       
     database: 'farmplay',
