@@ -1,10 +1,14 @@
 var mysqlDB = require('../mysql-db');
 var express = require('express');
 var multer = require('multer'); // multer모듈 적용 (for 파일업로드)
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads/') // cb 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
-  },
+var sftpStorage = require('multer-sftp');
+var storage = sftpStorage({
+    sftp: {
+        host: 'joy4.ddns.net',
+        port: 22,
+        username: 'dshive',
+        password: 'dshive!@#$'
+      },
   filename: function (req, file, cb) {
     cb(null, file.originalname) // cb 콜백함수를 통해 전송된 파일 이름 설정
   }
@@ -31,11 +35,18 @@ router.get('/import', (req, res, next) => {
   return res.sendFile(__dirname+'/import.html')
 });
 
-router.post('/v2', function(req, res, next)  {
+router.get('/v2', function(req, res, next)  {
   // res.json({title:'test'});
   // res.send(process.env.DEV_DB_USER)
-  res.send(req.body)
-});
+  mysqlDB.query('select count(*) as count from farm_room_img;' , function (err, rows, fields) {
+    if (!err) {
+      console.log(rows[0].count)
+    }else{
+
+    }
+  // res.send(req.body)
+  })
+})
 
 router.get('/', (req, res, next) => {
   return res.render("../pages/main");
@@ -60,8 +71,20 @@ var results = {
     result : "성공"
   }
 
+  router.post('/profile_img',upload.single('profileImgFile'), function(req,res){
+    mysqlDB.query('update users set user_profile_img = "'+req.file.filename+'" where farmCode = '+req.body.farmcode+';' , function (err, rows, fields) {
+      if (!err) {
+        console.log("프로필 이미지 이름 : "+req.file.filename)
+        results.result = req.file.filename
+        res.send(results)
+      }else{
+        results.result = req.file.filename
+        res.send(results)
+      }
+  })
+})
 
-router.post('/imgupload',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),function(req,res){
+  router.post('/imgupload',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),function(req,res){
   console.log("loglog/ farmcode = "+req.body.farmcode)
   var farmImg = req.files.farmImgFile
   var roomImg = req.files.roomImgFile
@@ -72,18 +95,50 @@ router.post('/imgupload',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'
     if (!err) {
       console.log("farm img update success----------------")
       console.log(rows)
-      for(var i=0; i<roomImg.length; i++){
-        mysqlDB.query('insert into farm_room_img (roomImgFarmCode, roomImgUrl) values ('
-        +req.body.farmcode+',"'+roomImg[i].filename+'");', function (err, rows, fields) {
+      //해당 농장 코드로 등록된 숙소사진이 있는지 DB 조회
+        mysqlDB.query('select count(*) as count from farm_room_img where roomImgFarmCode = '+req.body.farmcode+';' , function (err, rows, fields) {
         if (!err) {
-            console.log("room img insert success----------------")
-            console.log(rows)
+          //해당 농장 코드로 아직 등록된 숙소 사진이 없는경우 - 새로 삽입
+          if(rows[0].count == 0){
+            for(var i=0; i<roomImg.length; i++){
+              mysqlDB.query('insert into farm_room_img (roomImgFarmCode, roomImgUrl) values ('
+              +req.body.farmcode+',"'+roomImg[i].filename+'");', function (err, rows, fields) {
+                if (!err) {
+                    console.log("room img insert success----------------")
+                    console.log(rows)
+                }
+                else{
+                    console.log("err"+err)
+                }
+              })
+            }  
+          }else{
+            //해당 농장 코드로 등록된 숙소 사진이 이미 있는 경우 - 이미 등록된 숙소사진 모두 삭제?
+            mysqlDB.query('delete from farm_room_img where roomImgFarmCode = '+req.body.farmcode+';' , function (err, rows, fields) {
+              if (!err) {
+                for(var i=0; i<roomImg.length; i++){
+                  mysqlDB.query('insert into farm_room_img (roomImgFarmCode, roomImgUrl) values ('
+                  +req.body.farmcode+',"'+roomImg[i].filename+'");', function (err, rows, fields) {
+                    if (!err) {
+                        console.log("room img insert success----------------")
+                        console.log(rows)
+                    }
+                    else{
+                        console.log("err"+err)
+                    }
+                  })
+                }  
+              }else{
+                res.send(err)
+              }
+            })
+          }
         }
         else{
-            console.log("err"+err)
+          res.send(err)
         }
-    })
-      }
+      })
+
     }else{
       console.log(err)
       res.send("err")

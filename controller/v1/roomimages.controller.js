@@ -23,7 +23,7 @@ module.exports.post = ( req,res,next) => {
             results.result = "seuccess"
             var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
                 'fields : ' + JSON.stringify(fields);
-            res.send(JSON.stringify(rows));
+            res.send(rows);
         } else {
             console.log('query error : ' + err);
             res.send(err);

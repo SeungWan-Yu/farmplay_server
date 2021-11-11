@@ -46,3 +46,26 @@ module.exports.post = ( req,res,next) => {
         }
     });
 }
+
+exports.update = function (req, res) {
+    var body = req.body
+    console.log("받아온 리퀘스트값>>>");
+    console.log(body);
+  
+    var results = {
+        result : ""
+    }
+
+    mysqlDB.query('UPDATE users SET user_name = "'+req.body.name+'", user_phone = "'+req.body.phone+'", user_adress = "'+req.body.adress+'", user_adress_detail = "'+req.body.adressdetail+'" where user_id = "'+req.body.id+'";', function (err, rows, fields) {
+        if (!err) {
+            results.result = "success"
+            console.log(results);
+            res.send(results);
+        }else{
+            console.log('query error : ' + err);
+            results.result = "fail";
+            results.message = err;
+            res.send(results);
+        }
+})
+}
