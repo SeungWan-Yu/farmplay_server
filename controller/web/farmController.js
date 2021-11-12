@@ -136,7 +136,7 @@ exports.editFarm =async function(req,res){
     //농가이미지 수정한다면 db에 url수정해서 저장하기
     if(farm.dFarmImgChk=='t'){
         console.log(farmImg[0]);
-        farm.farmImg = "/public/uploads/"+farmImg[0].filename;   //새로운주소 db에저장
+        farm.farmImg = farmImg[0].filename;   //새로운주소 db에저장
     }
     
     //농가수정

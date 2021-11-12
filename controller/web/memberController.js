@@ -21,7 +21,6 @@ function dFile(path){
 }
 
 
-
 exports.memberList = function (req, res) {
     memberModel.getUserList().then(function(data){
         console.log("하이");
@@ -65,6 +64,7 @@ exports.editMember = async function (req, res) {
     var user = req.body;
     console.log(user.uId);
 
+
     var data = await memberModel.updateUser(user);
     console.log("업데이트 완료>>>>"+data);
     console.log(data);
@@ -78,36 +78,42 @@ exports.sendNotice = function (req, res) {
    
     const fs = require( "fs" );
     const file = fs.readdirSync("public/uploads_push","utf8")
-    
-
     console.log("파일길이>>"+file.length);
-    
     res.render("../pages/member/sendNotice",{fileLen:file.length});
 }
 
 
-exports.noticeSend = async function (req, res) {
+exports.noticeImg = function (req, res) {
+    var pushFile = req.files.pushFile; 
+    console.log(pushFile);
+    console.log("공지보내기시작");
+    var body = req.body;
+    
+    var title  = body.title;
+    var content  =  body.content
+    var imgurl = "";
+    console.log(pushFile[0].filename);
+    if(pushFile != null){
+        //imgurl = "http://192.168.1.24:3000/public/uploads_push/"+req.file.filename; 
+        //imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
+        imgurl = "http://joy4.ddns.net:3000/public/uploads_push/"+pushFile[0].filename; 
+    }
+    console.log("이미지유알엘>>>"+imgurl);
+        
+    res.json({imgurl,title,content});
+
+}
+
+exports.noticeSend = function (req, res) {
+    
     console.log("공지보내기시작");
     var body = req.body;
     var title  = body.title;
     var content  =  body.content
-    var imgurl = "";
-    console.log("파일");
-    console.log(req.file)
-
-    if(req.file != null){
-        console.log(req.file.filename)
-        //imgurl = "http://192.168.1.245:3000/public/uploads_push/"+req.file.filename; 
-        imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
-    }
-   
-
-    console.log("타이틀>>>"+title);
-    console.log("내용>>>"+content);
-    console.log("이미지 경로>>>"+imgurl);
+    var imgurl = body.imgurl;
+    console.log(body);
 
     var admin = require('../../firebase');
-    console.log("테스트1");
    
     const options = {
         priority: "high",     //메시지 중요도 설정 
@@ -125,20 +131,15 @@ exports.noticeSend = async function (req, res) {
                 })
             }
     };
+    console.log("메세지체크");
+    console.log(message);
     
-    var result = "";
-    console.log("여기테스트")
-    await admin.messaging().sendToTopic('notices', message, options).then(function(response) {
-            console.log("Successfully sent message:", response);
-            result = "success";
-           
-    })
-    .catch(function(error) {
-            console.log("Error sending message:", error);
-            result = "fail";
+    admin.messaging().sendToTopic('note1', message, options).then(() => {
+        res.json({"s":"성공"});
+    }).catch((err) => {
+        res.json({err});
     });
 
-    res.redirect("/admin/member/sendNotice?result="+result);
 }
 
 

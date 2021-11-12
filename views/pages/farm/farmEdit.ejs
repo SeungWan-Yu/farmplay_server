@@ -168,7 +168,7 @@
 
             if(conChk==0){
                 var farmImg = '<%=data[0].farmImg%>'
-                $('.farmImg').attr("src","http://"+location.host+farmImg+"");
+                $('.farmImg').attr("src","http://"+location.host+"/public/uploads/"+farmImg+"");
                 $('#farmFile').val("");
                 $('.upload-name').val("파일선택");
             }
@@ -278,7 +278,7 @@
                     inHtml += '<i class="fas fa-trash delImgBtn"></i>'
                     inHtml += '<u></u>'
                     inHtml += '</div>'
-                    inHtml += '<img src="http://'+location.host +roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">'
+                    inHtml += '<img src="http://'+location.host+"/public/uploads/"+roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">'
                     inHtml += '</span>'
                     inHtml += '</li>'
                 }    

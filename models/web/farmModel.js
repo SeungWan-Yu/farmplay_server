@@ -1,13 +1,11 @@
 var con = require('../../mysql-db');
 const mysql2  = require('mysql2/promise');
 const db = {
-    host: '14.63.223.217',
-    post: 3306,
+    host: 'joy4.ddns.net',
     user: 'dshive',
     password: 'dshive!@#$',       
     database: 'farmplay',
-    datastrings: "date",
-    timezone: 'utc',
+    dateStrings: "date",
     multipleStatements: true
   }
 
@@ -158,11 +156,11 @@ module.exports = {
             var r1 = await connection.query(sql1,params1);
             
             //2. 숙소이미지 추가될경우 추가 인서트
-            var staticUrl  ="/public/uploads/";
+           
             if(roomImg!=null){
                 for(var i=0; i<roomImg.length;i++){
                     var sql2 = "INSERT INTO farm_room_img (roomImgFarmCode, roomImgUrl) VALUES ( ?, ?)";
-                    var params2 = [farm.farmCode,staticUrl+roomImg[i].filename];
+                    var params2 = [farm.farmCode,roomImg[i].filename];
                     var r2 = await connection.query(sql2,params2);
                 }
             }

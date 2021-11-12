@@ -1,0 +1,146 @@
+<style>
+    .editBtn{margin-top: 30px;}
+    .addon{color: rgb(0, 0, 0); font-weight: bold;  padding-top: 10px; padding-left: 5px; width: 120px; background-color: rgb(223, 219, 223);}
+    .form-control-user{border-radius: 0 !important;}
+    /* .appMethod{font-size: 30px;} */
+ 
+</style>
+
+<script type="text/javascript">
+    $(function(){
+        $('.apiBtn').click(function(){
+            $('form').submit();
+        });
+
+
+    });
+
+
+
+</script>
+
+
+<div class="row">
+
+    <div class="col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">앱API등록</h6>
+            </div>
+            <div class="card-body">
+                <form class="" action="/admin/apiApp/addApi" method="post">
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >구분 </span>
+                            <select class="form-control form-control-user" name="apiDivision">
+                                <option></option>
+                                <option>회원</option>
+                                <option>농장</option>
+                                <option>모집</option>
+                                <option>참가</option>
+                                <option>리뷰</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >CRUD </span>
+                            <select class="form-control form-control-user" name="apiCrud">
+                                <option></option>
+                                <option>Insert</option>
+                                <option>Select</option>
+                                <option>Update</option>
+                                <option>Delete</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >API명 </span>
+                            <input type="text" class="form-control form-control-user" name="apiName">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >컨트롤러명</span>
+                            <input type="text" class="form-control form-control-user" name="apiCnt">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >API간단설명</span>
+                            <input type="text" class="form-control form-control-user" name="apiExplan">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >주소 (URL) </span>
+                            <input type="text" class="form-control form-control-user" name="apiUrl">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >전송방식 </span>
+                            <select class="form-control form-control-user" name="apiMethod">
+                                <option></option>
+                                <option>GET</option>
+                                <option>POST</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >ReqParam </span>
+                            <input type="text" class="form-control form-control-user" name="apiReqParam">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >ReqParam (한) </span>
+                            <input type="text" class="form-control form-control-user" name="apiReqParamKor">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >ResParam </span>
+                            <input type="text" class="form-control form-control-user" name="apiResParam">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >ResParam (한) </span>
+                            <input type="text" class="form-control form-control-user" name="apiResParamKor">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span class="addon" >API상세설명 </span>
+                            <input type="text" class="form-control form-control-user" name="apiDetailExplan">
+                        </div>
+                        <div class="col-sm-12 mb-6 mb-sm-0 input-group">
+                            <span style="color: tomato;">Param은 ','로 구분한다 ex)id,name,phone </span>
+                        </div>
+                    </div>
+                    <a class="btn btn-primary btn-block apiBtn">
+                        <span style="font-weight: bold; font-size: 20px;">API등록</span>
+                    </a>  
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">항목추가</h6>
+            </div>
+            <div class="card-body">
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

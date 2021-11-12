@@ -34,6 +34,11 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+server.on('connection', function(socket) {
+  // 10 minutes timeout
+  socket.setTimeout(10 * 60 * 1000);
+});
+server.headersTimeout = 10 * 60 * 1000;
 
 /**
  * Normalize a port into a number, string, or false.
