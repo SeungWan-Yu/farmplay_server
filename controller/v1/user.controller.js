@@ -24,7 +24,10 @@ module.exports.post = ( req,res,next) => {
         farmname : "",
         farmcode : 0,
         password : "",
-        username : ""
+        username : "",
+        userphone : "",
+        adress : "",
+        adressdetail : ""
     }
     var logincheck = [{
         state : "",
@@ -68,6 +71,9 @@ module.exports.post = ( req,res,next) => {
                         results.farmcode = rows[0].farm_code
                         results.farmstate = rows[0].farm_state
                         results.username = rows[0].user_name
+                        results.userphone = rows[0].user_phone
+                        results.adress = rows[0].user_adress
+                        results.adressdetail = rows[0].user_adress_detail
                 }
                 // console.log(rows[0])
             res.send(results);

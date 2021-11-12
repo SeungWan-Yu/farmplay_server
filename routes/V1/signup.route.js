@@ -9,5 +9,7 @@ router.route('/')
 router.route('/')
 .post(controller.post)
 
+router.route('/update')
+.post(controller.update)
 
 module.exports = router;

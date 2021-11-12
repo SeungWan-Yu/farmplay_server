@@ -69,4 +69,6 @@ router.use('/kakaouser', require('./kakaouser.route'))
 
 router.use('/review', require('./review.route'))
 
+router.use('/room', require('./room.route'))
+
 module.exports = router;
