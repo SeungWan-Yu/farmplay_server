@@ -9,6 +9,7 @@ router.get('/apiInsert', appApiController.apiInsert)
 router.get('/apiInsertt', appApiController.apiInsertt) 
 router.get('/appApiList', appApiController.appApiList) 
 router.get('/appApiDel', appApiController.appApiDel) 
+router.get('/apiSelect', appApiController.apiSelect) 
 
 
 

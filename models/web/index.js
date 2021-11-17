@@ -4,6 +4,7 @@ const farmModel = require('./farmModel')
 const recuritModel = require('./recuritModel')
 const farmplerModel = require('./farmplerModel')
 const appApiModel = require('./appApiModel')
+const tourModel = require('./tourModel')
 
 module.exports = {
     mainModel,
@@ -12,4 +13,5 @@ module.exports = {
     recuritModel,
     farmplerModel,
     appApiModel,
+    tourModel,
 }

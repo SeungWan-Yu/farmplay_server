@@ -1,14 +1,8 @@
 var mysqlDB = require('../mysql-db');
 var express = require('express');
 var multer = require('multer'); // multer모듈 적용 (for 파일업로드)
-var sftpStorage = require('multer-sftp');
-var storage = sftpStorage({
-    sftp: {
-        host: 'joy4.ddns.net',
-        port: 22,
-        username: 'dshive',
-        password: 'dshive!@#$'
-      },
+const { diskStorage } = require('multer');
+var storage = diskStorage({
   filename: function (req, file, cb) {
     cb(null, file.originalname) // cb 콜백함수를 통해 전송된 파일 이름 설정
   }

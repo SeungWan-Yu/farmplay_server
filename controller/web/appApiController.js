@@ -57,3 +57,14 @@ exports.appApiDel = function (req, res) {
         res.redirect("/admin/apiApp/appApiList");
     });
 }
+
+
+// 앱api 인서트 화면
+exports.apiSelect = function (req, res) {
+    var apiCrud = "Select";
+    appApiModel.apiList(apiCrud).then(function(data){
+        console.log("데이터체크")
+        console.log(data);
+        res.render("../pages/appApi/apiSelect",{data:data});
+    });
+}

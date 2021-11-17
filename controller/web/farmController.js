@@ -19,6 +19,7 @@ function dFile(path){
     }
 }
 
+//농가리스트
 exports.farmList = function (req, res) {
     console.log("팜컨트롤러")
     farmModel.getFarmList().then(function(data){
@@ -28,6 +29,7 @@ exports.farmList = function (req, res) {
    
 }
 
+//농가숙박이미지 리스트
 exports.farmRoomImgList = function (req, res) {
     var farmCode = req.body.farmCode;
     farmModel.getFarmRoomImgList(farmCode).then(function(data){
@@ -37,6 +39,7 @@ exports.farmRoomImgList = function (req, res) {
    
 }
 
+//농가숙박이미지 삭제
 exports.farmRoomImgDel = function (req, res) {
     var roomImgCode = req.body.roomImgCode;
     farmModel.delFarmRoomImgList(roomImgCode).then(function(data){
@@ -46,9 +49,8 @@ exports.farmRoomImgDel = function (req, res) {
    
 }
 
-
+//농가숙박이미지 등록
 exports.farmRoomImgInsert = function (req, res) {
-    console.log("여기와랑")
     var name = req.body;
     console.log("body 데이터 : ", name);
   
@@ -67,8 +69,7 @@ exports.farmRoomImgInsert = function (req, res) {
     res.json({ok: true, msg: "업로드 되었습니다."})   
 }
 
-
-
+//농가삭제
 exports.farmDel = function (req, res) {
     var farmCode = req.query.farmCode;
     var chk = req.query.chk;
@@ -97,6 +98,7 @@ exports.farmDel = function (req, res) {
     
 }
 
+//농가수정화면
 exports.farmEdit =async function(req,res){
     var farmCode = req.query.farmCode;
     var chk = req.query.chk; //농가리스트인지 농가승인리스트인지 구분해주는 변수
@@ -109,6 +111,7 @@ exports.farmEdit =async function(req,res){
     res.render("../pages/farm/farmEdit",{data:data,chk:chk,rImgLeng:rImgLeng});
 }
 
+//농가수정
 exports.editFarm =async function(req,res){
     console.log("현재유알엘>>"+req.url);
     console.log("농가수정페이지");
@@ -192,7 +195,7 @@ exports.editFarm =async function(req,res){
     }
 }
 
-
+//농가승인화면
 exports.farmAskList = async function (req, res) {
     console.log("팜컨트롤러23123")
     var data = await farmModel.getFarmAskList();
@@ -200,21 +203,53 @@ exports.farmAskList = async function (req, res) {
    
 }
 
-
-exports.farmConfirm = function (req, res) {
+//농가승인
+exports.farmConfirm =async function (req, res) {
     console.log("확인 컨트롤러");
     console.log(req.body);
     var farmCodeList = req.body.farmCodeList;
     var userId = req.body.userId;
     console.log("팜리스트>>>"+farmCodeList.length);
     console.log("유저아이디>>>"+userId);
-    farmModel.UpdateFarmConfirm(farmCodeList,userId).then(function(data){
+    var chk;
+    var resString = "";
+    var userToken  = "";
+    await farmModel.UpdateFarmConfirm(farmCodeList,userId).then(function(data){
+        chk = true;
+        console.log("리턴값" +data);
         console.log(data);
-        res.json("등록되었습니다.");
+        userToken = data[0].token
+       
     }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err); 
-        res.json("등록실패하였습니다. 관리자에게 문의");
+        chk= false;
+        resString = "등록실패하였습니다. 관리자에게 문의";
     });
-   
+    
+    console.log(userToken);
+    if(chk){
+        
+        var admin = require('../../firebase');
+        let message = {
+            data: {
+                message : JSON.stringify({
+                    type:'farmConfirm',
+                    title: '농가등록완료',
+                    content: '신청하신 농가 등록이 완료되었습니다.',
+                    imgUrl : '',
+                })  
+            },
+            token: userToken,
+        };
+        console.log("체크합니다");
+        await admin.messaging().send(message).then(() => {
+            resString = "등록되었습니다.";
+        }).catch((err) => {
+            console.log(err);
+            resString = "푸쉬실패";
+        });
+
+
+    }
+
+    res.json(resString);
 }

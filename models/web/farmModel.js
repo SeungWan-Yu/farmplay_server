@@ -1,59 +1,48 @@
-var con = require('../../mysql-db');
-const mysql2  = require('mysql2/promise');
-const db = {
-    host: 'joy4.ddns.net',
-    user: 'dshive',
-    password: 'dshive!@#$',       
-    database: 'farmplay',
-    dateStrings: "date",
-    multipleStatements: true
-  }
+const con = require('../../mysql2-db');  
 
 module.exports = {
-    
-    getFarmList : function(){
-        return new Promise((resolve,reject) =>{
-            console.log("결과1>>"+con)
-            con.query("SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='등록완료'" , 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    getFarmList :async function(){
+        const connection = await con;
+        try{
+            var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='등록완료'";
+            var [rows] = await connection.query(sql1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
-    getFarmRoomImgList : function(farmCode){
-        return new Promise((resolve,reject) =>{                
-            con.query("SELECT roomImgCode, roomImgFarmCode, roomImgUrl FROM farm_room_img WHERE roomImgFarmCode = "+farmCode+"", 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    getFarmRoomImgList :async function(farmCode){
+        const connection = await con;
+        try{
+            var sql1 = "SELECT roomImgCode, roomImgFarmCode, roomImgUrl FROM farm_room_img WHERE roomImgFarmCode = ?";
+            var param1 = [farmCode];
+            var [rows] = await connection.query(sql1,param1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
-    delFarmRoomImgList : function(roomImgCode){
-        return new Promise((resolve,reject) =>{
-            console.log("결과1>>"+roomImgCode)     
-            console.log("결과1>>"+con)
-            con.query("DELETE FROM farm_room_img WHERE roomImgCode = "+roomImgCode+"", 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    delFarmRoomImgList :async function(roomImgCode){
+        const connection = await con;
+        try{
+            var sql1 = "DELETE FROM farm_room_img WHERE roomImgCode = ?";
+            var param1 = [roomImgCode];
+            var [rows] = await connection.query(sql1,param1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
    
@@ -105,9 +94,7 @@ module.exports = {
 
     //************mysql2 일 경우 transaction ***********/
     delFarm :async function(farmCode){
-        const pool = mysql2.createPool(db);
-        const connection = await pool.getConnection(async conn=>conn);
-        
+        const connection = await con;
         try{
             await connection.beginTransaction();
             var r1 = await connection.query("DELETE FROM farm_room_img WHERE roomImgFarmCode = ?",farmCode);
@@ -123,30 +110,28 @@ module.exports = {
         }finally{
             connection.release();
         }
-
     },
 
-    getOneFarm : function(farmCode){
-        return new Promise((resolve,reject) =>{
-            con.query("SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmCode =?", farmCode,
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    getOneFarm :async function(farmCode){
+        const connection = await con;
+        try{
+            var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmCode =?";
+            var param1 = [farmCode];
+            var [rows] = await connection.query(sql1,param1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
 
     updateFarm :async function(farm,roomImg,dRoomImgList){
         console.log("모델삭제리스트");
         console.log(dRoomImgList);
-        const pool = mysql2.createPool(db);
-        const connection = await pool.getConnection(async conn=>conn);
-        
+        const connection = await con;
         try{
             await connection.beginTransaction();
             var sql1 = "UPDATE farm SET  farmName=?, farmStartOpen=?, farmProduce=?, farmType=?, farmerIntro=?, farmAddr=?, farmAddrDetail=?,farmRoomInternet=?,farmRoomSite=?,farmRoomInfo=?,farmRoom=?,farmRoomUnisex=?,farmRoomEtc=?,userName=?,farmState=?,farmImg=? WHERE farmCode= ?";
@@ -186,27 +171,27 @@ module.exports = {
     },
 
 
-    getFarmAskList : function(){
-        return new Promise((resolve,reject) =>{     
-            console.log("결과1>>"+con)
-            con.query("SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='신청중'" , 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    getFarmAskList :async function(){
+        const connection = await con;
+        try{
+            var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='신청중'";
+            var [rows] = await connection.query(sql1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
     UpdateFarmConfirm :async function(farmCodeList,userId){
-        const pool  = mysql2.createPool(db);
-        const connection = await pool.getConnection(async conn=>conn);
-
+        const connection = await con;
         try{
             await connection.beginTransaction();
+            var params = [userId];
+            var [r] = await connection.query("SELECT token FROM users WHERE user_id =?",params);   
+
             var r1 = await connection.query("SELECT IFNULL(farm_code,0) AS farm_code FROM users WHERE user_id =?",userId);
             var result1  = r1[0][0].farm_code;
             console.log("r1>>"+r1);
@@ -219,6 +204,7 @@ module.exports = {
             console.log("r3>>"+r3);
             await connection.commit();
             console.log("트랜잭션성공");
+            return r;
         }catch(err){
             console.log("에러발생 롤백");
             await connection.rollback();
@@ -242,35 +228,34 @@ module.exports = {
     },
 
 
-    getFarmRoomImgCnt : function(farmCode){
-        return new Promise((resolve,reject) =>{        
-            console.log("결과1>>"+con)
-            con.query("SELECT COUNT(roomImgCode)  AS cnt FROM farm_room_img WHERE roomImgFarmCode = ?",farmCode, 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    getFarmRoomImgCnt :async function(farmCode){
+        const connection = await con;
+        try{
+            var sql1 = "SELECT COUNT(roomImgCode)  AS cnt FROM farm_room_img WHERE roomImgFarmCode = ?";
+            var param1 = [farmCode];
+            var [rows] = await connection.query(sql1,param1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
-    getRoomImgUrl : function(dRoomImgList){
-        console.log("모델이미지리스트>>"+dRoomImgList);
-        return new Promise((resolve,reject) =>{
-            con.query("SELECT roomImgUrl FROM farm_room_img WHERE roomImgCode IN ("+dRoomImgList+")", 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log(result);
-                    console.log("결과>>"+result);
-                    resolve(result)
-                }
-            });
-        });
+    getRoomImgUrl :async function(dRoomImgList){
+        const connection = await con;
+        try{
+            var sql1 = "SELECT roomImgUrl FROM farm_room_img WHERE roomImgCode IN (?)";
+            var param1 = [dRoomImgList];
+            var [rows] = await connection.query(sql1,param1);
+            console.log("결과값");
+            return rows;
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
     },
 
 

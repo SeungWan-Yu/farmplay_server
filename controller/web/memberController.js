@@ -88,11 +88,10 @@ exports.noticeImg = function (req, res) {
     console.log(pushFile);
     console.log("공지보내기시작");
     var body = req.body;
-    
+    console.log(body);
     var title  = body.title;
     var content  =  body.content
     var imgurl = "";
-    console.log(pushFile[0].filename);
     if(pushFile != null){
         //imgurl = "http://192.168.1.24:3000/public/uploads_push/"+req.file.filename; 
         //imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
@@ -123,7 +122,7 @@ exports.noticeSend = function (req, res) {
     var message = {
             data: {  
                 message : JSON.stringify({
-                    type:'10',
+                    type:'notice',
                     channel: '10',
                     title: title,
                     content: content,

@@ -4,6 +4,7 @@ const farmController = require('./farmController')
 const recuritController = require('./recuritController')
 const farmplerController = require('./farmplerController')
 const appApiController = require('./appApiController')
+const tourController = require('./tourController')
 
 
 module.exports = {
@@ -13,4 +14,5 @@ module.exports = {
   recuritController,
   farmplerController,
   appApiController,
+  tourController,
 }

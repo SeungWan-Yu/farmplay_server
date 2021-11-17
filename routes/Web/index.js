@@ -8,6 +8,7 @@ router.use('/recurit', require('./recuritRouter'));
 router.use('/farmpler', require('./farmplerRouter'));
 router.use('/farmpler', require('./farmplerRouter'));
 router.use('/apiApp', require('./appApiRouter'));
+router.use('/tour', require('./tourRouter'));
 
 
 module.exports = router;
