@@ -1,8 +1,14 @@
 var mysqlDB = require('../mysql-db');
 var express = require('express');
 var multer = require('multer'); // multer모듈 적용 (for 파일업로드)
-const { diskStorage } = require('multer');
-var storage = diskStorage({
+var sftpStorage = require('multer-sftp');
+var storage = sftpStorage({
+    sftp: {
+        host: 'joy4.ddns.net',
+        port: 22,
+        username: 'dshive',
+        password: 'dshive!@#$'
+      },
   filename: function (req, file, cb) {
     cb(null, file.originalname) // cb 콜백함수를 통해 전송된 파일 이름 설정
   }
@@ -65,8 +71,9 @@ var results = {
     result : "성공"
   }
 
-  router.post('/profile_img',upload.single('profileImgFile'), function(req,res){
-    mysqlDB.query('update users set user_profile_img = "'+req.file.filename+'" where farmCode = '+req.body.farmcode+';' , function (err, rows, fields) {
+  router.post('/profile_img',upload.single('profileImgFile'),function(req,res){
+      console.log(req.body.user_id)
+      mysqlDB.query('update users set user_profile_img = "'+req.file.filename+'" where user_id = '+req.body.user_id+';' , function (err, rows, fields) {
       if (!err) {
         console.log("프로필 이미지 이름 : "+req.file.filename)
         results.result = req.file.filename
@@ -74,9 +81,24 @@ var results = {
       }else{
         results.result = req.file.filename
         res.send(results)
+        console.log("실패")
       }
   })
-})
+});
+//   function(req,res){
+//     mysqlDB.query('update users set user_profile_img = "'+req.file.filename+'" where farmCode = '+req.body.farmcode+';' , function (err, rows, fields) {
+//       if (!err) {
+//         console.log("프로필 이미지 이름 : "+req.file.filename)
+//         results.result = req.file.filename
+//         res.send(results)
+//       }else{
+//         results.result = req.file.filename
+//         res.send(results)
+//         console.log("실패")
+//       }
+//   })
+// }
+
 
   router.post('/imgupload',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),function(req,res){
   console.log("loglog/ farmcode = "+req.body.farmcode)
@@ -100,9 +122,12 @@ var results = {
                 if (!err) {
                     console.log("room img insert success----------------")
                     console.log(rows)
+                    res.send(results)
                 }
                 else{
                     console.log("err"+err)
+                    results.result = "fail"
+                    res.send(results)
                 }
               })
             }  
@@ -116,9 +141,12 @@ var results = {
                     if (!err) {
                         console.log("room img insert success----------------")
                         console.log(rows)
+                        res.send(results)
                     }
                     else{
                         console.log("err"+err)
+                        results.result = "fail"
+                        res.send(results)
                     }
                   })
                 }  

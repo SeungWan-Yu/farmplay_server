@@ -20,14 +20,16 @@ module.exports.get = ( req,res,next) => {
             contents:"전라북도 전주시 덕진구 반룡로 109 A동",
             latitude : 35.82430626863803,
             longitude : 127.14801122677846,
-            like : 10
+            like : 10,
+            img : "shopping.jpeg"
         },
         {
             name : "대성 전통 시장",
             contents:"전라북도 전주시 덕진구 반룡로 109 B동",
             latitude : 35.82430626863803,
             longitude : 127.14801122677846,
-            like : 12
+            like : 12,
+            img : "shopping.jpeg"
         }
     ]
     console.log(marker)

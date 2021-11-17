@@ -71,4 +71,6 @@ router.use('/review', require('./review.route'))
 
 router.use('/room', require('./room.route'))
 
+router.use('/getprofileimg', require('./getprofileimg.route'))
+
 module.exports = router;
