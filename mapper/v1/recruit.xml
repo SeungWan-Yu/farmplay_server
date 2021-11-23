@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recruitMapper">
+
+    <sql id="selectBoardColumn">
+        SELECT 
+             recuritCode
+            ,recuritFarmCode
+            ,recuritState
+            ,recuritUserId
+            ,recuritStart
+            ,recuritEnd
+            ,recuritJobStart
+            ,recuritJobEnd
+            ,recuritJobKind
+            ,recuritMealProvide
+            ,recuritMealVeget
+            ,recuritMealMemo
+            ,recuritChkFampler
+            ,recuritChkPeriod
+            ,recuritChkMinor
+            ,recuritChkMinorMemo
+            ,recuritChkMax
+            ,recuritChkSummary
+    </sql>    
+
+    <!-- 모집정보 가져오기(모집코드)-->
+    <select id="getRecruit">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            recruit 
+        WHERE 
+            recuritCode = #{recruitcode};
+    </select>
+
+    <!-- 모집정보 가져오기(팜코드)-->
+    <select id="getRecruitListFarmcode">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            recruit
+        WHERE 
+            recuritFarmCode = #{farmcode};
+    </select>
+
+    <!-- 모집정보 가져오기(유저아이디)-->
+    <select id="getRecuritListId">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            recruit
+        WHERE 
+            recuritUserId = #{userId};
+    </select>
+
+    <!-- 모집등록 -->
+    <insert id="addRecruit">
+        INSERT INTO recruit 
+            ( recuritFarmCode
+            , recuritState
+            , recuritUserId
+            , recuritStart
+            , recuritEnd
+            , recuritJobStart
+            , recuritJobEnd
+            , recuritJobKind
+            , recuritMealProvide
+            , recuritMealVeget
+            , recuritMealMemo
+            , recuritChkFampler
+            , recuritChkPeriod
+            , recuritChkMinor
+            , recuritChkMinorMemo
+            , recuritChkMax
+            , recuritChkSummary ) 
+        VALUES 
+            ( #{recuritFarmCode}
+            , #{recuritState}
+            , #{recuritUserId}
+            , #{recuritStart}
+            , #{recuritEnd}
+            , #{recuritJobStart}
+            , #{recuritJobEnd}
+            , #{recuritJobKind}
+            , #{recuritMealProvide}
+            , #{recuritMealVeget}
+            , #{recuritMealMemo}
+            , #{recuritChkFampler}
+            , #{recuritChkPeriod}
+            , #{recuritChkMinor}
+            , #{recuritChkMinorMemo}
+            , #{recuritChkMax}
+            , #{recuritChkSummary} );
+    </insert>
+
+    <!-- 모집수정 -->
+    <update id="updateReruit">
+        UPDATE recruit 
+        SET 
+             recuritStart       = #{recuritStart}
+            ,recuritEnd         = #{recuritEnd}
+            ,recuritJobStart    = #{recuritJobStart}
+            ,recuritJobEnd      = #{recuritJobEnd}
+            ,recuritJobKind     = #{recuritJobKind}
+            ,recuritMealProvide = #{recuritMealProvide}
+            ,recuritMealVeget   = #{recuritMealVeget}
+            ,recuritMealMemo    = #{recuritMealMemo}
+            ,recuritChkFampler  = #{recuritChkFampler}
+            ,recuritChkPeriod   = #{recuritChkPeriod}
+            ,recuritChkMinor    = #{recuritChkMinor}
+            ,recuritChkMinorMemo= #{recuritChkMinorMemo}
+            ,recuritChkMax      = #{recuritChkMax}
+            ,recuritChkSummary  = #{recuritChkSummary}
+        WHERE 
+             recuritCode        = #{recuritCode}
+    </update>
+
+     <!-- 모집마감 -->
+    <update id="updateReruitState">
+        UPDATE 
+            recruit 
+        SET 
+            recuritState    = '모집완료' 
+        WHERE 
+            recuritCode     = #{recruitcode}
+    </update>
+
+</mapper>

@@ -19,6 +19,15 @@
 <script type="text/javascript">
     $(function(){
 
+        //리턴값 체크 
+        var data = "<%-data%>";
+        if(data=="실패"){
+            var msg = "<%-msg.message%>";
+            alert("에러메세지 콘솔창 확인");
+            console.log(msg);
+        }
+
+        
         /**************************** 삭제 실패경우 알림창 받기****************************/  
         var para = document.location.href.split("result=");
         var result = para[1];
@@ -65,8 +74,8 @@
        
         //삭제 모달창안에서 확인 버튼 클릭 이벤트
         $('.delFarm').click(function(){
-            var msg = $('#message-text').val();
-                if(msg=="삭제"){
+            var message = $('#message-text').val();
+                if(message=="삭제"){
                     location.href = "/admin/farm/farmDel?farmCode="+setFarmCode+"&&chk="+pageChk+""
                 }else{
                     

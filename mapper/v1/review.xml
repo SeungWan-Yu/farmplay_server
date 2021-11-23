@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reviewMapper">
+
+    <sql id="selectBoardColumn">
+        SELECT 
+         reviewCode
+        ,reviewStandard
+        ,reviewFpId
+        ,reviewFarmCode
+        ,reviewEnterCode
+        ,reviewRating
+        ,reviewApplicatDay
+        ,reviewAttendanceDay
+        ,reviewContent
+        ,reviewRegDate
+    </sql>   
+
+    <!-- 리뷰등록 -->
+    <insert id="addReview">
+        INSERT INTO review 
+            ( reviewStandard
+            , reviewFpId
+            , reviewFarmCode
+            , reviewEnterCode
+            , reviewRating
+            , reviewApplicatDay
+            , reviewAttendanceDay
+            , reviewContent
+            , reviewRegDate ) 
+        VALUES 
+            ( #{reviewStandard}
+            , #{reviewFpId}
+            , #{reviewFarmCode}
+            , #{reviewEnterCode}
+            , #{reviewRating}
+            , #{reviewApplicatDay}
+            , #{reviewAttendanceDay}
+            , #{reviewContent}
+            , NOW() );
+    </insert>
+
+   
+    <!-- 리뷰평점 계산해서 리뷰갯수,평점 가져오기 -->
+    <select id="getReviewRatingCal">
+        SELECT 
+              FLOOR(AVG(reviewRating)*10+0.5)/10 AS farmRating
+            , COUNT(reviewRating) AS reviewCnt 
+        FROM 
+            review  
+        WHERE 
+            reviewStandard  = #{reviewStandard}  
+            AND 
+            reviewFarmCode  = #{reviewFarmCode};
+    </select>
+
+    <!-- 리뷰평점 (농장테이블) 업데이트 -->
+    <update id="updateReviewRatingFarm">
+        UPDATE
+            farm 
+        SET 
+             farmRating     = #{reviewRating}
+            ,farmReviewCnt  = #{reviewCnt}
+        WHERE
+            farmCode        = #{farmCode};
+    </update>
+
+      <!-- 리뷰평점 (유저테이블) 업데이트 -->
+    <update id="updateReviewRatingUser">
+        UPDATE
+            users 
+        SET 
+             userRating     = #{reviewRating}
+            ,userReviewCnt  = #{reviewCnt}
+        WHERE
+            user_id         = #{userId};
+    </update>
+
+
+    <!-- 참가테이블 리뷰작성완료 업데이트 -->
+    <update id="updateEnterReview">
+        UPDATE farmpler 
+        SET 
+            enterReview='Y' 
+        WHERE 
+            enterCode   = #{reviewEnterCode} 
+            AND 
+            enterUserId = #{reviewFpId} 
+            AND 
+            enterState  = '참가완료';
+    </update>
+
+    
+    <!-- 참가테이블 참가상태 변경 -->
+    <update id="updateEnterState">
+        UPDATE farmpler 
+        SET 
+            enterState  = #{enterState}
+        WHERE 
+            enterCode   = #{enterCode}
+            AND 
+            enterUserId = #{enterUserId}
+            AND 
+            enterState= '참가확정됨';
+    </update>
+
+    <!-- 리뷰평점 계산해서 리뷰갯수,평점 가져오기 -->
+    <select id="getReview">
+        <include refid="selectBoardColumn"></include>
+        FROM review 
+        WHERE 
+            reviewEnterCode  = #{reviewEnterCode} 
+            AND 
+            reviewStandard   = #{reviewStandard};
+    </select>
+
+</mapper>

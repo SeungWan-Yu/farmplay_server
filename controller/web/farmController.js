@@ -17,17 +17,22 @@ function dFile(path){
         console.log("파일이 없다");
         return false;
     }
-}
+};
 
 //농가리스트
-exports.farmList = function (req, res) {
-    console.log("팜컨트롤러")
-    farmModel.getFarmList().then(function(data){
-        console.log(data)
-        res.render("../pages/farm/farmList",{data:data,chk:""});
-    })
-   
+exports.farmList =async function (req, res) {
+    var results = {result:"", msg:"성공"};
+    try {
+        results.result = await farmModel.getFarmList();
+    } catch (error) {
+        results.result = "실패";
+        results.msg = error;
+    }
+    console.log("리턴값체크");
+    console.log(results);
+    res.render("../pages/farm/farmList",{data:results.result,msg:results.msg,chk:""});
 }
+
 
 //농가숙박이미지 리스트
 exports.farmRoomImgList = function (req, res) {
@@ -37,7 +42,7 @@ exports.farmRoomImgList = function (req, res) {
         res.json(data)
     })
    
-}
+};
 
 //농가숙박이미지 삭제
 exports.farmRoomImgDel = function (req, res) {
@@ -47,7 +52,7 @@ exports.farmRoomImgDel = function (req, res) {
         res.json(data)
     })
    
-}
+};
 
 //농가숙박이미지 등록
 exports.farmRoomImgInsert = function (req, res) {
@@ -196,11 +201,17 @@ exports.editFarm =async function(req,res){
 }
 
 //농가승인화면
-exports.farmAskList = async function (req, res) {
-    console.log("팜컨트롤러23123")
-    var data = await farmModel.getFarmAskList();
-    res.render("../pages/farm/farmList",{data:data,chk:"ask"});
-   
+exports.farmAskList =async function (req, res) {
+    var results = {result:"", msg:"성공"};
+    try {
+        results.result = await farmModel.getFarmAskList();
+    } catch (error) {
+        results.result = "실패";
+        results.msg = error;
+    }
+    console.log("리턴값체크");
+    console.log(results);
+    res.render("../pages/farm/farmList",{data:results.result,msg:results.msg,chk:"ask"});
 }
 
 //농가승인
@@ -228,7 +239,7 @@ exports.farmConfirm =async function (req, res) {
     console.log(userToken);
     if(chk){
         
-        var admin = require('../../firebase');
+        var admin = require('../../configs/firebase');
         let message = {
             data: {
                 message : JSON.stringify({

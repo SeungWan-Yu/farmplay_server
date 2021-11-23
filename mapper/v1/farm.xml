@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="farmMapper">
+
+    <sql id="selectBoardColumn">
+        SELECT 
+              farmCode
+            , farmState
+            , farmAskDate
+            , farmRegDate
+            , farmImg
+            , farmName
+            , farmStartOpen
+            , farmProduce
+            , farmType
+            , farmerIntro
+            , farmAddr
+            , farmAddrDetail
+            , farmRoomInternet
+            , farmRoomSite
+            , farmRoomInfo
+            , farmRoom
+            , farmRoomUnisex
+            , farmRoomEtc
+            , userName
+            , farmRating
+            , farmReviewCnt
+    </sql>    
+
+    <sql id="recuritColumn">
+        , recuritCode
+        , recuritFarmCode
+        , recuritState
+        , recuritUserId
+        , recuritStart
+        , recuritEnd
+        , recuritJobStart
+        , recuritJobEnd
+        , recuritJobKind
+        , recuritMealProvide
+        , recuritMealVeget
+        , recuritMealMemo
+        , recuritChkFampler
+        , recuritChkPeriod
+        , recuritChkMinor
+        , recuritChkMinorMemo
+        , recuritChkMax
+        , recuritChkSummary
+    </sql>   
+
+    <!-- 팜이미지코드 가져오기-->
+    <select id="getRoomImgListFarmCode">
+        SELECT 
+              roomImgCode
+            , roomImgFarmCode
+            , roomImgUrl
+	    FROM 
+            farm_room_img
+        WHERE 
+            roomImgFarmCode = #{farmcode};
+    </select>
+    
+    <!-- 팜가져오기 (유저아이디)-->
+    <select id="getFarmUser">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            farm 
+        WHERE 
+            userName = #{username};
+    </select>
+    
+    <!-- 팜가져오기 (팜코드)-->
+    <select id="getFarm">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            farm 
+        WHERE 
+            farmCode = #{farmcode};
+    </select>
+
+    <!-- 등록농장 있는지 체크(유저아이디) -->
+    <select id="getFarmCheck">
+        SELECT
+            count(*) as count
+        FROM 
+            farm
+        WHERE
+            userName = #{username};
+    </select>
+
+    <!-- 농장리스트 가져오기(등록완료) -->
+    <select id="getFarmList">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            farm 
+        WHERE 
+            farmstate = '등록완료';
+    </select>
+   
+    <!-- 농장등록 -->
+    <insert id="addFarm">
+        INSERT INTO farm
+	        ( farmName
+            , farmStartOpen
+            , farmProduce
+            , farmType
+            , farmerIntro
+            , farmAddr
+            , farmAddrDetail
+            , farmRoomInternet
+            , farmRoomSite
+            , farmRoomInfo
+            , farmRoom
+            , farmRoomUnisex
+            , farmRoomEtc
+            , userName )
+	    VALUES 
+            ( #{farmname}
+            , #{farmbegin}
+            , #{farmcrop}
+            , #{farmform}
+            , #{farmerinfo}
+            , #{farmadress}
+            , #{adressdetail}
+            , #{internet}
+            , #{roomadress}
+            , #{roominfo}
+            , #{room}
+            , #{roompublic}
+            , #{roometc}
+            , #{username} )
+    </insert>
+
+    <!-- 농장수정 -->
+    <update id="updateFarm">
+        UPDATE farm
+        SET
+             farmState       = '신청중'
+            ,farmAskDate     = NOW()
+            ,farmRegDate     = ''
+            ,farmImg         = ''
+		    ,farmName        = #{farmname}
+		    ,farmStartOpen   = #{farmbegin}
+		    ,farmProduce     = #{farmcrop}
+		    ,farmType        = #{farmform}
+		    ,farmerIntro     = #{farmerinfo}
+		    ,farmAddr        = #{farmadress}
+		    ,farmAddrDetail  = #{adressdetail}
+		    ,farmRoomInternet= #{internet}
+		    ,farmRoomSite    = #{roomadress}
+		    ,farmRoomInfo    = #{roominfo}
+		    ,farmRoom        = #{room}
+		    ,farmRoomUnisex  = #{roompublic}
+		    ,farmRoomEtc     = #{roometc}
+		    ,userName        = #{username}
+	    WHERE 
+             farmCode        = #{farmCode}
+    </update>
+
+    <!-- 농장+모집테이블 가져오기) -->
+    <select id="getRecruitList">
+        <include refid="selectBoardColumn"></include>
+        <include refid="recuritColumn"></include>
+        FROM 
+            farm_recurit 
+        WHERE 
+            farmCode = #{farmcode};
+    </select>
+
+     <!-- 농장+모집+참가(팜플러) 테이블 가져오기) -->
+    <select id="getEnterList">
+        <include refid="selectBoardColumn"></include>
+        <include refid="recuritColumn"></include>
+            , enterCode
+            , enterfarmCode
+            , enterRecuritCode
+            , enterUserId
+            , enterUserName
+            , enterUserPhoto
+            , enterUserRating
+            , enterReporting
+            , enterStart
+            , enterEnd
+            , enterEditStart
+            , enterEditEnd
+            , enterFarmplerIntro
+            , enterEditDate
+            , enterEditReson
+            , enterState
+            , enterReview
+        FROM 
+            farm_recruit_farmpler 
+        WHERE 
+            enterUserId = #{id};
+    </select>
+
+
+</mapper>

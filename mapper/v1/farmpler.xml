@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="farmplerMapper">
+
+    <sql id="selectBoardColumn">
+        SELECT 
+             enterCode
+            ,enterfarmCode
+            ,enterRecuritCode
+            ,enterUserId
+            ,enterUserName
+            ,enterUserPhoto
+            ,enterUserRating
+            ,enterReporting
+            ,enterStart
+            ,enterEnd
+            ,enterEditStart
+            ,enterEditEnd
+            ,enterFarmplerIntro
+            ,enterEditDate
+            ,enterEditReson
+            ,enterState
+            ,enterReview
+    </sql>    
+
+
+    <!-- 참여 팜플러 리스트 가져오기(모집코드)-->
+    <select id="getFarmplerList">
+    <include refid="selectBoardColumn"></include>
+        FROM 
+            farmpler 
+        WHERE 
+            enterRecuritCode = #{recruitcode}
+    </select>
+    
+    <!-- 업데이트 유저가 참가취소-->
+    <update id="updateEnterCancel">
+        UPDATE farmpler 
+        SET 
+             enterEditDate  = NOW()
+            ,enterEditReson = #{enterEditReson}
+            ,enterState     = #{enterState}
+        WHERE 
+             enterCode      = #{enterCode}
+             AND 
+             enterUserId    = #{enterUserId};     
+    </update>
+  
+    <!-- 업데이트 유저가 참가수정요청-->
+    <update id="updateEnterEdit">
+        UPDATE farmpler 
+        SET 
+             enterEditStart = #{enterEditStart}
+            ,enterEditEnd   = #{enterEditEnd}
+            ,enterEditDate  = NOW()
+            ,enterEditReson = #{enterEditReson}
+            ,enterState     = #{enterState} 
+        WHERE 
+            enterCode   = #{enterCode}
+            AND 
+            enterUserId = #{enterUserId};
+    </update>
+
+    <!-- 업데이트 농가가 참가자 참가수락취소(참가신청중/참가완료상태)-->
+    <update id="updateEnterConfirmCancelReq">
+        UPDATE farmpler
+        SET 
+             enterState     = #{confirmState}
+            ,enterEditReson = #{enterEditReson}
+            ,enterEditDate  = NOW() 
+        WHERE 
+            enterUserId     = #{enterUserId} 
+            AND 
+            enterCode       = #{enterCode};
+    </update>
+    
+    <!-- 업데이트 농가가 참가자 참가수락취소(참가수정요청 상태))-->
+    <update id="updateEnterConfirmCancelEdit">
+        UPDATE farmpler 
+        SET 
+             enterStart     = #{enterStart}
+            ,enterEnd       = #{enterEnd}
+            ,enterState     = #{confirmState}
+            ,enterEditReson = #{enterEditReson}
+            ,enterEditDate  = NOW()
+            ,enterEditStart = ''
+            ,enterEditEnd   = '' 
+        WHERE 
+            enterUserId     = #{enterUserId} 
+            AND 
+            enterCode       = #{enterCode};
+    </update>
+
+     <!-- 참가등록 -->
+    <insert id="addFarmpler">
+        INSERT INTO farmpler 
+            ( enterfarmCode
+            , enterRecuritCode
+            , enterUserId
+            , enterUserName
+            , enterStart
+            , enterEnd
+            , enterEditStart
+            , enterEditEnd
+            , enterFarmplerIntro
+            , enterEditReson
+            , enterState
+            , enterReview ) 
+        VALUES 
+            ( #{enterFarmCode}
+            , #{enterRecuritCode}
+            , #{enterUserId}
+            , #{enterUserName}
+            , #{enterStart}
+            , #{enterEnd}
+            , #{enterEditStart}
+            , #{enterEditEnd}
+            , #{enterFarmplerIntro}
+            , #{enterEditReson}
+            , #{enterState}
+            , #{enterReview} );
+    </insert>
+
+     <!-- 팜플러정보 가져오기 (아이디)-->
+    <select id="getFarmplerId">
+    <include refid="selectBoardColumn"></include>
+        FROM 
+            farmpler 
+        WHERE 
+            enterUserid = #{userId};
+    </select>
+
+     <!-- 팜플러정보 가져오기 (참가코드))-->
+    <select id="getFarmpler">
+    <include refid="selectBoardColumn"></include>
+        FROM 
+            farmpler 
+        WHERE 
+            enterCode = #{enterCode};
+    </select>
+
+</mapper>

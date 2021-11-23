@@ -1,72 +1,47 @@
 
-const reviewModel = require("../../models/v1/reviewModel");
+const {reviewModel} = require("../../models/v1");
 
-exports.addReview = function (req, res) {
-    console.log("에드리뷰컨트롤러");
-    var review = req.body
-    console.log("받아온 리퀘스트값>>>");
 
-    console.log(review);
-    var results = {
-        result : ""
+exports.addReview = async (req,res) => {
+    var results = {result : ""};
+    var body = req.body;
+    var reviewStandard  = body.reviewStandard;
+    try {
+        if(reviewStandard=="농장"){
+            var r1 = await reviewModel.addReviewFarm(body);
+        }else if(reviewStandard=="팜플러"){
+            var r2 = await reviewModel.addReviewFarmpler(body);
+        }
+        results.result = "success";
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
     }
-    reviewModel.addReview(review).then(function(data){
-        results.result = "success"
-        res.send(results);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-        results.result = "fail"
-        res.json(results);
-    });
+    res.send(results);  
+};
 
-}
+exports.getReview = async (req,res) => {
+    var result;
+    var body = req.body;
+    try {
+        result = await reviewModel.getReview(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result);  
+};
 
+exports.getReviewRating = async (req,res) => {
+    var result;
+    var params = req.query;
+    try {
+        result = await reviewModel.getReviewRating(params);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result);  
+};
 
-exports.getReview = function (req, res) {
-    console.log("겟리뷰컨트롤러");
-    var params = req.query
-    console.log("받아온 리퀘스트값>>>");
-   
-
-    reviewModel.getReview(params).then(function(data){
-        console.log("성공");
-        console.log(data);
-        res.send(data);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
-
-
-exports.getReviewRating = function (req, res) {
-    console.log("겟리뷰컨트롤러 확인");
-    var params = req.query
-    console.log(params);
-    reviewModel.getReviewRating(params).then(function(data){
-        console.log("성공여기여기");
-        console.log(data);
-        res.send(data);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
-
-exports.getRecruitList = function (req, res) {
-    console.log("모집리스트");
-    var body = req.body
-    farmModel.getRecruitList(body).then(function(data){
-        console.log("성공");
-        console.log(data);
-        res.send(data);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
 

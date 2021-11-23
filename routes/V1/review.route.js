@@ -1,15 +1,13 @@
 var express = require('express');
 var router = express.Router();
+const { reviewController } = require('../../controller/v1');
 
-const controller = require('../../controller/v1/review.controller')
 
-router.route('/addReview')
-.post(controller.addReview)
+router.post('/addReview', reviewController.addReview);
 
-router.route('/getReview')
-.post(controller.getReview)
+router.post('/getReview', reviewController.getReview);
 
-router.route('/getReviewRating')
-.post(controller.getReviewRating)
+router.post('/getReviewRating', reviewController.getReviewRating);
+
 
 module.exports = router;

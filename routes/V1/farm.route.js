@@ -1,49 +1,35 @@
 var express = require('express');
 var router = express.Router();
+const { farmController } = require('../../controller/v1');
 
-const controller = require('../../controller/v1/farm.controller')
 
-router.route('/')
-.get(controller.get)
+//#getFarm
+router.get('/', farmController.getFarmList);
 
-router.route('/')
-.post(controller.post)
+//#postFarm
+router.post('/', farmController.addFarm);
 
-router.route('/update')
-.post(controller.farmUpdate)
+//#postUpdateFarm
+router.post('/update', farmController.updateFarm);
 
-router.route('/multiTest')
-.post(controller.multiTest)
+//#getFarmRecruitFarmpler
+router.post('/recruitFampler', farmController.getEnterList);
 
-router.route('/recruitFampler')
-.post(controller.getEnterList)
+//#getFarmRecruit
+router.post('/recruit', farmController.getRecruitList);
 
-router.route('/recruit')
-.post(controller.getRecruitList)
+//#postFarmname
+router.post('/name', farmController.getFarm);
 
-const controller2 = require('../../controller/v1/farmname.controller')
+//#getFarmstate
+router.post('/state', farmController.getFarmCheck);
 
-router.route('/name')
-.get(controller2.get)
+//#postFarmuser
+router.post('/user', farmController.getFarmUser);
 
-router.route('/name')
-.post(controller2.post)
+//#farmroomImages
+router.post('/roomImges', farmController.getRoomImgListFarmCode);
 
-const controller3 = require('../../controller/v1/farmstate.controller')
-
-router.route('/state')
-.get(controller3.get)
-
-router.route('/state')
-.post(controller3.post)
-
-const controller4 = require('../../controller/v1/farmuser.controller')
-
-router.route('/user')
-.get(controller4.get)
-
-router.route('/user')
-.post(controller4.post)
-
+router.post('/multiTest',farmController.multiTest);     //<<<<테스트용도
 
 module.exports = router;

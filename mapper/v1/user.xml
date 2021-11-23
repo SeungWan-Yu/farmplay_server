@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userMapper">
+
+
+    <sql id="selectBoardColumn">
+        SELECT 
+            user_id
+            , user_pw
+            , user_name
+            , user_phone
+            , user_adress
+            , user_adress_detail
+            , token
+            , farm_code
+            , farm_state
+            , userimg
+            , userRating
+            , userReviewCnt
+            , user_profile_img
+    </sql>    
+
+    <!-- 유저 등록-->
+    <insert id="addUser">
+        INSERT INTO users
+            ( user_id
+            , user_pw
+            , user_name
+            , user_phone
+            , user_adress
+            , user_adress_detail
+            , token )
+        VALUES 
+            ( #{id}
+            , #{pw}
+            , #{name}
+            , #{phone}
+            , #{adress}
+            , #{adressdetail}
+            , #{token});
+    </insert>
+
+    <!-- 유저 업데이트-->
+    <update id="updateUser">
+        UPDATE users
+        SET
+            user_name           = #{name},
+            user_phon           = #{phone},
+            user_adress         = #{adress},
+            user_adress_detail  = #{adressdetail},
+        WHERE 
+            user_id             = #{id};
+    </update>
+
+    <!-- 유저이미지 및 리뷰정보 가져오기-->
+    <select id="getUserImgRating">
+        SELECT 
+             userRating
+            ,userReviewCnt
+            ,user_profile_img 
+        FROM 
+            users 
+        WHERE 
+            user_id = #{id};
+    </select>
+
+    <!-- 유저이미지 및 유저리뷰 농장리뷰가져오기-->
+    <select id="getUserImgRatingFarm">
+        SELECT
+             u.user_profile_img
+            ,f.farmCode 
+            ,u.userRating
+            ,u.userReviewCnt
+            ,f.farmRating
+            ,f.farmReviewCnt 
+        FROM 
+            users AS u 
+        LEFT JOIN 
+            farm AS f 
+        ON 
+            u.user_id = f.userName 
+        WHERE 
+            u.user_id = #{id};
+    </select>
+
+
+    <!-- 유저 로그인체크-->
+    <select id="getLoginCheck">
+        SELECT 
+              user_pw
+            , user_name
+            , farm_code
+            , farm_state
+        FROM 
+            users
+        WHERE
+            user_id = #{id};
+    </select>
+
+    <!-- 유저 아이디중복체크-->
+    <select id="getIdCheck">
+        SELECT 
+            count(*) AS count
+        FROM
+            users 
+        WHERE
+            user_id = #{id}
+            <if test="phone != null">
+                AND
+                user_phone = #{phone};	 
+            </if>
+    </select>
+
+     <!-- 유저 비번 업데이트-->
+    <update id="updateUserPw">
+        UPDATE users
+        SET
+            user_pw = #{pass}
+        WHERE 
+            user_id = #{id};
+    </update>
+
+    <!-- 유저아이디 가져오기(연락처)-->
+    <select id="getUserId">
+        SELECT
+	        user_id
+        FROM
+	        users
+        WHERE
+	        user_phone = #{phone};
+    </select>
+
+     <!-- 카카오유저 체크 -->
+    <select id="getKaoUser">
+         SELECT 
+            count(*) AS count
+        FROM
+	        users
+        WHERE
+	        user_id = #{kakaocode};
+    </select>
+
+
+    <!-- 인증체크 -->
+    <select id="getCertification">
+         SELECT 
+              phone
+            , CODE
+        FROM 
+            certifi
+        WHERE
+        phone = #{phone};
+    </select>
+
+
+    <!-- 인증정보 업데이트 -->
+    <update id="updateCertification">
+        UPDATE 
+            certifi
+        SET
+		    code  = #{code}
+	    WHERE 
+	        phone = #{phone};
+    </update>
+
+    <!-- 인증정보 입력 -->
+    <insert id="addCertification">
+        INSERT INTO certifi
+            ( phone
+            , code)
+	    VALUES
+            ( #{phone}
+             ,#{code});
+    </insert>
+
+</mapper>

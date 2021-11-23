@@ -1,32 +1,44 @@
 var express = require('express');
 var router = express.Router();
+const { userController } = require('../../controller/v1');
 
-const controller = require('../../controller/v1/user.controller')
 
-const controller2 = require('../../controller/v1/idcheck.controller')
 
-const controller3 = require('../../controller/v1/buanchuser.controller')
+//login과  /id/ifo와 같음 나중에 하나 삭제할것
 
-router.route('/id')
-.post(controller2.post)
+//#Login
+router.post('/login', userController.getLoginCheck);
 
-router.route('/')
-.get(controller.get)
+//#postId
+router.post('/id', userController.getIdCheck);
 
-router.route('/login')
-.post(controller.post)
+//#getUserInfo
+router.post('/id/info', userController.getLoginCheck);
 
-router.route('/buan')
-.get(controller3.get)
+//#get_profile_img
+router.post('/getUserImgRating', userController.getUserImgRating);
 
-const controller4 = require('../../controller/v1/userinfo.controller')
+//#signup
+router.post('/signup', userController.addUser);
 
-router.route('/id/recruit')
-.post(controller4.post)
+//#userinfoupdate
+router.post('/update', userController.updateUser);
 
-const controller5 = require('../../controller/v1/userinfo2.controller')
+//#changepw
+router.post('/changePw', userController.updateUserPw);
 
-router.route('/id/info')
-.post(controller5.post)
+//#findId
+router.post('/findId', userController.getUserId);
+
+//#getKakaoUserInfo
+router.post('/kakaouser', userController.getKaoUser);
+
+//#postcerti
+router.post('/certification', userController.getCertification);
+
+//#postcerticode
+router.post('/certificationcode', userController.getCertificationCode);
+
+
 
 module.exports = router;

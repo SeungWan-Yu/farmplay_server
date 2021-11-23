@@ -1,42 +1,27 @@
 var express = require('express');
 var router = express.Router();
+const { recruitController } = require('../../controller/v1');
 
-const controller = require('../../controller/v1/recruit.controller')
 
-router.route('/')
-.get(controller.get)
+//#postRecruit
+router.post('/', recruitController.addRecruit);
 
-router.route('/')
-.post(controller.post)
+//#changeRecruit
+router.post('/edit', recruitController.updateReruit);
 
-router.route('/edit')
-.post(controller.updateReruit)
+//#endRecruit
+router.post('/end', recruitController.updateReruitState);
 
-router.route('/end')
-.post(controller.endReruit)
+//#postRecruitcode
+router.post('/code', recruitController.getRecruit);
 
-const controller2 = require('../../controller/v1/recruitname.controller')
+//#postRecruitname                 <-- 사용안하는거 같음
+router.post('/name', recruitController.getRecuritListId);
 
-router.route('/name')
-.get(controller2.get)
+//#postRecruitcodeall               <-- 사용안하는거 같음
+router.post('/code/all', recruitController.getRecruitListFarmcode);
 
-router.route('/name')
-.post(controller2.post)
 
-const controller3 = require('../../controller/v1/recruitcodeall.controller')
 
-router.route('/code/all')
-.get(controller3.get)
-
-router.route('/code/all')
-.post(controller3.post)
-
-const controller4 = require('../../controller/v1/recruitcode.controller')
-
-router.route('/code')
-.get(controller4.get)
-
-router.route('/code')
-.post(controller4.post)
 
 module.exports = router;

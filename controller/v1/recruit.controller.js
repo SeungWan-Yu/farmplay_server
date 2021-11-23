@@ -1,86 +1,88 @@
 var mysqlDB = require('../../mysql-db');
-const reruitModel = require("../../models/v1/reruitModel");
+const {recruitModel} = require("../../models/v1");
+const {Recruit} = require("../../dto/v1");
 
-module.exports.get = ( req,res,next) => {
-    mysqlDB.query('select * from farm where farmstate = 1', function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-            res.send(JSON.stringify(rows));
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
-        }
-    });
-}
 
-module.exports.post = ( req,res,next) => {
-    var results = {
-        result  : "",
-        message : ""
+
+exports.getRecruit = async (req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await recruitModel.getRecruit(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
     }
-    mysqlDB.query('insert into recruit (recuritFarmCode,recuritState,recuritUserId,recuritStart,recuritEnd,recuritJobStart,recuritJobEnd,recuritJobKind,recuritMealProvide,recuritMealVeget,recuritMealMemo,recuritChkFampler,recuritChkPeriod,recuritChkMinor,recuritChkMinorMemo,recuritChkMax,recuritChkSummary) values ("'
-    +req.body.recuritFarmCode+'","'+req.body.recuritState+'","'+req.body.recuritUserId+
-    '","'+req.body.recuritStart+'","'+req.body.recuritEnd+'","'+req.body.recuritJobStart+'","'+req.body.recuritJobEnd+
-    '","'+req.body.recuritJobKind+'","'+req.body.recuritMealProvide+'","'+req.body.recuritMealVeget+'","'+req.body.recuritMealMemo+
-    '","'+req.body.recuritChkFampler+'","'+req.body.recuritChkPeriod+'","'+req.body.recuritChkMinor+
-    '","'+req.body.recuritChkMinorMemo+'","'+req.body.recuritChkMax+'","'+req.body.recuritChkSummary+'");', function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-                results.result = "success"
-            res.send(results);
-        } else {
-            console.log('query error : ' + err);
-            results.result = "fail";
-            results.message = err;
-            res.send(results);
-        }
-    });
-  
-}
+    res.send(result);  
+};
 
-exports.updateReruit = function (req, res) {
-    console.log("팜컨트롤러 전근영");
-    var body = req.body
-    console.log("받아온 리퀘스트값>>>");
+
+exports.getRecruitListFarmcode = async (req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await recruitModel.getRecruitListFarmcode(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result);  
+};
+
+
+exports.getRecuritListId = async (req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await recruitModel.getRecuritListId(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result);  
+};
+
+
+exports.addRecruit = async(req,res) => {
+    var body = req.body;
+    var results = {result : ""};
+    try {
+        r1 = await recruitModel.addRecruit(body);
+        results.result = "success";
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
+    }
+    console.log(results);
+    res.send(results); 
+};
+
+exports.updateReruit = async (req,res) => {
+    var body = req.body;
+    var results = {result : ""};
+    try {
+        r1 = await recruitModel.updateReruit(body);
+        results.result = "success";
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
+    }
+    console.log(results);
+    res.send(results);  
+};
+
+
+exports.updateReruitState = async (req,res) => {
+    var body = req.body;
+    var results = {result : ""};
     console.log(body);
-    var results = {
-        result  : "",
+    try {
+        r1 = await recruitModel.updateReruitState(body);
+        results.result = "success";
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
     }
-    reruitModel.updateReruit(body).then(function(data){
-        console.log("성공");
-        results.result = "success"
-        console.log(data);
-        res.send(results);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
-
-
-exports.endReruit = function (req, res) {
-    console.log("팜마감하기컨트롤러 전근영");
-    var query = req.query
-    console.log("받아온 리퀘스트값>>>");
-    console.log(query);
-    var results = {
-        result  : "",
-    }
-    reruitModel.endReruit(query).then(function(data){
-        console.log("성공");
-        results.result = "success"
-        console.log(data);
-        res.send(results);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
+    console.log(results);
+    res.send(results); 
+};

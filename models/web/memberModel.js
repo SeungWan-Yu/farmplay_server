@@ -1,14 +1,20 @@
 var con = require('../../mysql-db');
+const mybatisMapper = require('mybatis-mapper');
+const format = {language: 'sql', indent: ''};
+mybatisMapper.createMapper(['./mapper/web/user.xml']);
 
 
 module.exports = {
     
     getUserList : function(){
+        var param ={};
+        var query = mybatisMapper.getStatement('webUserMapper', 'getUserList', param, format);
         return new Promise((resolve,reject) =>{       
             console.log("결과1>>"+con)
-            con.query('SELECT user_id, user_name, user_phone, user_adress, user_adress_detail, token, farm_code FROM users', 
+            con.query(query, 
             function (err, result, fields) {
                 if(err){
+                    console.log("모델에러발생");
                     reject(err)
                 }else{
                     console.log("결과>>"+result)
@@ -50,7 +56,7 @@ module.exports = {
 
     updateUser : function(user){
         return new Promise((resolve,reject) =>{
-            con.query("UPDATE users SET user_name="+"'"+user.uName+"', user_phone="+"'"+user.uPhone+"', user_adress="+"'"+user.uAddr+"', user_adress_detail="+"'"+user.uAddrDetail+"'  WHERE  user_id = "+"'"+user.uId+"'", 
+            con.query("UPDATE ussers SET user_name="+"'"+user.uName+"', user_phone="+"'"+user.uPhone+"', user_adress="+"'"+user.uAddr+"', user_adress_detail="+"'"+user.uAddrDetail+"'  WHERE  user_id = "+"'"+user.uId+"'", 
             function (err, result, fields) {
                 if(err){
                     reject(err)

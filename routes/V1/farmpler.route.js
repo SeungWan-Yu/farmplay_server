@@ -1,53 +1,27 @@
 var express = require('express');
 var router = express.Router();
-
-const controller = require('../../controller/v1/farmpler.controller')
-
-router.route('/')
-.get(controller.get)
-
-router.route('/')
-.post(controller.post)
+const { farmplerController } = require('../../controller/v1');
 
 
-router.route('/enterState')
-.post(controller.updateEnterState)
+//#postFarmplerCode
+router.post('/', farmplerController.getFarmplerList);
 
-router.route('/editConfirm')
-.post(controller.updateEnterConfirmCancel)
+//#changeEnterState
+router.post('/enterState', farmplerController.updateEnterState);
+
+//#changeEditConfirm
+router.post('/editConfirm', farmplerController.updateEnterConfirmCancel);
+
+//#postRecruitFarmpler
+router.post('/recruit', farmplerController.addFarmpler);
+
+//#postFarmplername            <--이거 안쓰는거 같음
+router.post('/id', farmplerController.getFarmplerId);
+
+//#postEntercode         
+router.post('/entercode', farmplerController.getFarmpler);       
 
 
-const controller2 = require('../../controller/v1/farmplerrecruit.controller')
-
-router.route('/recruit')
-.get(controller2.get)
-
-router.route('/recruit')
-.post(controller2.post)
-
-const controller3 = require('../../controller/v1/farmplercode.controller')
-
-router.route('/code')
-.get(controller3.get)
-
-router.route('/code')
-.post(controller3.post)
-
-const controller4 = require('../../controller/v1/farmplerid.controller')
-
-router.route('/id')
-.get(controller4.get)
-
-router.route('/id')
-.post(controller4.post)
-
-const controller5 = require('../../controller/v1/farmplerentercode.controller')
-
-router.route('/entercode')
-.get(controller5.get)
-
-router.route('/entercode')
-.post(controller5.post)
 
 
 module.exports = router;

@@ -1,82 +1,106 @@
 var mysqlDB = require('../../mysql-db');
-const farmplerModel = require("../../models/v1/farmplerModel");
+const {farmplerModel} = require("../../models/v1");
+const { RIPEMD160 } = require('crypto-js');
 
-module.exports.get = ( req,res,next) => {
-    mysqlDB.query('select * from farm where farmstate = 1', function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-            res.send(JSON.stringify(rows));
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
+
+exports.getFarmplerList = async (req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmplerModel.getFarmplerList(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    console.log(result);
+    res.send(result); 
+};
+
+exports.updateEnterState = async (req,res) => {
+    var body = req.body;
+    var result;
+    var enterState  = body.enterState
+    try {
+        if(enterState=="참가취소됨"){
+            result = await farmplerModel.updateEnterCancel(body);
+        }else if(enterState=="참가수정요청"){
+            result = await farmplerModel.updateEnterEdit(body);
         }
-    });
-}
-
-module.exports.post = ( req,res,next) => {
-    var results = {
-        result : ""
+    } catch (error) {
+        console.log(error);
+        result = error;
     }
-    mysqlDB.query('select * from farmpler where enterRecuritCode = "'+req.body.recruitcode+'" ', function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-                results.result = "success"
-            res.send(rows);
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
-        }
-    });
-  
-}
+    res.send(result); 
+};
 
-exports.updateEnterState = function (req, res) {
-    var body = req.body
-    console.log("받아온 리퀘스트값>>>");
+
+exports.updateEnterConfirmCancel = async (req,res) => {
+    var body = req.body;
+    var result;
+    var enterState  = body.enterState;
+    var confirmState  = body.confirmState;
+    
+    if(confirmState=="참가확정됨"){
+        body.enterEditReson = "";
+    }else if(confirmState=="참가취소됨"){
+        body.enterEditReson = "농가취소";
+    };
+
+    if(enterState=="참가신청중"){
+        body.enterStart  = "";
+        body.enterEnd  = "";
+    };
+
     console.log(body);
-  
-    var results = {
-        result : ""
+    try {
+        if(enterState=="참가신청중" || enterState=="참가확정됨"){
+            result = await farmplerModel.updateEnterConfirmCancelReq(body);
+        }else if(enterState=="참가수정요청"){
+            result = await farmplerModel.updateEnterConfirmCancelEdit(body);
+        }   
+    } catch (error) {
+        console.log(error);
+        result = error;
     }
+    res.send(result); 
+};
 
-    farmplerModel.updateEnterState(body).then(function(data){
-        console.log("성공");
-        console.log(data);
-        results.result = "success"
-        res.send(results);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-        console.log("에러메세지끝");
-    });
 
-}
-
-exports.updateEnterConfirmCancel = function (req, res) {
-    var body = req.body
-    console.log("받아온 리퀘스트값>>>");
-    console.log(body);
-
-    var results = {
-        result : ""
+exports.addFarmpler = async (req,res) => {
+    var body = req.body;
+    var results = {result : ""};
+    try {
+        var r1 = await farmplerModel.addFarmpler(body);
+        results.result = "success";
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
     }
-    farmplerModel.updateEnterConfirmCancel(body).then(function(data){
-        console.log("성공");
-        console.log(data);
-        results.result = "success"
-        res.send(results);
-    res.send(results);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-        console.log("에러메세지끝");
-    });
+    res.send(result); 
+};
 
-}
 
+exports.getFarmplerId = async (req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmplerModel.getFarmplerId(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result); 
+};
+
+
+exports.getFarmpler = async (req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmplerModel.getFarmpler(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result);  
+};

@@ -13,10 +13,14 @@ var http = require('http');
  */
 
  app.use((err, req, res, next) => {
-
-  console.log({ok: false, data: err.message})
-  
-  })
+  //모바일은 ejs화면이 없어 에러가 발생해 제외한다.
+    var errorMsg = err.message;
+    var msg = 'Failed to lookup view "error" in views directory'
+    var chk = errorMsg.includes(msg);
+    if(!chk){
+      console.log({ok: false, data: err.message})
+    }
+  });
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
@@ -36,9 +40,9 @@ server.on('error', onError);
 server.on('listening', onListening);
 server.on('connection', function(socket) {
   // 10 minutes timeout
-  socket.setTimeout(10 * 60 * 1000);
+  //socket.setTimeout(10 * 60 * 1000);
 });
-server.headersTimeout = 10 * 60 * 1000;
+//server.headersTimeout = 10 * 60 * 1000;
 
 /**
  * Normalize a port into a number, string, or false.

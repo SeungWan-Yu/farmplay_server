@@ -1,4 +1,5 @@
-const con = require('../../mysql2-db');  
+const con = require('../../configs/mysql2-db');
+
 
 module.exports = {
     

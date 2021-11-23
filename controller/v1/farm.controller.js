@@ -1,147 +1,130 @@
 var mysqlDB = require('../../mysql-db');
-const farmModel = require("../../models/v1/farmModel");
+const {farmModel} = require("../../models/v1");
+const ErrorJson = require("../../custom_modules/errorJson");
+var errorJson = new ErrorJson();
 
-
-module.exports.get = ( req,res,next) => {
-    mysqlDB.query('select * from farm where farmstate = "등록완료"', function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-            res.send(JSON.stringify(rows));
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
-        }
-    });
-
-    // const marker = [
-    //     {
-    //         name : "전주시청",
-    //         contents:"전라북도 전주시 완산구 서노송동 노송광장로 10",
-    //         latitude : 35.82430626863803,
-    //         longitude : 127.14801122677846
-    //     },
-    //     {
-    //         name : "호남제일문",
-    //         contents:"전라북도 전주시 덕진구 여의동",
-    //         latitude : 35.86960842055048,
-    //         longitude : 127.07083583144886
-    //     },
-    //     {
-    //         name : "전주 월드컵 경기장",
-    //         contents:"전라북도 전주시 덕진구 조촌동 기린대로 1055",
-    //         latitude : 35.86827358315628,
-    //         longitude : 127.06444778409082
-    //     },
-    //     {
-    //         name : "전북 테크노파크",
-    //         contents:"전라북도 전주시 덕진구 팔복동2가 반룡로 110-5",
-    //         latitude : 35.859705494380165,
-    //         longitude : 127.08290981292653
-    //     },
-    // ]
-//     console.log(marker)
-//     res.send(marker)
-}
-
-module.exports.post = ( req,res,next) => {
-
-    console.log(req)
-    
-    var results = {
-        result : "",
-        farmcode : 0
+exports.getRoomImgListFarmCode = async(req,res) => {
+    var body = req.body;
+    var farmRoomImg = errorJson.farmRoomImg();
+    var result;
+    try {
+        result = await farmModel.getRoomImgListFarmCode(body);
+    } catch (error) {
+        console.log(error);
+        var list = [];
+        list.push(farmRoomImg);
+        result = list;
     }
-    mysqlDB.query('insert into farm (farmName,farmStartOpen,farmProduce,farmType,farmerIntro,farmAddr,farmAddrDetail,farmRoomInternet,farmRoomSite,farmRoomInfo,farmRoom,farmRoomUnisex,farmRoomEtc,username) values ("'
-    +req.body.farmname+'","'+req.body.farmbegin+'","'+req.body.farmcrop+'","'+req.body.farmform+
-    '","'+req.body.farmerinfo+'","'+req.body.farmadress+'","'+req.body.adressdetail+'","'+req.body.internet+'","'+req.body.roomadress+'","'+req.body.roominfo+'","'+req.body.room+'","'+req.body.roompublic+
-    '","'+req.body.roometc+'","'+req.body.username+'");', function (err, rows, fields) {
-        if (!err) {
-            // console.log(rows);
-            // console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-                results.result = "success"
-                results.farmcode = rows.insertId
-            console.log(results)
-            res.send(results);
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
-        }
-    });
-  
-}
+    console.log(result);
+    res.send(result); 
+};
 
 
-module.exports.farmUpdate = ( req,res,next) => {
-    console.log("업데이트화면")
-    var farm = req.body
-    console.log(req)
-    
-    var results = {
-        result : ""
+exports.getFarmUser = async(req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmModel.getFarmUser(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
     }
-    var sql = "UPDATE farm SET farmState='신청중', farmAskDate=NOW(), farmRegDate='', farmImg='', farmName=?, farmStartOpen=?, farmProduce=?, farmType=?, farmerIntro=?, farmAddr=?, farmAddrDetail=?, farmRoomInternet=?, farmRoomSite=?, farmRoomInfo=?,farmRoom=?,farmRoomUnisex=?,farmRoomEtc=?,userName=? WHERE farmCode=?"
+    res.send(result); 
+};
 
-    var params1 = [farm.farmname,farm.farmbegin,farm.farmcrop,farm.farmform,farm.farmerinfo,farm.farmadress,farm.adressdetail,
-    farm.internet,farm.roomadress,farm.roominfo,farm.room,farm.roompublic,farm.roometc,farm.username,farm.farmCode  
-    ]
+exports.getFarm = async(req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmModel.getFarm(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result); 
+};
 
-    mysqlDB.query(sql,params1, function (err, rows, fields) {
-        if (!err) {
-            console.log(rows);
-            console.log(fields);
-            var result = 'rows : ' + JSON.stringify(rows) + '<br><br>' +
-                'fields : ' + JSON.stringify(fields);
-                results.result = "success"
-            res.send(results);
-        } else {
-            console.log('query error : ' + err);
-            res.send(err);
-        }
-    });
-  
-}
+exports.getFarmCheck = async(req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmModel.getFarmCheck(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result); 
+};
 
-
-
-exports.getEnterList = function (req, res) {
-    console.log("팜컨트롤러 전근영");
-    var params = req.query
-    console.log("받아온 리퀘스트값>>>");
-    console.log(params);
-    farmModel.getEnterList(params).then(function(data){
-        console.log("성공");
-        console.log(data);
-        res.send(data);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
-
-exports.getRecruitList = function (req, res) {
-    console.log("팜컨트롤러 전근영");
-    var params = req.query
-    console.log("받아온 리퀘스트값>>>");
-    console.log(params);
-    farmModel.getRecruitList(params).then(function(data){
-        console.log("성공");
-        console.log(data);
-        res.send(data);
-    }).catch(function(err){
-        console.log("캐치에러");
-        console.log(err);
-    });
-
-}
+exports.getFarmList = async(req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmModel.getFarmList();
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result); 
+};
 
 
-exports.multiTest = function (req, res) {
+exports.addFarm = async(req,res) => {
+    var body = req.body;
+    var results = {result : "", farmcode : 0};
+    try {
+        rows = await farmModel.addFarm(body);
+        results.result = "success"
+        results.farmcode = rows.insertId
+    } catch (error) {
+        console.log(error);
+        results.result = error;
+    }
+    res.send(results); 
+};
+
+
+exports.updateFarm = async(req,res) => {
+    var body = req.body;
+    var results = {result : ""};
+    try {
+        r1 = await farmModel.updateFarm(body);
+        results.result = "success";
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
+    }
+    res.send(results); 
+};
+
+exports.getEnterList = async(req,res) => {
+    var body = req.body;
+    var result;
+    console.log(body);
+    try {
+        result = await farmModel.getEnterList(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result); 
+};
+
+exports.getRecruitList = async(req,res) => {
+    var body = req.body;
+    var result;
+    try {
+        result = await farmModel.getRecruitList(body);
+    } catch (error) {
+        console.log(error);
+        result = error;
+    }
+    res.send(result); 
+};
+
+
+//테스트용도 지워도댐
+exports.multiTest = async(req,res,next) => {
     console.log("--------------------데이터 체크");
     var params = req.params
     var body = req.body
@@ -157,4 +140,6 @@ exports.multiTest = function (req, res) {
     }
     res.send(results);
    
-}
+};
+
+

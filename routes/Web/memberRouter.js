@@ -61,7 +61,12 @@ const upload = multer({
 
 
 
-router.get('/memberList', memberController.memberList); 
+router.get('/memberList',async (req,res) =>{
+    var data =await memberController.memberList();
+    res.render("../pages/member/memberList",{data:data.result,msg:data.msg});
+}); 
+
+//router.get('/memberList', memberController.memberList); 
 router.get('/memberDel', memberController.memberDel);
 router.get('/memberEdit', memberController.memberEdit); //수정페이지
 router.post('/editMember', memberController.editMember); //수정에서 수정버튼 클릭할때 

@@ -1,6 +1,7 @@
 const memberModel = require("../../models/web/memberModel");
 
 
+
 //파일 삭제함수
 function dFile(path){
     const fs = require('fs');
@@ -21,14 +22,27 @@ function dFile(path){
 }
 
 
-exports.memberList = function (req, res) {
-    memberModel.getUserList().then(function(data){
-        console.log("하이");
-        console.log(data)
-        res.render("../pages/member/memberList",{data:data});
-    })
-   
+exports.memberList = async function(){
+    var results = {result:"", msg:"성공"};
+    try {
+        results.result = await memberModel.getUserList();
+    } catch (error) {
+        results.result = "실패";
+        results.msg = error;
+    }
+    console.log("리턴값체크");
+    console.log(results);
+    return results;
 }
+
+// exports.memberList = function (req, res) {
+//     memberModel.getUserList().then(function(data){
+//         console.log("하이");
+//         console.log(data)
+//         res.render("../pages/member/memberList",{data:data});
+//     })
+   
+// }
 
 exports.memberDel = function (req, res) {
     
@@ -112,7 +126,7 @@ exports.noticeSend = function (req, res) {
     var imgurl = body.imgurl;
     console.log(body);
 
-    var admin = require('../../firebase');
+    var admin = require('../../configs/firebase');
    
     const options = {
         priority: "high",     //메시지 중요도 설정 

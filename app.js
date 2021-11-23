@@ -1,16 +1,16 @@
 var createError = require('http-errors');
-
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var cors = require("cors");
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var timeout = require('connect-timeout');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/V1/user.route');
+var dotenv = require("dotenv");
 
 
+dotenv.config();
 var app = express();
 // view engine setup
 
@@ -30,7 +30,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(timeout('1000s'));
 //app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
