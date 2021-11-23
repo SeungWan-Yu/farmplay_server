@@ -8,7 +8,6 @@ const db = {
     multipleStatements: true
   }
 
-console.log("test");
 const pool  = mysql2.createPool(db);
 const connection =  pool.getConnection(async conn=>conn);
 
