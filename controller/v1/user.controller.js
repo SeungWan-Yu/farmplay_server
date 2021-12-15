@@ -21,7 +21,7 @@ exports.updateUserImg = async (req,res) => {
         if(results.data.changedRows==1){
             results.message="exist";
             if(userProfileImg!="empty"){
-                fileDel("public\\uploads\\"+userProfileImg);    //성공하면 이전파일삭제
+                fileDel("public/uploads/"+userProfileImg);    //성공하면 이전파일삭제
             }
         }else{
             fileDel(req.file.path);     //변경되지 않았다면 현재파일삭제

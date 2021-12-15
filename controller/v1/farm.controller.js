@@ -197,12 +197,12 @@ exports.updateFarm = async(req,res) => {
 
         //농가사진 삭제 (농가이미지가 변경되었다면)
         if(farmImgName!=undefined){
-            fileDel("public\\uploads\\"+farmImgName[0].farmImg);
+            fileDel("public/uploads/"+farmImgName[0].farmImg);
         }
         //숙소사진 삭제 (삭제할 숙소사진이 있다면)
         if(delRoomImgList!=undefined){
             for(var i in delRoomImgList){
-                fileDel("public\\uploads\\"+delRoomImgList[i]);
+                fileDel("public/uploads/"+delRoomImgList[i]);
             }        
         }
 
