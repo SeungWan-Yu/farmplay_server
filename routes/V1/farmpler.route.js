@@ -3,22 +3,22 @@ var router = express.Router();
 const { farmplerController } = require('../../controller/v1');
 
 
-//#postFarmplerCode
+//#getFarmplerList
 router.post('/', farmplerController.getFarmplerList);
 
-//#changeEnterState
+//#updateEnterState
 router.post('/enterState', farmplerController.updateEnterState);
 
-//#changeEditConfirm
+//#updateEnterConfirmCancel
 router.post('/editConfirm', farmplerController.updateEnterConfirmCancel);
 
-//#postRecruitFarmpler
+//#addFarmpler
 router.post('/recruit', farmplerController.addFarmpler);
 
 //#postFarmplername            <--이거 안쓰는거 같음
 router.post('/id', farmplerController.getFarmplerId);
 
-//#postEntercode         
+//#getFarmpler         
 router.post('/entercode', farmplerController.getFarmpler);       
 
 

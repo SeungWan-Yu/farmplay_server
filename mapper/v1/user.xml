@@ -5,31 +5,32 @@
 
     <sql id="selectBoardColumn">
         SELECT 
-            user_id
-            , user_pw
-            , user_name
-            , user_phone
-            , user_adress
-            , user_adress_detail
-            , token
-            , farm_code
-            , farm_state
-            , userimg
-            , userRating
-            , userReviewCnt
-            , user_profile_img
+             userId
+            ,userPw
+            ,userName
+            ,userPhone
+            ,userAdress
+            ,userAdressDetail
+            ,userToken
+            ,userFarmCode
+            ,userFarmState
+            ,userImg
+            ,userRating
+            ,userReviewCnt
+            ,userProfileImg
+            ,userRegDate
     </sql>    
 
     <!-- 유저 등록-->
     <insert id="addUser">
         INSERT INTO users
-            ( user_id
-            , user_pw
-            , user_name
-            , user_phone
-            , user_adress
-            , user_adress_detail
-            , token )
+            ( userId
+            , userPw
+            , userName
+            , userPhone
+            , userAdress
+            , userAdressDetail
+            , userToken )
         VALUES 
             ( #{id}
             , #{pw}
@@ -44,12 +45,12 @@
     <update id="updateUser">
         UPDATE users
         SET
-            user_name           = #{name},
-            user_phon           = #{phone},
-            user_adress         = #{adress},
-            user_adress_detail  = #{adressdetail},
+            userName           = #{name},
+            userPhone           = #{phone},
+            userAdress         = #{adress},
+            userAdressDetail  = #{adressdetail}
         WHERE 
-            user_id             = #{id};
+            userId = #{id}
     </update>
 
     <!-- 유저이미지 및 리뷰정보 가져오기-->
@@ -57,17 +58,17 @@
         SELECT 
              userRating
             ,userReviewCnt
-            ,user_profile_img 
+            ,userProfileImg 
         FROM 
             users 
         WHERE 
-            user_id = #{id};
+            userId = #{id};
     </select>
 
     <!-- 유저이미지 및 유저리뷰 농장리뷰가져오기-->
     <select id="getUserImgRatingFarm">
         SELECT
-             u.user_profile_img
+             u.userProfileImg
             ,f.farmCode 
             ,u.userRating
             ,u.userReviewCnt
@@ -78,23 +79,37 @@
         LEFT JOIN 
             farm AS f 
         ON 
-            u.user_id = f.userName 
+            u.userId = f.userName 
         WHERE 
-            u.user_id = #{id};
+            u.userId = #{id};
     </select>
 
 
     <!-- 유저 로그인체크-->
     <select id="getLoginCheck">
         SELECT 
-              user_pw
-            , user_name
-            , farm_code
-            , farm_state
+              userPw
+            , userName
+            , userFarmCode
+            , userFarmState
         FROM 
             users
         WHERE
-            user_id = #{id};
+            userId = #{id};
+    </select>
+
+    <!-- 유저 로그인체크-->
+    <select id="getSingupInfo">
+        SELECT 
+              userPw
+            , userName
+            , userPhone
+            , userAdress
+            , userAdressDetail
+        FROM 
+            users
+        WHERE
+            userId = #{id};
     </select>
 
     <!-- 유저 아이디중복체크-->
@@ -104,10 +119,10 @@
         FROM
             users 
         WHERE
-            user_id = #{id}
+            userId = #{id}
             <if test="phone != null">
                 AND
-                user_phone = #{phone};	 
+                userPhone = #{phone};	 
             </if>
     </select>
 
@@ -115,19 +130,30 @@
     <update id="updateUserPw">
         UPDATE users
         SET
-            user_pw = #{pass}
+            userPw = #{pass}
         WHERE 
-            user_id = #{id};
+            userId = #{id};
+    </update>
+
+     <!-- 유저 이미지 업데이트-->
+    <update id="updateUserImg">
+        UPDATE users
+        SET
+            userProfileImg = #{userImg}
+        WHERE 
+            userId = #{userId};
     </update>
 
     <!-- 유저아이디 가져오기(연락처)-->
     <select id="getUserId">
         SELECT
-	        user_id
+	         userId
+            ,userPhone
+
         FROM
 	        users
         WHERE
-	        user_phone = #{phone};
+	        userPhone = #{phone};
     </select>
 
      <!-- 카카오유저 체크 -->
@@ -137,21 +163,35 @@
         FROM
 	        users
         WHERE
-	        user_id = #{kakaocode};
+	        userId = #{kakaocode};
     </select>
 
 
     <!-- 인증체크 -->
-    <select id="getCertification">
+    <select id="getCertificationCode">
          SELECT 
               phone
-            , CODE
+            , code
         FROM 
             certifi
         WHERE
         phone = #{phone};
     </select>
+    
+      <!-- 인증체크 -->
+    <select id="getCertification">
+         SELECT 
+            count(*) AS count
+        FROM 
+            users
+        WHERE
+        userPhone = #{phone};
+        <if test="singupState == 'findPw'">
+            AND
+            userId = #{userId};	 
+        </if>
 
+    </select>
 
     <!-- 인증정보 업데이트 -->
     <update id="updateCertification">

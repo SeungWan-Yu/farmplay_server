@@ -48,7 +48,7 @@
         , recuritChkSummary
     </sql>   
 
-    <!-- 팜이미지코드 가져오기-->
+    <!-- 팜룸이미지코드 가져오기-->
     <select id="getRoomImgListFarmCode">
         SELECT 
               roomImgCode
@@ -58,6 +58,16 @@
             farm_room_img
         WHERE 
             roomImgFarmCode = #{farmcode};
+    </select>
+
+    <!-- 팜이미지명 가져오기-->
+    <select id="getFarmImg">
+        SELECT 
+            farmImg
+	    FROM 
+            farm	
+        WHERE 
+            farmCode = #{farmCode};
     </select>
     
     <!-- 팜가져오기 (유저아이디)-->
@@ -76,6 +86,18 @@
             farm 
         WHERE 
             farmCode = #{farmcode};
+    </select>
+
+     <!-- 팜 숙소이미지 리스트 가져오기 (팜코드)-->
+    <select id="getFarmRoomImg">
+        SELECT 
+             roomImgCode
+            ,roomImgFarmCode
+            ,roomImgUrl
+        FROM 
+            farm_room_img
+        WHERE 
+            roomImgFarmCode = #{farmcode};    
     </select>
 
     <!-- 등록농장 있는지 체크(유저아이디) -->
@@ -100,7 +122,8 @@
     <!-- 농장등록 -->
     <insert id="addFarm">
         INSERT INTO farm
-	        ( farmName
+	        ( farmImg 
+            , farmName
             , farmStartOpen
             , farmProduce
             , farmType
@@ -115,21 +138,47 @@
             , farmRoomEtc
             , userName )
 	    VALUES 
-            ( #{farmname}
-            , #{farmbegin}
-            , #{farmcrop}
-            , #{farmform}
-            , #{farmerinfo}
-            , #{farmadress}
-            , #{adressdetail}
-            , #{internet}
-            , #{roomadress}
-            , #{roominfo}
-            , #{room}
-            , #{roompublic}
-            , #{roometc}
-            , #{username} )
+            ( #{farmImg}
+            , #{farmName}
+            , #{farmStartOpen}
+            , #{farmProduce}
+            , #{farmType}
+            , #{farmerIntro}
+            , #{farmAddr}
+            , #{farmAddrDetail}
+            , #{farmRoomInternet}
+            , #{farmRoomSite}
+            , #{farmRoomInfo}
+            , #{farmRoom}
+            , #{farmRoomUnisex}
+            , #{farmRoomEtc}
+            , #{userName} )
     </insert>
+
+
+    <!-- 농장숙소이미지등록 -->
+    <insert id="addFarmRoomImg">
+        INSERT INTO farm_room_img
+	        ( roomImgFarmCode
+            , roomImgUrl)
+	    VALUES 
+         <foreach collection="roomImgList" item="roomImg"  separator=",">
+            (#{roomImg.farmCode}
+            ,#{roomImg.roomImgUrl})
+        </foreach>
+    </insert>
+
+    <!-- 농장숙소이미지삭제 -->
+    <delete id="removeFarmRoomImg">
+		DELETE FROM farm_room_img
+		WHERE
+            <foreach collection="roomImgList" item="roomImg"  separator="OR">
+                roomImgFarmCode = #{roomImg.farmCode}
+                AND
+                roomImgUrl = #{roomImg.roomImgUrl}
+            </foreach>
+	</delete>
+
 
     <!-- 농장수정 -->
     <update id="updateFarm">
@@ -138,27 +187,29 @@
              farmState       = '신청중'
             ,farmAskDate     = NOW()
             ,farmRegDate     = ''
-            ,farmImg         = ''
-		    ,farmName        = #{farmname}
-		    ,farmStartOpen   = #{farmbegin}
-		    ,farmProduce     = #{farmcrop}
-		    ,farmType        = #{farmform}
-		    ,farmerIntro     = #{farmerinfo}
-		    ,farmAddr        = #{farmadress}
-		    ,farmAddrDetail  = #{adressdetail}
-		    ,farmRoomInternet= #{internet}
-		    ,farmRoomSite    = #{roomadress}
-		    ,farmRoomInfo    = #{roominfo}
-		    ,farmRoom        = #{room}
-		    ,farmRoomUnisex  = #{roompublic}
-		    ,farmRoomEtc     = #{roometc}
-		    ,userName        = #{username}
+		    ,farmName        = #{farmName}
+		    ,farmStartOpen   = #{farmStartOpen}
+		    ,farmProduce     = #{farmProduce}
+		    ,farmType        = #{farmType}
+		    ,farmerIntro     = #{farmerIntro}
+		    ,farmAddr        = #{farmAddr}
+		    ,farmAddrDetail  = #{farmAddrDetail}
+		    ,farmRoomInternet= #{farmRoomInternet}
+		    ,farmRoomSite    = #{farmRoomSite}
+		    ,farmRoomInfo    = #{farmRoomInfo}
+		    ,farmRoom        = #{farmRoom}
+		    ,farmRoomUnisex  = #{farmRoomUnisex}
+		    ,farmRoomEtc     = #{farmRoomEtc}
+		    ,userName        = #{userName}
+            <if test="farmImg != null">
+            ,farmImg         = #{farmImg}
+            </if>
 	    WHERE 
              farmCode        = #{farmCode}
     </update>
 
     <!-- 농장+모집테이블 가져오기) -->
-    <select id="getRecruitList">
+    <select id="getFarmRecruitList">
         <include refid="selectBoardColumn"></include>
         <include refid="recuritColumn"></include>
         FROM 
@@ -168,7 +219,7 @@
     </select>
 
      <!-- 농장+모집+참가(팜플러) 테이블 가져오기) -->
-    <select id="getEnterList">
+    <select id="getFarmRecruitEnterList">
         <include refid="selectBoardColumn"></include>
         <include refid="recuritColumn"></include>
             , enterCode

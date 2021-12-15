@@ -70,7 +70,7 @@ exports.tourApiUpdate =async function (req, res) {
   try {
     var obj2 = await axios.get(url2+queryParams2);
     var item2 = obj2.data.response.body.items.item;
-
+    
     for(var j in item2){
       
       // //소개정보 

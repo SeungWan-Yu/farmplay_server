@@ -5,6 +5,20 @@ mybatisMapper.createMapper(['./mapper/v1/user.xml']);
 
 module.exports = {
 
+    updateUserImg :async function(body){
+        const con = await connection;
+        try{ 
+            var query = mybatisMapper.getStatement('userMapper','updateUserImg',body, format);
+            console.log(query);
+            var [rows] = await con.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            con.release();
+        }
+        return rows;
+    },
+
     addCertification :async function(body){
         const con = await connection;
         try{ 
@@ -33,6 +47,20 @@ module.exports = {
         return rows[0];
     },
 
+    getCertificationCode :async function(userPhone){
+        const con = await connection;
+        try{ 
+            var query = mybatisMapper.getStatement('userMapper', 'getCertificationCode', userPhone, format);
+            console.log(query);
+            var [rows] = await con.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            con.release();
+        }
+        return rows;
+    },
+
     getCertification :async function(userPhone){
         const con = await connection;
         try{ 
@@ -44,7 +72,7 @@ module.exports = {
         }finally{
             con.release();
         }
-        return rows[0];
+        return rows;
     },
 
     getKaoUser :async function(kakaocode){
@@ -72,7 +100,7 @@ module.exports = {
         }finally{
             con.release();
         }
-        return rows[0];
+        return rows;
     },
 
     updateUserPw :async function(userPw){
@@ -100,11 +128,10 @@ module.exports = {
         }finally{
             con.release();
         }
-        return rows[0];
+        return rows;
     },
     
     getLoginCheck :async function(userId){
-        console.log("로그인체크")
         const con = await connection;
         try{
             var query = mybatisMapper.getStatement('userMapper', 'getLoginCheck', userId, format);
@@ -114,7 +141,20 @@ module.exports = {
         }finally{
             con.release();
         }
-        return rows[0];
+        return rows;
+    },
+    
+    getSingupInfo :async function(userId){
+        const con = await connection;
+        try{
+            var query = mybatisMapper.getStatement('userMapper', 'getSingupInfo', userId, format);
+            var [rows] = await con.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            con.release();
+        }
+        return rows;
     },
 
     getUserImgRating :async function(userId){
@@ -127,7 +167,7 @@ module.exports = {
         }finally{
             con.release();
         }
-        return rows[0];
+        return rows;
     },
 
     getUserImgRatingFarm :async function(userId){
@@ -140,7 +180,7 @@ module.exports = {
         }finally{
             con.release();
         }
-        return rows[0];
+        return rows;
     },
 
     addUser :async function(user){   

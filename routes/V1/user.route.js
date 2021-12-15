@@ -1,42 +1,48 @@
 var express = require('express');
 var router = express.Router();
+var upload = require('../../custom_modules/fileUpload');
 const { userController } = require('../../controller/v1');
-
 
 
 //login과  /id/ifo와 같음 나중에 하나 삭제할것
 
-//#Login
+//#img
+router.post('/profile_img',upload.single('profileImgFile'), userController.updateUserImg);
+
+//#getLoginCheck
 router.post('/login', userController.getLoginCheck);
 
-//#postId
+//#getIdCheck
 router.post('/id', userController.getIdCheck);
+
+//#getSingupInfo
+router.post('/singupInfo', userController.getSingupInfo);
 
 //#getUserInfo
 router.post('/id/info', userController.getLoginCheck);
 
-//#get_profile_img
+//#getUserImgRating
 router.post('/getUserImgRating', userController.getUserImgRating);
 
 //#signup
 router.post('/signup', userController.addUser);
 
-//#userinfoupdate
+//#updateUser
 router.post('/update', userController.updateUser);
 
 //#changepw
-router.post('/changePw', userController.updateUserPw);
+router.post('/updateUserPw', userController.updateUserPw);
 
-//#findId
+//#findId           <-- 사용안함
 router.post('/findId', userController.getUserId);
 
 //#getKakaoUserInfo
 router.post('/kakaouser', userController.getKaoUser);
 
-//#postcerti
+//#getCertification
 router.post('/certification', userController.getCertification);
 
-//#postcerticode
+//#getCertificationCode
 router.post('/certificationcode', userController.getCertificationCode);
 
 

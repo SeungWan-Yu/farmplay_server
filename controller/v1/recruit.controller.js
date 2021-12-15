@@ -5,15 +5,17 @@ const {Recruit} = require("../../dto/v1");
 
 
 exports.getRecruit = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var result;
     try {
-        result = await recruitModel.getRecruit(body);
+        results.data = await recruitModel.getRecruit(body);
+        if(results.data.length>0)results.message = "exist";
     } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
         console.log(error);
-        result = error;
     }
-    res.send(result);  
+    res.send(results);  
 };
 
 
@@ -44,28 +46,30 @@ exports.getRecuritListId = async (req,res) => {
 
 
 exports.addRecruit = async(req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var results = {result : ""};
     try {
-        r1 = await recruitModel.addRecruit(body);
-        results.result = "success";
+        results.data = await recruitModel.addRecruit(body);
+        if(results.data.affectedRows!=0)results.message = "exist";
     } catch (error) {
-        console.log(error);
         results.result = "fail";
+        results.message = error.message;
+        console.log(error);
     }
     console.log(results);
     res.send(results); 
 };
 
 exports.updateReruit = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var results = {result : ""};
     try {
-        r1 = await recruitModel.updateReruit(body);
-        results.result = "success";
+        results.data = await recruitModel.updateReruit(body);
+        if(results.data.changedRows!=0)results.message = "exist";
     } catch (error) {
-        console.log(error);
         results.result = "fail";
+        results.message = error.message;
+        console.log(error);;
     }
     console.log(results);
     res.send(results);  
@@ -73,15 +77,17 @@ exports.updateReruit = async (req,res) => {
 
 
 exports.updateReruitState = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var results = {result : ""};
     console.log(body);
     try {
-        r1 = await recruitModel.updateReruitState(body);
-        results.result = "success";
+        results.data = await recruitModel.updateReruitState(body);
+        if(results.data.changedRows!=0)results.message = "exist";
+
     } catch (error) {
-        console.log(error);
         results.result = "fail";
+        results.message = error.message;
+        console.log(error);;
     }
     console.log(results);
     res.send(results); 

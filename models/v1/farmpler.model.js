@@ -15,7 +15,7 @@ module.exports = {
         }finally{
             connection.release();
         }
-        return rows[0];
+        return rows;
     },
 
     getFarmplerId : async function(userId){

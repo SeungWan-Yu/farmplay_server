@@ -3,16 +3,16 @@ var router = express.Router();
 const { recruitController } = require('../../controller/v1');
 
 
-//#postRecruit
+//#addRecruit
 router.post('/', recruitController.addRecruit);
 
-//#changeRecruit
+//#updateReruit
 router.post('/edit', recruitController.updateReruit);
 
-//#endRecruit
+//#updateReruitState
 router.post('/end', recruitController.updateReruitState);
 
-//#postRecruitcode
+//#getRecruit
 router.post('/code', recruitController.getRecruit);
 
 //#postRecruitname                 <-- 사용안하는거 같음

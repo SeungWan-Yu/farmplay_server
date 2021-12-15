@@ -1,118 +1,175 @@
-var mysqlDB = require('../../mysql-db');
 const {userModel} = require("../../models/v1");
-const { off } = require('../../mysql-db');
+var fileDel = require('../../custom_modules/fileDelete');
+var CryptoJS = require("crypto-js");
+var SHA256 = require("crypto-js/sha256");
+var Base64 = require("crypto-js/enc-base64");
+
+
+exports.updateUserImg = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    var body = req.body;
+    body.userId = body.userId.replace(/"/gi,"");
+    body.userProfileImg = body.userProfileImg.replace(/"/gi,"");
+    var userProfileImg = body.userProfileImg;
+    console.log(body);
+    body.userImg = req.file.filename;
+    console.log(body.userId);
+    console.log("바디체크합니다")
+    try {
+        results.data = await userModel.updateUserImg(body);
+        results.data.userImg = req.file.filename;   //현재파일명 보내기
+        if(results.data.changedRows==1){
+            results.message="exist";
+            if(userProfileImg!="empty"){
+                fileDel("public\\uploads\\"+userProfileImg);    //성공하면 이전파일삭제
+            }
+        }else{
+            fileDel(req.file.path);     //변경되지 않았다면 현재파일삭제
+        }
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        fileDel(req.file.path);     //에러일경우 현재파일 삭제
+        console.log(error);
+    }
+    console.log(results);
+    res.send(results);
+};
 
 
 exports.getUserImgRating = async (req,res) => {
     console.log("여기옵니까");
     var body = req.body;
-    var result;
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var farmstate = body.farmstate;
     try {
         if(farmstate=="1"){
-            console.log("일반유저")
-            result = await userModel.getUserImgRating(body);
+            console.log("일반유저");
+            results.data = await userModel.getUserImgRating(body);
         }else if(farmstate=="2"){
-            console.log("농가유저")
-            result = await userModel.getUserImgRatingFarm(body);
-        }  
+            console.log("농가유저");
+            results.data = await userModel.getUserImgRatingFarm(body);
+        }
+        if(results.data.length>0)results.message = "exist";
     } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
         console.log(error);
-        result = error;
     }
     console.log("결과")
-    console.log(result)
-    res.send(result);
-};
-
-
-exports.getLoginCheck = async (req,res) => {
-    var body = req.body;
-    //성공일 경우 리턴값이 없을경> "empty", 리턴값이 있을경우>"exist" 두가지 보내야함
-    //empty는 서버통신할 필요없이 화면단에서 거르도록 바꿔야함
-    var results = {
-        result : "",
-        farmcode : 0,
-        farmstate : 0,
-        username : "",
-        password : ""
-    };
-    try {
-        r1 = await userModel.getLoginCheck(body);
-        if(r1!=undefined){
-            results.farmcode = r1.farm_code;
-            results.farmstate = r1.farm_state;
-            results.username = r1.user_name;
-            results.password = r1.user_pw;
-            results.result = "exist";
-        }else{
-            results = {result :"empty"};
-        }
-    } catch (error) {
-        console.log(error);
-        results = error;
-        results.result = "empty";
-    }
-    
+    console.log(results)
     res.send(results);
 };
 
+exports.getLoginCheck = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    var body = req.body;
+    console.log("바디체크합니다")
+    //성공일 경우 리턴값이 없을경> "empty", 리턴값이 있을경우>"exist" 두가지 보내야함
+    //empty는 서버통신할 필요없이 화면단에서 거르도록 바꿔야함
+
+    try {
+        results.data = await userModel.getLoginCheck(body);
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }
+    console.log("결과체크")
+    console.log(results)
+    res.send(results);
+};
+
+
+exports.getSingupInfo = async (req,res) => {
+    var body = req.body;
+    console.log("바디체크합니다")
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    //성공일 경우 리턴값이 없을경> "empty", 리턴값이 있을경우>"exist" 두가지 보내야함
+    //empty는 서버통신할 필요없이 화면단에서 거르도록 바꿔야함
+    try {
+        results.data = await userModel.getSingupInfo(body);
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }
+    console.log("결과체크")
+    console.log(results)
+    res.send(results);
+};
+
+
+
 exports.getIdCheck = async (req,res) => {
     var body = req.body;
-    var results;
+    var results = {result:"success" ,data:[] ,message:"empty"};
     try {
-        results = await userModel.getIdCheck(body);
+        results.data = await userModel.getIdCheck(body);
+        if(results.data.length>0)results.message = "exist";
     } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
         console.log(error);
-        results = error;
     }
-
+    console.log(results);
     res.send(results);
 };
 
 
 exports.addUser = async (req,res) => {
     var body = req.body;
-    var results = {result :""};
+    var results = {result:"success" ,data:[] ,message:"empty"};
     try {
-        r1 = await userModel.addUser(body);
-        results.result = "success";
+        results.data = await userModel.addUser(body);
+        if(results.data.affectedRows==1)results.message="exist";
     } catch (error) {
         console.log(error);
         results.result = "fail";
+        results.message = error.message;
     }
-
     res.send(results);
 };
 
 
 exports.updateUser = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var results;
+    console.log(body.id.length);
+    console.log("바디체크");
+    console.log(body);
     try {
-      results = await userModel.updateUser(body);
+        results.data = await userModel.updateUser(body);
+        if(results.data.changedRows==1)results.message="exist";
     } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
         console.log(error);
-        results = error;
     }
-  
+    console.log(results);
     res.send(results);
 };
   
 exports.updateUserPw = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
     var results = {result :""};
     try {
         r1 = await userModel.getIdCheck(body);
-        if(r1.count==0){
-            results.result ="empty";
-        }else{
-            r2 = await userModel.updateUserPw(body);
-            results.result ="success";
+        if(r1[0].count>0){
+            results.data = await userModel.updateUserPw(body);
+            if(results.data.changedRows==1){
+                results.message="exist";
+            }else{
+                results.message="notChage";
+            }
         }
     } catch (error) {
-        console.log(error);
         results.result ="fail";
+        results.message = error.message;
+        console.log(error);
     }
 
     res.send(results);
@@ -149,28 +206,58 @@ exports.getKaoUser = async (req,res) => {
 
 
 exports.getCertificationCode = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var results = {result : ""};
     try {
-        r1 = await userModel.getCertification(body);
-        if(r1!=undefined){
-            if(r1.code == body.code){
-                results.result = "success"
+        r1 = await userModel.getCertificationCode(body);
+        //유저가 입력한 코드와 DB에 가져온 코드가 같을 경우 아이디를 리턴
+        if(r1[0].code==body.code){
+            results.data = await userModel.getUserId(body);
+            if(results.data.length>0)results.message = "exist"; 
+        }else{  //그러지 않을 경우 different또는 empty 발송
+            if(results.data.length==0){
+                results.message = "empty";
             }else{
-                results.result = "fail" 
-            }
-        }else{
-            results.result = "fail"
+                results.message = "different"; 
+            }     
         }
     } catch (error) {
         console.log(error);
-        results = error;
+        results.result = "fail";
+        results.message = error.message;     
     }
     res.send(results);
 };
 
 exports.getCertification = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
+    var singupState  = body.singupState;
+
+    try {
+        r1 = await userModel.getCertification(body);
+        if(singupState=="singup"){
+            if(r1[0]!=0){
+                results.result = "fail";
+                results.message = "연락처중복";
+                res.sed(results)
+            }
+        }else{
+            if(r1[0]==0){
+                results.result = "fail";
+                results.message = "연락처없음";
+                res.sed(results)
+            }
+        }
+        
+    } catch (error) {
+        console.log(error);
+        results.result = "fail";
+        results.message = error.message;     
+        res.send(results);
+    }
+
+
     var randomNum = {};
     //0~9까지의 난수
     randomNum.random = function (n1, n2) {
@@ -223,6 +310,8 @@ exports.getCertification = async (req,res) => {
         },
       }, function (err, res, html) {
         if (err) {
+          results.result = "fail";
+          results.message = err.message;     
           resultCode = 404;
           console.log(err);
         }
@@ -232,21 +321,21 @@ exports.getCertification = async (req,res) => {
       }
     );
   
-    var results = {
-        resultCode: resultCode
-    }
     var certifi = {phone:userPhone , code:userAuthNum};
     try {
         r1 = await userModel.getCertification(certifi);
-        if(r1!=undefined){
+        if(r1.length>0){
             r2 = await userModel.updateCertification(certifi);
         }else{
             r3 = await userModel.addCertification(certifi);
         }
     } catch (error) {
+        results.result = "fail";
+        results.message = err.message;    
+        resultCode = 404;
         console.log(error);
-        results.resultCode = 404;
     }
+    results.data = resultCode;
     res.send(results);
 
 };

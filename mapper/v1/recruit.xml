@@ -70,7 +70,8 @@
             , recuritChkMinor
             , recuritChkMinorMemo
             , recuritChkMax
-            , recuritChkSummary ) 
+            , recuritChkSummary 
+            ,recuritRegDate ) 
         VALUES 
             ( #{recuritFarmCode}
             , #{recuritState}
@@ -88,7 +89,8 @@
             , #{recuritChkMinor}
             , #{recuritChkMinorMemo}
             , #{recuritChkMax}
-            , #{recuritChkSummary} );
+            , #{recuritChkSummary}
+            , NOW());
     </insert>
 
     <!-- 모집수정 -->
@@ -118,7 +120,8 @@
         UPDATE 
             recruit 
         SET 
-            recuritState    = '모집완료' 
+            recuritState    = '모집완료' ,
+            recuritEndDate  = NOW()
         WHERE 
             recuritCode     = #{recruitcode}
     </update>

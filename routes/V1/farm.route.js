@@ -1,27 +1,28 @@
 var express = require('express');
 var router = express.Router();
+var upload = require('../../custom_modules/fileUpload');
 const { farmController } = require('../../controller/v1');
 
 
-//#getFarm
+//#getFarmList
 router.get('/', farmController.getFarmList);
 
-//#postFarm
-router.post('/', farmController.addFarm);
+//#addFarm
+router.post('/',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),farmController.addFarm);
 
-//#postUpdateFarm
-router.post('/update', farmController.updateFarm);
+//#updateFarm
+router.post('/update',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]), farmController.updateFarm);
 
-//#getFarmRecruitFarmpler
-router.post('/recruitFampler', farmController.getEnterList);
+//#getFarmRecruitEnterList
+router.post('/recruitFampler', farmController.getFarmRecruitEnterList);
 
-//#getFarmRecruit
-router.post('/recruit', farmController.getRecruitList);
+//#getFarmRecruitList
+router.post('/recruit', farmController.getFarmRecruitList);
 
-//#postFarmname
-router.post('/name', farmController.getFarm);
+//#getFarmRoom
+router.post('/name', farmController.getFarmRoom);
 
-//#getFarmstate
+//#getFarmCheck
 router.post('/state', farmController.getFarmCheck);
 
 //#postFarmuser
@@ -30,6 +31,5 @@ router.post('/user', farmController.getFarmUser);
 //#farmroomImages
 router.post('/roomImges', farmController.getRoomImgListFarmCode);
 
-router.post('/multiTest',farmController.multiTest);     //<<<<테스트용도
 
 module.exports = router;

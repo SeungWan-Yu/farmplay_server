@@ -3,45 +3,41 @@ const {reviewModel} = require("../../models/v1");
 
 
 exports.addReview = async (req,res) => {
-    var results = {result : ""};
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
     var reviewStandard  = body.reviewStandard;
     try {
         if(reviewStandard=="농장"){
-            var r1 = await reviewModel.addReviewFarm(body);
+            results.data = await reviewModel.addReviewFarm(body);
+            results.message = "exist";
         }else if(reviewStandard=="팜플러"){
-            var r2 = await reviewModel.addReviewFarmpler(body);
+            results.data = await reviewModel.addReviewFarmpler(body);
+            results.message = "exist";
         }
-        results.result = "success";
     } catch (error) {
-        console.log(error);
-        results.result = "fail";
+        if(error.message!="affectedRows"){
+            results.result = "fail"
+            results.message = error.message;
+            console.log(error);
+        }
     }
     res.send(results);  
 };
 
 exports.getReview = async (req,res) => {
-    var result;
+    var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
     try {
-        result = await reviewModel.getReview(body);
+        results.data = await reviewModel.getReview(body);
+        if(results.data.length>0)results.message = "exist";
     } catch (error) {
+        results.result = "fail"
+        results.message = error.message;
         console.log(error);
-        result = error;
     }
-    res.send(result);  
+    res.send(results);  
 };
 
-exports.getReviewRating = async (req,res) => {
-    var result;
-    var params = req.query;
-    try {
-        result = await reviewModel.getReviewRating(params);
-    } catch (error) {
-        console.log(error);
-        result = error;
-    }
-    res.send(result);  
-};
+
 
 

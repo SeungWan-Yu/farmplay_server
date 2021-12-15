@@ -28,6 +28,7 @@ app.use(expressLayouts); // express-ejs-layouts 사용하기 설정
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
