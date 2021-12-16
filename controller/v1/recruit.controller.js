@@ -1,4 +1,3 @@
-var mysqlDB = require('../../mysql-db');
 const {recruitModel} = require("../../models/v1");
 const {Recruit} = require("../../dto/v1");
 

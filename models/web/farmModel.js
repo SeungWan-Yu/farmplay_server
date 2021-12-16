@@ -206,6 +206,7 @@ module.exports = {
             return r;
         }catch(err){
             console.log("에러발생 롤백");
+            console.log(err);
             await connection.rollback();
             throw err;
         }finally{

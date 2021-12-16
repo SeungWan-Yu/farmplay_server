@@ -1,4 +1,3 @@
-var mysqlDB = require('../../mysql-db');
 
 exports.getFoodList = ( req,res,next) => {
     const marker = [

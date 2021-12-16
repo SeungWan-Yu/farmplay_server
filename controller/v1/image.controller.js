@@ -1,4 +1,3 @@
-var mysqlDB = require('../../mysql-db');
 
 exports.getImageList = ( req,res,next) => {
 
