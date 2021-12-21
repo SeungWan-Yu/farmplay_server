@@ -1,4 +1,4 @@
-const con = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 
 
 module.exports = {
@@ -7,7 +7,7 @@ module.exports = {
         console.log("모델체크");
         console.log(itemFood);
         console.log(itemFood.length);
-        const connection = await con;
+        const connection = await pool.getConnection();
    
         try{
             await connection.beginTransaction();

@@ -1,11 +1,11 @@
-const con = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 const mybatisMapper = require('mybatis-mapper');
 const format = {language: 'sql', indent: ''};
 mybatisMapper.createMapper(['./mapper/v1/review.xml']);
 
 module.exports = {
     addReviewFarm :async function(review){
-        const connection = await con;
+        const connection = await pool.getConnection();
         var rowCheck = false;
         var rows = [];
         try{
@@ -68,7 +68,7 @@ module.exports = {
     },
 
     addReviewFarmpler :async function(review){
-        const connection = await con;
+        const connection = await pool.getConnection();
         var rowCheck = false;
         var rows = [];
         try{
@@ -145,7 +145,7 @@ module.exports = {
     },
 
     getReview :async function(body){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('reviewMapper','getReview',body, format);
             var [rows] = await connection.query(query);

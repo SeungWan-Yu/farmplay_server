@@ -1,4 +1,4 @@
-const con = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 const mybatisMapper = require('mybatis-mapper');
 const format = {language: 'sql', indent: ''};
 mybatisMapper.createMapper(['./mapper/v1/recruit.xml']);
@@ -7,7 +7,7 @@ mybatisMapper.createMapper(['./mapper/v1/recruit.xml']);
 module.exports = {
     
     addRecruit :async function(recruit){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('recruitMapper','addRecruit',recruit,format);
             var [rows] = await connection.query(query);
@@ -20,7 +20,7 @@ module.exports = {
     },
 
     getRecuritListId :async function(userId){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('recruitMapper','getRecuritListId',userId,format);
             var [rows] = await connection.query(query);
@@ -33,7 +33,7 @@ module.exports = {
     },
 
     getRecruitListFarmcode :async function(farmcode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('recruitMapper','getRecruitListFarmcode',farmcode,format);
             var [rows] = await connection.query(query);
@@ -46,7 +46,7 @@ module.exports = {
     },
 
     getRecruit :async function(recruitcode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('recruitMapper','getRecruit',recruitcode,format);
             var [rows] = await connection.query(query);
@@ -60,7 +60,7 @@ module.exports = {
 
 
     updateReruit :async function(recruit){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('recruitMapper','updateReruit',recruit,format);
             var [rows] = await connection.query(query);
@@ -73,7 +73,7 @@ module.exports = {
     },
 
     updateReruitState :async function(recruitcode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         //이후 프로세스 참가수정중,참가신청중 모두 참가취소로 변경되어야 함
         try{
             var query = mybatisMapper.getStatement('recruitMapper','updateReruitState',recruitcode,format);
