@@ -23,25 +23,39 @@ router.get('/upload', function(req, res, next)  {
   // res.send(process.env.DEV_DB_USER)
 });
 
+router.get('/daesung', (req, res, next) => {
+  return res.sendFile(__dirname+'/daesung.html')
+});
+
 router.get('/kakao', (req, res, next) => {
   return res.sendFile(__dirname+'/kakao.html')
+});
+
+router.post('/toss', (req, res, next) => {
+
+  return res.sendFile(__dirname+'/toss.html')
 });
 
 router.get('/import', (req, res, next) => {
   return res.sendFile(__dirname+'/import.html')
 });
 
+router.get('/success', (req, res, next) => {
+  return res.sendFile(__dirname+'/success.html')
+});
+
+router.get('/fail', (req, res, next) => {
+  return res.sendFile(__dirname+'/fail.html')
+});
 
 router.get('/', (req, res, next) => {
   return res.render("../pages/main");
 });
 
-
 var now = new Date();
 var date = now.toString()
 
 // console.log(date.substring(16,18))
-
 // setTimeout(() => {
 //   console.log(date.substring(16,18))
 // }, 60000);
