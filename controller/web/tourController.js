@@ -1,5 +1,6 @@
 const tourModel = require("../../models/web/tourModel");
 const axios = require('axios');
+const puppeteer = require('puppeteer');
 
 //전역함수
 function getConId(conId){
@@ -7,19 +8,86 @@ function getConId(conId){
   return contentId;
 }
 
+//스크롤 함수
+async function autoScroll(page){
+  console.log("스크롤시작");
+  await page.evaluate(async () => {
+    console.log("스크롤시작1");
+      // await new Promise((resolve, reject) => {
+      //   console.log("스크롤체크");
+      //     var totalHeight = 0;
+      //     var distance = 100;
+      //     var timer = setInterval(() => {
+      //         var scrollHeight = document.body.scrollHeight;
+      //         console.log("스크롤길이");
+      //         console.log(scrollHeight);
+      //         window.scrollBy(0, distance);
+      //         totalHeight += distance;
 
-exports.tourList = function (req, res) {
-    console.log("투어리스트컨트롤러");
-    res.render("../pages/tour/tourList");
+      //         if(totalHeight >= scrollHeight){
+      //           console.log("스크롤호호");
+      //             clearInterval(timer);
+      //             resolve();
+      //         }
+      //     }, 100);
+      // });
+  });
+  console.log("스크롤끝");
 }
 
-exports.tourApiUpdate =async function (req, res) {
-  console.log("투어리스트컨트롤러234");
+exports.getRestaurantCrawl =async function (req, res) {
+  console.log("크롤링시작");
+  const browser = await puppeteer.launch({ // 브라우저 생성
+    headless: false, // headless 사용안함
+    defaultViewport: { // Viewport 크기 설정
+      width: 1000,
+      height: 670
+    }
+  }); 
+  
+  const page = await browser.newPage(); 
+  await page.goto('https://map.naver.com/v5/search/군산맛집'); 
+  const frame = page.frames().find(frame => frame.name() === 'searchIframe');
+ 
+  console.log("프레임");
+  console.log(frame)
+  
+  await frame.waitForXPath('//*[@id="_pcmap_list_scroll_container"]/ul/li');
+  await autoScroll(frame);
+  var article= await frame.$x('//*[@id="_pcmap_list_scroll_container"]/ul/li');
 
+  //await page.waitForXPath('//*[@id="_pcmap_list_scroll_container"]/ul/li[1]',{timeout: 120000});
+  //const article = await page.$$('#searchIframe');
+  console.log("길이>>"+article.length);
+  console.log("길이>>"+article);
+  //await page.waitForSelector('._1EKsQ _12tNp _3in-q',{visible:true}); 
+  const links = await page.evaluate(() => { 
+  return Array.from(document.querySelectorAll('#app-root ul li a span')).map(span => (span.textContent)); // h3태그 의 text 가져옴 
+  }); 
+  console.log(links.join('\n')); 
+
+  res.json({"data":"응"});
+}
+
+
+exports.getRestaurant = function (req, res) {
+    console.log("레스트롱타");
+    res.render("../pages/tour/restaurant");
+}
+
+exports.tourList = function (req, res) {
+  console.log("투어리스트컨트롤러");
+  res.render("../pages/tour/tourList");
+}
+
+
+
+exports.tourApiUpdate =async (req, res) => {
+  console.log("투어리스트컨트롤러234");
+  var results = {result:"success" ,data:[] ,message:"empty"};
   //전역변수
-  var result = "";    //반환 결과값 담을 변수
-  var item = [];      //지역코드 담을 배열
-  var itemFood = [];  //지역기반 관광정보 음식 담을 배열
+  var itemLocationList = [];      //지역코드 담을 배열
+  var itemFoodList = [];  //지역기반 관광정보 음식 담을 배열
 
 
   //컬럼들
@@ -47,7 +115,7 @@ exports.tourApiUpdate =async function (req, res) {
   // //지역코드 가져오기 api연동
   // try {
   //   var obj = await axios.get(url+queryParams);
-  //   item = obj.data.response.body.items.item;
+  //   itemLocationList = obj.data.response.body.items.item;
   // } catch (err) {
   //   result = "지역코드 api 실패";
   //   res.json({result,err});
@@ -60,13 +128,14 @@ exports.tourApiUpdate =async function (req, res) {
   const url2 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?"
 
    //소개정보조회 url
-   const url3 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailIntro?";
+  const url3 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailIntro?";
 
     //공통정보조회 url
-    const url4 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?";
+  const url4 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?";
   
   //지역코드로 지역기반 관광정보 불러오기
   var queryParams2 = serviceKey + pageNo + numOfRows + mobileApp + mobileOS + arrange + contentFood  + type;
+  
   try {
     var obj2 = await axios.get(url2+queryParams2);
     var item2 = obj2.data.response.body.items.item;
@@ -98,18 +167,18 @@ exports.tourApiUpdate =async function (req, res) {
       foodMap.title = item2[j].title;
       foodMap.readcount = item2[j].readcount;
       // foodMap.overview = item4.overview;
-      itemFood.push(foodMap);
+      itemFoodList.push(foodMap);
     }
-  } catch (err) {
-    result = "지역기반 api 실패";
-    res.json({result,err});
+
+    results.data = await tourModel.setFoodList(itemFoodList);
+    if(results.data.affectedRows!=0)results.message = "exist";
+
+  } catch (error) {
+    results.result = "fail";
+    results.message = error.message;
+    console.log(error);
   }
-
-  console.log("길이"+itemFood.length);
-  tourModel.setFoodList(itemFood).then(function(data){
-    console.log(data)
-    res.json(data);
-  })
-
+  console.log(results);
+  res.json(results);
 
 }

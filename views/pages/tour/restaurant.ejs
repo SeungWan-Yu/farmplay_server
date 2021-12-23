@@ -1,0 +1,68 @@
+<style>
+    .hide{display: none;}
+    .addon{text-align: center;color: rgb(0, 0, 0); font-weight: bold;  padding-top: 8px; width: 120px; background-color: rgb(223, 219, 223);}
+    .farmImg{width: 100%;height:500px;object-fit: cover; }	
+    .roomImg {
+    width: 300px;
+    height: 150px;
+    object-fit: cover;
+    }
+    .farmCtl,.recuritCtl{font-weight: bold; background-color:rgb(219, 219, 219); width: 20%;}
+    .area_list01{display: block; margin-top:2%; width:100%; text-align: center;}
+    .area_list01 li{display: block; margin:1.5% 3% 1.5% 0; width:47%; float: left;}
+    .area_list01 li img{display: block; width:100%; height: 240px; object-fit: cover;}
+    .area_list01 li span{position: relative; top:0px; left:0px; display: block;}
+    .farmTable{font-size: 12px;}
+</style>
+
+<script type="text/javascript">
+
+
+ $(function(){
+
+
+    var cnt = 1;
+    $('#btnCrawl').click(function(){
+        var timer = setInterval(function(){
+            $('#resTime').text("응답시간 :"+ (cnt++)+"초");
+        }, 1000)
+
+        $.ajax({
+        contentType: "application/json; charset=utf-8",
+        type:"post",
+        dataType:'json',
+        url: '/admin/tour/restaurantCrawl',	    
+        success: function(data) {
+            alert("성공");
+            console.log(data);
+            clearTimeout(timer);
+            $('#resResult').text("결과 : 성공");
+            console.log("성공 끝");
+        },
+        error: function searchError(xhr, err) {
+            alert("에러");
+            alert(err);
+            clearTimeout(timer);
+            ('#resResult').text("결과 : 실패");
+        }
+    });
+    });
+
+   
+   
+});
+
+
+</script>
+
+<h1>레스토랑트페이지</h1>
+<button class="btn btn-primary" id="btnCrawl">크롤링시작</button>
+<div>
+    <span id="resTime">응답시간  </span>
+</div>
+
+<div>
+    <span id="resResult">결과 : </span>
+</div>
+
+

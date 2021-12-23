@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webTourMapper">
+
+<sql id="selectBoardColumn">
+    SELECT 
+          foodCode
+        , foodTypeId
+        , foodAddr1
+        , foodAreacode
+        , foodSigunguCode
+        , foodFirstimage
+        , foodFirstimage2
+        , foodMapx
+        , foodMapy
+        , foodTitle
+        , foodReadCount
+        , foodRegDate
+</sql>    
+
+<!-- 푸드코드 가져오기 -->
+<select id="getFoodCodeList">
+    SELECT 
+        foodCode
+	FROM
+        tour_food
+</select>
+
+
+<!-- 푸드삭제 -->
+<delete id="removeFoodAll">
+    DELETE FROM tour_food 
+    WHERE foodCode IN (
+        <foreach collection="r1" item="r"  separator=",">
+            #{r.foodCode}
+         </foreach>
+    )
+
+
+    DELETE FROM farm_room_img
+    WHERE
+        <foreach collection="roomImgList" item="roomImg"  separator="OR">
+            roomImgFarmCode = #{roomImg.farmCode}
+            AND
+            roomImgUrl = #{roomImg.roomImgUrl}
+        </foreach>
+</delete>
+
+ <!-- 음식 등록 -->
+<insert id="addTourFood">
+    INSERT INTO tour_food
+        ( foodCode
+         ,foodTypeId
+         ,foodAddr1
+         ,foodAreacode
+         ,foodSigunguCode
+         ,foodFirstimage
+         ,foodFirstimage2
+         ,foodMapx
+         ,foodMapy
+         ,foodTitle
+         ,foodReadCount
+         ,foodRegDate )
+	VALUES 
+    <foreach collection="itemFoodList" item="itemFood"  separator=",">
+        ( #{itemFood.contentid}
+         ,#{itemFood.contenttypeid}
+         ,#{itemFood.addr1}
+         ,#{itemFood.areacode}
+         ,#{itemFood.sigungucode}
+         ,#{itemFood.firstimage}
+         ,#{itemFood.firstimage2}
+         ,#{itemFood.mapx}
+         ,#{itemFood.mapy}
+         ,#{itemFood.title}
+         ,#{itemFood.readcount}
+         ,NOW() )
+    </foreach>
+   
+    
+</insert>
+
+
+
+
+
+</mapper>

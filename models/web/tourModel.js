@@ -1,27 +1,31 @@
 const pool = require('../../configs/mysql2-db');
-
+const mybatisMapper = require('mybatis-mapper');
+const format = {language: 'sql', indent: ''};
+mybatisMapper.createMapper(['./mapper/web/webTour.xml']);
 
 module.exports = {
     
-    setFoodList :async function(itemFood){
+    setFoodList :async function(itemFoodList){
         console.log("모델체크");
-        console.log(itemFood);
-        console.log(itemFood.length);
+        console.log(itemFoodList);
+        console.log(itemFoodList.length);
         const connection = await pool.getConnection();
    
         try{
             await connection.beginTransaction();
-            var sql = "TRUNCATE TABLE tour_food"
-            var [rows] = await connection.query(sql);
+            var q1 = mybatisMapper.getStatement('webTourMapper','getFoodCodeList',format);
+            var [r1] = await connection.query(q1);
+            console.log(r1);
+            console.log(r1[0].foodCode);
+            var q2 = mybatisMapper.getStatement('webTourMapper','removeFoodAll',r1,format);
+            var [r2] = await connection.query(q2);
 
-            for(var i in itemFood){
-                var sql1 = "INSERT INTO tour_food (foodCode, foodTypeId, foodAddr1, foodAreacode, foodSigunguCode, foodFirstimage, foodFirstimage2, foodMapx, foodMapy, foodTitle, foodReadCount, foodRegDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-                var param1 = [itemFood[i].contentid,itemFood[i].contenttypeid,itemFood[i].addr1,itemFood[i].areacode,itemFood[i].sigungucode,itemFood[i].firstimage,itemFood[i].firstimage2,itemFood[i].mapx,itemFood[i].mapy,itemFood[i].title,itemFood[i].readcount];
-                var [rows] = await connection.query(sql1,param1);
-            }
-            console.log("결과값");
+            console.log(r2);
+            console.log(rows);
+            var q3 = mybatisMapper.getStatement('webTourMapper','addTourFood',itemFoodList,format);
+            console.log(q3);
+            var [r3] = await connection.query(q3);
             await connection.commit();
-            return rows;
         }catch(err){
             console.log("에러 롤백");
             await connection.rollback();
@@ -29,6 +33,7 @@ module.exports = {
         }finally{
             connection.release();
         }
+        return r3;
     },
 
    
