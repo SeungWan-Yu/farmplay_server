@@ -1,4 +1,4 @@
-const con = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 const mybatisMapper = require('mybatis-mapper');
 const format = {language: 'sql', indent: ''};
 mybatisMapper.createMapper(['./mapper/v1/farm.xml']);
@@ -9,7 +9,7 @@ mybatisMapper.createMapper(['./mapper/v1/farm.xml']);
 module.exports = {
 
     getFarmRecruitEnterList :async function(enterUserId){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmRecruitEnterList',enterUserId,format);
             var [rows] = await connection.query(query);
@@ -22,7 +22,7 @@ module.exports = {
     },
 
     getFarmRecruitList :async function(farmCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmRecruitList',farmCode,format);
             var [rows] = await connection.query(query);
@@ -37,7 +37,7 @@ module.exports = {
     getRoomImgListFarmCode :async function(farmCode){
         console.log("팜코드체크")
         console.log(farmCode);
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getRoomImgListFarmCode',farmCode,format);
             var [rows] = await connection.query(query);
@@ -51,7 +51,7 @@ module.exports = {
     
 
     getFarmUser : async function(userId){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmUser',userId,format);
             var [rows] = await connection.query(query);
@@ -64,7 +64,7 @@ module.exports = {
     },
 
     getFarm : async function(farmcode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarm',farmcode,format);
             var [rows] = await connection.query(query);
@@ -77,7 +77,7 @@ module.exports = {
     },
     
     getFarmImg : async function(farmCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmImg',farmCode,format);
             var [rows] = await connection.query(query);
@@ -90,7 +90,7 @@ module.exports = {
     },
     
     getFarmRoomImg : async function(farmcode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmRoomImg',farmcode,format);
             var [rows] = await connection.query(query);
@@ -103,7 +103,7 @@ module.exports = {
     },
 
     getFarmCheck : async function(userId){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmCheck',userId,format);
             var [rows] = await connection.query(query);
@@ -116,7 +116,7 @@ module.exports = {
     },
 
     getFarmList : async function(){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('farmMapper','getFarmList',format);
             var [rows] = await connection.query(query);
@@ -129,7 +129,7 @@ module.exports = {
     },
 
     addFarm : async function(farm,roomImg){
-        const connection = await con;
+        const connection = await pool.getConnection();
         var rows = [];
         try{
             await connection.beginTransaction();
@@ -180,7 +180,7 @@ module.exports = {
         var rows = [];
         console.log("모델체크")
         console.log(farm)
-        const connection = await con;
+        const connection = await pool.getConnection();
        
         try{
             await connection.beginTransaction();

@@ -1,9 +1,10 @@
-const con = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 
 
 module.exports = {
     getFarmList :async function(){
-        const connection = await con;
+        
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='등록완료'";
             var [rows] = await connection.query(sql1);
@@ -16,7 +17,7 @@ module.exports = {
     },
 
     getFarmRoomImgList :async function(farmCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT roomImgCode, roomImgFarmCode, roomImgUrl FROM farm_room_img WHERE roomImgFarmCode = ?";
             var param1 = [farmCode];
@@ -31,7 +32,7 @@ module.exports = {
     },
 
     delFarmRoomImgList :async function(roomImgCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "DELETE FROM farm_room_img WHERE roomImgCode = ?";
             var param1 = [roomImgCode];
@@ -94,7 +95,7 @@ module.exports = {
 
     //************mysql2 일 경우 transaction ***********/
     delFarm :async function(farmCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             await connection.beginTransaction();
             var r1 = await connection.query("DELETE FROM farm_room_img WHERE roomImgFarmCode = ?",farmCode);
@@ -113,7 +114,7 @@ module.exports = {
     },
 
     getOneFarm :async function(farmCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmCode =?";
             var param1 = [farmCode];
@@ -131,7 +132,7 @@ module.exports = {
     updateFarm :async function(farm,roomImg,dRoomImgList){
         console.log("모델삭제리스트");
         console.log(dRoomImgList);
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             await connection.beginTransaction();
             var sql1 = "UPDATE farm SET  farmName=?, farmStartOpen=?, farmProduce=?, farmType=?, farmerIntro=?, farmAddr=?, farmAddrDetail=?,farmRoomInternet=?,farmRoomSite=?,farmRoomInfo=?,farmRoom=?,farmRoomUnisex=?,farmRoomEtc=?,userName=?,farmState=?,farmImg=? WHERE farmCode= ?";
@@ -171,7 +172,7 @@ module.exports = {
     },
 
     getFarmAskList :async function(){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='신청중'";
             var [rows] = await connection.query(sql1);
@@ -185,7 +186,7 @@ module.exports = {
     },
 
     UpdateFarmConfirm :async function(farmCodeList,userId){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             await connection.beginTransaction();
             var params = [userId];
@@ -229,7 +230,7 @@ module.exports = {
 
 
     getFarmRoomImgCnt :async function(farmCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT COUNT(roomImgCode)  AS cnt FROM farm_room_img WHERE roomImgFarmCode = ?";
             var param1 = [farmCode];
@@ -244,7 +245,7 @@ module.exports = {
     },
 
     getRoomImgUrl :async function(dRoomImgList){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT roomImgUrl FROM farm_room_img WHERE roomImgCode IN (?)";
             var param1 = [dRoomImgList];

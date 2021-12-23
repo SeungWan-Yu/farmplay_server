@@ -1,4 +1,4 @@
-const connection = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 
 module.exports = {
     

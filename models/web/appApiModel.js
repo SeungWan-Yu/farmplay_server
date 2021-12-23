@@ -1,10 +1,10 @@
-const con = require('../../configs/mysql2-db');
+const pool = require('../../configs/mysql2-db');
 
 
 module.exports = {
 
     apiList :async function(apiCrud){
-        const connection = await con;
+        const connection = await pool.getConnection();
 
         console.log("모집수정 모델확인");
         //이후 프로세스 참가수정중,참가신청중 모두 참가취소로 변경되어야 함
@@ -23,7 +23,7 @@ module.exports = {
     },
 
     apiAllList :async function(){
-        const connection = await con;
+        const connection = await pool.getConnection();
         try{
             var sql1 = "SELECT apiCode, apiDivision, apiCrud, apiName, apiCnt, apiExplan, apiUrl, apiMethod, apiReqParam, apiReqParamKor, apiResParam, apiResParamKor, apiDetailExplan, apiRegDate FROM api";
             var [rows] = await connection.query(sql1);
@@ -38,7 +38,7 @@ module.exports = {
     },
 
     addApi :async function(b){
-        const connection = await con;
+        const connection = await pool.getConnection();
 
         console.log("api등록 모델확인");
         //이후 프로세스 참가수정중,참가신청중 모두 참가취소로 변경되어야 함
@@ -57,7 +57,7 @@ module.exports = {
     },
     
     appApiDel :async function(apiCode){
-        const connection = await con;
+        const connection = await pool.getConnection();
         console.log("api등록 모델확인");
         //이후 프로세스 참가수정중,참가신청중 모두 참가취소로 변경되어야 함
         try{

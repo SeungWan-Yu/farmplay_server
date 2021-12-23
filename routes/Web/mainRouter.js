@@ -7,6 +7,7 @@ const { mainController } = require('../../controller/web')
 router.route('/')
 .get(mainController.mainView)
 
-
+router.route('/destory')
+.get(mainController.destoryView)
 
 module.exports = router // 이렇게 내보내면 부모 router 에 자동으로 연결됩니다.
