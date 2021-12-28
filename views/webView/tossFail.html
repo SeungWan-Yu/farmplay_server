@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>결제하기</title>
+      </head>
+      
+<body>
+
+<!-- HELLO! -->
+<h1 id="rText">실패다</h1>
+</body>
+
+
+<script>
+  var rText = document.getElementById("rText");
+  const url = new URL(window.location.href);
+  const urlParams = url.searchParams;
+  var msg = urlParams.get('msg');
+  var code = urlParams.get('code');
+  var result = urlParams.get('result');
+  var searchChk = urlParams.get('searchChk');
+  var searchResult = urlParams.get('searchResult');
+
+
+  if(result=="try"){
+    rText.innerText = "다시시도해주세요";
+    console.log("트라이")
+  }else if(result=="null"){
+    rText.innerText = "전송된 데이터가 없습니다. 다시시도해주세요";
+  }else if(result=="differAmount"){
+    rText.innerText = "결제 금액이 다릅니다. 다시시도해주세요";
+  }else if(result=="approvalApi"){
+    rText.innerText = "승인처리도중 에러발생 다시시도해주세요";
+    console.log(msg);
+    console.log(code);
+  }else if(result=="dataBase"){
+    console.log(msg);
+    rText.innerText = "DB등록에러 다시시도해주세요";
+  }else if(result=="dataBaseApro"){
+    console.log(msg);
+    rText.innerText = "결제처리가 지연되고 있습니다. 관리자에게 문의하세요";
+  }
+
+</script>
+
+
+</html>

@@ -5,6 +5,7 @@ const recruitController = require('./recruit.controller');
 const tourController = require('./tour.controller');
 const imageController = require('./image.controller');
 const reviewController = require('./review.controller');
+const webViewController = require('./webView.controller');
 
 module.exports = {
   userController,
@@ -14,4 +15,5 @@ module.exports = {
   tourController,
   imageController,
   reviewController,
+  webViewController,
 }

@@ -14,6 +14,7 @@ router.use('/farm', require('./farm.route'));
 router.use('/recruit', require('./recruit.route'));
 router.use('/farmpler', require('./farmpler.route'));
 router.use('/review', require('./review.route'));
+router.use('/webView', require('./webView.route'));
 
 
 

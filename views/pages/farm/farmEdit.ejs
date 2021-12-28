@@ -43,9 +43,10 @@
 <script>
 
     $(function(){
-
+        
         var initData = JSON.parse('<%-JSON.stringify(data)%>')[0]; //넘어온 데이터 json으로 변환 
-        console.log(initData);
+        
+
         var gFarmCode= initData.farmCode;   //팜코드 전역변수
 
         //농가신청페이지 인지 농가리스트인지 구분

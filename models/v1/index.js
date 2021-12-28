@@ -3,6 +3,8 @@ const farmplerModel = require('./farmpler.model');
 const recruitModel = require('./recruit.model');
 const reviewModel = require('./review.model');
 const userModel = require('./user.model');
+const webViewModel = require('./webView.model');
+
 
 module.exports = {
   farmModel,
@@ -10,4 +12,5 @@ module.exports = {
   recruitModel,
   reviewModel,
   userModel,
+  webViewModel,
 }

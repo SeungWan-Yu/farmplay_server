@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webViewMapper">
+
+ 
+
+    <!-- 결재요청등록 -->
+    <insert id="addPayReq">
+        INSERT INTO payment_request
+            ( payReqOid
+             ,payReqPrice
+             ,payReqUid
+             ,payReqState
+             ,peyReqRegDate)
+        VALUES 
+            ( #{oId}
+             ,#{price}
+             ,#{uId}
+             ,#{state}
+             ,NOW())
+    </insert>
+
+    <insert id="addPayApro">
+        INSERT INTO payment_approval
+            ( payAproOid
+             ,payAproPrice
+             ,payAproUid
+             ,payAproRegDate)
+        VALUES 
+            ( #{orderId}
+            ,#{amount}
+            ,#{uId}
+            ,NOW())
+    </insert>
+
+   
+    <!-- 결재요청 가격 가져오기 -->
+    <select id="getPayReq">
+        SELECT 
+             payReqOid
+            ,payReqPrice
+            ,payReqAmount
+            ,payReqUid
+            ,payReqState
+            ,peyReqRegDate
+	    FROM 
+            payment_request
+	    WHERE 
+            payReqOid = #{orderId}
+    </select>
+
+
+    <!-- 결제상태 업데이트 -->
+    <update id="updatePayReqState">
+        UPDATE payment_request
+	    SET
+            payReqState= #{state}
+        <if test="errMsg != null">
+		    ,payReqErrMsg = #{errMsg}
+        </if>
+	    WHERE 
+	        payReqOid = #{orderId}
+    </update>
+
+   <!-- 결제가격 업데이트 -->
+    <update id="updatePayReqAmount">
+        UPDATE payment_request
+        SET
+            payReqAmount    = #{amount}
+	    WHERE 
+	        payReqOid       = #{orderId}
+    </update>
+
+      <!-- 리뷰평점 (유저테이블) 업데이트 -->
+    <update id="updateReviewRatingUser">
+        UPDATE
+            users 
+        SET 
+             userRating     = #{reviewRating}
+            ,userReviewCnt  = #{reviewCnt}
+        WHERE
+            userId         = #{userId};
+    </update>
+
+
+    <!-- 참가테이블 리뷰작성완료 업데이트 -->
+    <update id="updateEnterReview">
+        UPDATE farmpler 
+        SET 
+            enterReview='Y' 
+        WHERE 
+            enterCode   = #{reviewEnterCode} 
+            AND 
+            enterUserId = #{reviewFpId} 
+            AND 
+            enterState  = '참가완료';
+    </update>
+
+    
+    <!-- 참가테이블 참가상태 변경 -->
+    <update id="updateEnterState">
+        UPDATE farmpler 
+        SET 
+            enterState  = #{enterState}
+        WHERE 
+            enterCode   = #{enterCode}
+            AND 
+            enterUserId = #{enterUserId}
+            AND 
+            enterState= '참가확정됨';
+    </update>
+
+    <!-- 리뷰평점 계산해서 리뷰갯수,평점 가져오기 -->
+    <select id="getReview">
+        <include refid="selectBoardColumn"></include>
+        FROM review 
+        WHERE 
+            reviewEnterCode  = #{reviewEnterCode} 
+            AND 
+            reviewStandard   = #{reviewStandard};
+    </select>
+
+</mapper>
