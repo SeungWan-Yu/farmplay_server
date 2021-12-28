@@ -88,6 +88,7 @@ exports.tourApiUpdate =async (req, res) => {
   //전역변수
   var itemLocationList = [];      //지역코드 담을 배열
   var itemFoodList = [];  //지역기반 관광정보 음식 담을 배열
+  var itemFoodListMap = {};
 
 
   //컬럼들
@@ -169,8 +170,9 @@ exports.tourApiUpdate =async (req, res) => {
       // foodMap.overview = item4.overview;
       itemFoodList.push(foodMap);
     }
-
-    results.data = await tourModel.setFoodList(itemFoodList);
+    itemFoodListMap.itemFoodList = itemFoodList;
+    console.log(itemFoodListMap);
+    results.data = await tourModel.setFoodList(itemFoodListMap);
     if(results.data.affectedRows!=0)results.message = "exist";
 
   } catch (error) {

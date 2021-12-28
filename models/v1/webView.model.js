@@ -53,7 +53,6 @@ module.exports = {
 
     addPayApro : async function(body,connection){
         try{
-            //2. 결제승인정보 DB저장 (최종인원 초과하지 않았다면)
             var query = mybatisMapper.getStatement('webViewMapper','addPayApro',body,format);
             var [rows] = await connection.query(query);
         }catch(err){

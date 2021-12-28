@@ -5,24 +5,24 @@ mybatisMapper.createMapper(['./mapper/web/webTour.xml']);
 
 module.exports = {
     
-    setFoodList :async function(itemFoodList){
+    setFoodList :async function(itemFoodListMap){
         console.log("모델체크");
-        console.log(itemFoodList);
-        console.log(itemFoodList.length);
         const connection = await pool.getConnection();
    
         try{
             await connection.beginTransaction();
             var q1 = mybatisMapper.getStatement('webTourMapper','getFoodCodeList',format);
             var [r1] = await connection.query(q1);
+            var mapR1 = {"r1":r1};
             console.log(r1);
             console.log(r1[0].foodCode);
-            var q2 = mybatisMapper.getStatement('webTourMapper','removeFoodAll',r1,format);
+            var q2 = mybatisMapper.getStatement('webTourMapper','removeFoodAll',mapR1,format);
+            console.log("쿼리2출력");
+            console.log(q2);
             var [r2] = await connection.query(q2);
 
             console.log(r2);
-            console.log(rows);
-            var q3 = mybatisMapper.getStatement('webTourMapper','addTourFood',itemFoodList,format);
+            var q3 = mybatisMapper.getStatement('webTourMapper','addTourFood',itemFoodListMap,format);
             console.log(q3);
             var [r3] = await connection.query(q3);
             await connection.commit();

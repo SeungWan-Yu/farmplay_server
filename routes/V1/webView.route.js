@@ -9,6 +9,7 @@ router.get('/toss',webViewController.getToss);
 router.get('/import',webViewController.getImport);
 router.get('/tossSuccess',webViewController.getTossSuccess);
 router.get('/tossFail',webViewController.getTossFail);
+router.get('/tossComplete',webViewController.getTossComplete);
 
 
 module.exports = router;

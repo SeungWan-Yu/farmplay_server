@@ -35,15 +35,6 @@
             #{r.foodCode}
          </foreach>
     )
-
-
-    DELETE FROM farm_room_img
-    WHERE
-        <foreach collection="roomImgList" item="roomImg"  separator="OR">
-            roomImgFarmCode = #{roomImg.farmCode}
-            AND
-            roomImgUrl = #{roomImg.roomImgUrl}
-        </foreach>
 </delete>
 
  <!-- 음식 등록 -->

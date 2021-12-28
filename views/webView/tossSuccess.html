@@ -7,5 +7,20 @@
 <body>
 <!-- HELLO! -->
 <h1>성공이다</h1>
+<button id="btnComplete">확인</button>
 </body>
+<script>
+  const url = new URL(window.location.href);
+  const urlParams = url.searchParams;
+  var orderId = urlParams.get('orderId');
+  var amount = Number(urlParams.get('amount'));
+  var result = {"orderId":orderId,"amount":amount};
+
+  var btnComplete = document.getElementById("btnComplete");
+  btnComplete.addEventListener("click",function(){
+    window.Android.processDATA(orderId,amount);
+  });
+
+  
+</script>
 </html>

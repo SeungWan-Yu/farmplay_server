@@ -23,14 +23,16 @@
     <insert id="addPayApro">
         INSERT INTO payment_approval
             ( payAproOid
+             ,payAproPaymentKey
              ,payAproPrice
              ,payAproUid
              ,payAproRegDate)
         VALUES 
             ( #{orderId}
-            ,#{amount}
-            ,#{uId}
-            ,NOW())
+             ,#{paymentKey}
+             ,#{amount}
+             ,#{uId}
+             ,NOW())
     </insert>
 
    
