@@ -1,6 +1,6 @@
 const tourModel = require("../../models/web/tourModel");
 const axios = require('axios');
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
 
 //전역함수
 function getConId(conId){
@@ -37,34 +37,34 @@ async function autoScroll(page){
 
 exports.getRestaurantCrawl =async function (req, res) {
   console.log("크롤링시작");
-  const browser = await puppeteer.launch({ // 브라우저 생성
-    headless: false, // headless 사용안함
-    defaultViewport: { // Viewport 크기 설정
-      width: 1000,
-      height: 670
-    }
-  }); 
+  // const browser = await puppeteer.launch({ // 브라우저 생성
+  //   headless: false, // headless 사용안함
+  //   defaultViewport: { // Viewport 크기 설정
+  //     width: 1000,
+  //     height: 670
+  //   }
+  // }); 
   
-  const page = await browser.newPage(); 
-  await page.goto('https://map.naver.com/v5/search/군산맛집'); 
-  const frame = page.frames().find(frame => frame.name() === 'searchIframe');
+  // const page = await browser.newPage(); 
+  // await page.goto('https://map.naver.com/v5/search/군산맛집'); 
+  // const frame = page.frames().find(frame => frame.name() === 'searchIframe');
  
-  console.log("프레임");
-  console.log(frame)
+  // console.log("프레임");
+  // console.log(frame)
   
-  await frame.waitForXPath('//*[@id="_pcmap_list_scroll_container"]/ul/li');
-  await autoScroll(frame);
-  var article= await frame.$x('//*[@id="_pcmap_list_scroll_container"]/ul/li');
+  // await frame.waitForXPath('//*[@id="_pcmap_list_scroll_container"]/ul/li');
+  // await autoScroll(frame);
+  // var article= await frame.$x('//*[@id="_pcmap_list_scroll_container"]/ul/li');
 
-  //await page.waitForXPath('//*[@id="_pcmap_list_scroll_container"]/ul/li[1]',{timeout: 120000});
-  //const article = await page.$$('#searchIframe');
-  console.log("길이>>"+article.length);
-  console.log("길이>>"+article);
-  //await page.waitForSelector('._1EKsQ _12tNp _3in-q',{visible:true}); 
-  const links = await page.evaluate(() => { 
-  return Array.from(document.querySelectorAll('#app-root ul li a span')).map(span => (span.textContent)); // h3태그 의 text 가져옴 
-  }); 
-  console.log(links.join('\n')); 
+  // //await page.waitForXPath('//*[@id="_pcmap_list_scroll_container"]/ul/li[1]',{timeout: 120000});
+  // //const article = await page.$$('#searchIframe');
+  // console.log("길이>>"+article.length);
+  // console.log("길이>>"+article);
+  // //await page.waitForSelector('._1EKsQ _12tNp _3in-q',{visible:true}); 
+  // const links = await page.evaluate(() => { 
+  // return Array.from(document.querySelectorAll('#app-root ul li a span')).map(span => (span.textContent)); // h3태그 의 text 가져옴 
+  // }); 
+  // console.log(links.join('\n')); 
 
   res.json({"data":"응"});
 }
