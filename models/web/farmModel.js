@@ -187,17 +187,19 @@ module.exports = {
 
     UpdateFarmConfirm :async function(farmCodeList,userId){
         const connection = await pool.getConnection();
+        await connection.beginTransaction();
         try{
-            await connection.beginTransaction();
+           
             var params = [userId];
-            var [r] = await connection.query("SELECT token FROM users WHERE user_id =?",params);   
+            var [r] = await connection.query("SELECT userToken FROM users WHERE userId =?",params);   
 
-            var r1 = await connection.query("SELECT IFNULL(farm_code,0) AS farm_code FROM users WHERE user_id =?",userId);
-            var result1  = r1[0][0].farm_code;
+            var r1 = await connection.query("SELECT IFNULL(userFarmCode,0) AS userFarmCode FROM users WHERE userId =?",userId);
+            var result1  = r1[0][0].userFarmCode;
+            console.log(result1);
             console.log("r1>>"+r1);
             if(result1==0){
                 var params2 = [farmCodeList,userId];
-                var r2 = await connection.query("UPDATE users SET farm_code=? ,farm_state=2 WHERE user_id=?",params2);
+                var r2 = await connection.query("UPDATE users SET userFarmCode=? ,userFarmState=2 WHERE userId=?",params2);
                 console.log("r2>>"+r2);
             }
             var r3 = await connection.query("UPDATE farm SET farmState='등록완료',farmRegDate=NOW() WHERE farmCode IN("+farmCodeList+")");

@@ -3,6 +3,8 @@ var fileDel = require('../../custom_modules/fileDelete');
 var CryptoJS = require("crypto-js");
 var SHA256 = require("crypto-js/sha256");
 var Base64 = require("crypto-js/enc-base64");
+var request  = require("request");
+var axios  = require("axios");
 
 
 exports.updateUserImg = async (req,res) => {
@@ -208,24 +210,31 @@ exports.getKaoUser = async (req,res) => {
 exports.getCertificationCode = async (req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
+    console.log(body);  
     try {
         r1 = await userModel.getCertificationCode(body);
         //유저가 입력한 코드와 DB에 가져온 코드가 같을 경우 아이디를 리턴
         if(r1[0].code==body.code){
+            console.log("같음");
             results.data = await userModel.getUserId(body);
-            if(results.data.length>0)results.message = "exist"; 
-        }else{  //그러지 않을 경우 different또는 empty 발송
-            if(results.data.length==0){
-                results.message = "empty";
+            if(results.data.length>0){
+                results.message = "exist"; 
             }else{
-                results.message = "different"; 
-            }     
+                console.log("여기엠티");
+                results.message = "empty"; 
+            }
+        }else{  //그러지 않을 경우 different또는 empty 발송
+            console.log("다름");
+            results.message = "different";   
         }
     } catch (error) {
         console.log(error);
         results.result = "fail";
         results.message = error.message;     
     }
+
+    console.log("최종데이터")
+    console.log(results);
     res.send(results);
 };
 
@@ -233,109 +242,133 @@ exports.getCertification = async (req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
     var singupState  = body.singupState;
+    console.log(singupState);
 
     try {
-        r1 = await userModel.getCertification(body);
+        r1 = await userModel.getPhoneCheck(body);
+        console.log("연락처체크");
+        console.log(r1[0].count);
         if(singupState=="singup"){
-            if(r1[0]!=0){
+            console.log("여기");
+            if(r1[0].count!=0){
                 results.result = "fail";
                 results.message = "연락처중복";
-                res.sed(results)
+                res.send(results);
             }
         }else{
-            if(r1[0]==0){
+            if(r1[0].count==0){
                 results.result = "fail";
                 results.message = "연락처없음";
-                res.sed(results)
+                res.send(results);
             }
         }
         
+
+        var randomNum = {};
+        //0~9까지의 난수
+        randomNum.random = function (n1, n2) {
+          return parseInt(Math.random() * (n2 - n1 + 1)) + n1;
+        };
+        //인증번호를 뽑을 난수 입력 n 6이면 6자리
+        randomNum.authNo = function (n) {
+          var value = "";
+          for (var i = 0; i < n; i++) {
+            value += randomNum.random(0, 9);
+          }
+          return value;
+        };
+
+        var userPhone = body.phone;
+        console.log(userPhone)
+        var userAuthNum = randomNum.authNo(6);
+        var resultCode = 200;
+        const date = Date.now().toString();
+        const uri = "ncp:sms:kr:264031561865:smarthive";
+        const secretKey = "DRRXehpBeIgKRbuNrNI7ZpUIpV86GouK78m4eyHF";
+        const accessKey = "kIszOkClGHtpPW2SGAQU";
+        const method = "POST";
+        const space = " ";
+        const newLine = "\n";
+        const url = `https://sens.apigw.ntruss.com/sms/v2/services/${uri}/messages`;
+        const url2 = `/sms/v2/services/${uri}/messages`;
+        const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
+        hmac.update(method); hmac.update(space);
+        hmac.update(url2); hmac.update(newLine);
+        hmac.update(date); hmac.update(newLine);
+        hmac.update(accessKey);
+        const hash = hmac.finalize();
+        const signature = hash.toString(CryptoJS.enc.Base64);
+        var data =  {
+            type: "SMS",
+            countryCode: "82",
+            from: "07043544504",
+            content: `[팜플] 인증번호 [${userAuthNum}]를 입력해주세요.`,
+            messages: [{to: `${userPhone}`, },],
+        };
+        
+        var response = await axios.post(url,data, {
+            headers: {
+                "Contenc-type": "application/json; charset=utf-8",
+                "x-ncp-iam-access-key": accessKey,
+                "x-ncp-apigw-timestamp": date,
+                "x-ncp-apigw-signature-v2": signature,
+            },
+        });
+
+        console.log("응답결과");
+        console.log(response);
+        // request(
+        //   {
+        //     method: method, json: true, uri: url, headers: {
+        //       "Contenc-type": "application/json; charset=utf-8",
+        //       "x-ncp-iam-access-key": accessKey,
+        //       "x-ncp-apigw-timestamp": date,
+        //       "x-ncp-apigw-signature-v2": signature,
+        //     }, body: {
+        //       type: "SMS",
+        //       countryCode: "82",
+        //       from: "07043544504",
+        //       content: `[팜플] 인증번호 [${userAuthNum}]를 입력해주세요.`,
+        //       messages: [{
+        //         to: `${userPhone}`,
+        //       },
+        //       ],
+        //     },
+        //   }, function (err, res, html) {
+        //     if (err) {
+        //       results.result = "fail";
+        //       results.message = err.message;     
+        //       resultCode = 404;
+        //       console.log(err);
+        //     }
+        //     else {
+        //       console.log(html);
+        //     }
+        //   }
+        // );
+      
+        var certifi = {phone:userPhone , code:userAuthNum};
+
+        r1 = await userModel.getCertification(certifi);
+        console.log(r1[0].count);
+        if(r1[0].count>0){
+            r2 = await userModel.updateCertification(certifi);
+        }else{
+            console.log("등록");
+            r3 = await userModel.addCertification(certifi);
+        }
+
     } catch (error) {
         console.log(error);
+        resultCode = 400;
         results.result = "fail";
         results.message = error.message;     
         res.send(results);
     }
 
-
-    var randomNum = {};
-    //0~9까지의 난수
-    randomNum.random = function (n1, n2) {
-      return parseInt(Math.random() * (n2 - n1 + 1)) + n1;
-    };
-    //인증번호를 뽑을 난수 입력 n 6이면 6자리
-    randomNum.authNo = function (n) {
-      var value = "";
-      for (var i = 0; i < n; i++) {
-        value += randomNum.random(0, 9);
-      }
-      return value;
-    };
-    var userPhone = body.phone;
-    console.log(userPhone)
-    var userAuthNum = randomNum.authNo(6);
-    var resultCode = 200;
-    const date = Date.now().toString();
-    const uri = "ncp:sms:kr:264031561865:smarthive";
-    const secretKey = "DRRXehpBeIgKRbuNrNI7ZpUIpV86GouK78m4eyHF";
-    const accessKey = "kIszOkClGHtpPW2SGAQU";
-    const method = "POST";
-    const space = " ";
-    const newLine = "\n";
-    const url = `https://sens.apigw.ntruss.com/sms/v2/services/${uri}/messages`;
-    const url2 = `/sms/v2/services/${uri}/messages`;
-    const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
-    hmac.update(method); hmac.update(space);
-    hmac.update(url2); hmac.update(newLine);
-    hmac.update(date); hmac.update(newLine);
-    hmac.update(accessKey);
-    const hash = hmac.finalize();
-    const signature = hash.toString(CryptoJS.enc.Base64);
-    request(
-      {
-        method: method, json: true, uri: url, headers: {
-          "Contenc-type": "application/json; charset=utf-8",
-          "x-ncp-iam-access-key": accessKey,
-          "x-ncp-apigw-timestamp": date,
-          "x-ncp-apigw-signature-v2": signature,
-        }, body: {
-          type: "SMS",
-          countryCode: "82",
-          from: "07043544504",
-          content: `[팜플] 인증번호 [${userAuthNum}]를 입력해주세요.`,
-          messages: [{
-            to: `${userPhone}`,
-          },
-          ],
-        },
-      }, function (err, res, html) {
-        if (err) {
-          results.result = "fail";
-          results.message = err.message;     
-          resultCode = 404;
-          console.log(err);
-        }
-        else {
-          console.log(html);
-        }
-      }
-    );
-  
-    var certifi = {phone:userPhone , code:userAuthNum};
-    try {
-        r1 = await userModel.getCertification(certifi);
-        if(r1.length>0){
-            r2 = await userModel.updateCertification(certifi);
-        }else{
-            r3 = await userModel.addCertification(certifi);
-        }
-    } catch (error) {
-        results.result = "fail";
-        results.message = err.message;    
-        resultCode = 404;
-        console.log(error);
-    }
-    results.data = resultCode;
+    results.data = [{"resultCode":resultCode}];
+    console.log("최종체크");
+    console.log(results);
     res.send(results);
 
 };

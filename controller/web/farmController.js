@@ -229,7 +229,7 @@ exports.farmConfirm =async function (req, res) {
         chk = true;
         console.log("리턴값" +data);
         console.log(data);
-        userToken = data[0].token
+        userToken = data[0].userToken
        
     }).catch(function(err){
         chk= false;

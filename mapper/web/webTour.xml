@@ -26,6 +26,37 @@
         tour_food
 </select>
 
+<!-- 푸드코드 가져오기 -->
+<select id="getFoodCodeDbList">
+    SELECT 
+        foodCode
+	FROM
+        tour_food
+    WHERE
+        foodDbComplete = 'N';
+</select>
+
+<!-- 푸드코드 업데이트 -->
+<update id="updateFoodList">
+    <foreach collection="itemFoodUpdateList" item="itemFood"  separator=";">
+    UPDATE tour_food
+	SET
+		foodFirstMenu   =   #{itemFood.firstmenu},
+		foodTreatMenu   =   #{itemFood.treatmenu},
+		foodTel         =   #{itemFood.infocenterfood},
+		foodOpenTime    =   #{itemFood.opentimefood},
+		foodParking     =   #{itemFood.parkingfood},
+		foodReservation =   #{itemFood.reservationfood},
+		foodRestDate    =   #{itemFood.restdatefood},
+		foodPacking     =   #{itemFood.packing},
+		foodHomepage    =   #{itemFood.homepage},
+		foodOverView    =   #{itemFood.overview},
+		foodDbComplete  =   #{itemFood.dbComplete}
+	WHERE
+        foodCode        =   #{itemFood.foodCode} 
+    </foreach>
+</update>
+
 
 <!-- 푸드삭제 -->
 <delete id="removeFoodAll">
@@ -37,8 +68,8 @@
     )
 </delete>
 
- <!-- 음식 등록 -->
-<insert id="addTourFood">
+<!-- 음식 등록 -->
+<insert id="addTourFoodFor">
     INSERT INTO tour_food
         ( foodCode
          ,foodTypeId
@@ -53,6 +84,39 @@
          ,foodReadCount
          ,foodRegDate )
 	VALUES 
+        ( #{contentid}
+         ,#{contenttypeid}
+         ,#{addr1}
+         ,#{areacode}
+         ,#{sigungucode}
+         ,#{firstimage}
+         ,#{firstimage2}
+         ,#{mapx}
+         ,#{mapy}
+         ,#{title}
+         ,#{readcount}
+         ,NOW() )  
+    
+</insert>
+
+
+ <!-- 음식 등록 -->
+<insert id="addTourFood">
+    INSERT INTO tour_food
+      	( foodCode
+	     ,foodTypeId
+         ,foodAddr1
+         ,foodAreacode
+         ,foodSigunguCode
+         ,foodFirstimage
+         ,foodFirstimage2
+         ,foodMapx
+         ,foodMapy
+         ,foodTitle
+         ,foodReadCount
+         ,foodDbComplete
+         ,foodRegDate)
+	VALUES 
     <foreach collection="itemFoodList" item="itemFood"  separator=",">
         ( #{itemFood.contentid}
          ,#{itemFood.contenttypeid}
@@ -65,11 +129,69 @@
          ,#{itemFood.mapy}
          ,#{itemFood.title}
          ,#{itemFood.readcount}
+         ,#{itemFood.dbComplete}
          ,NOW() )
     </foreach>
    
-    
+
 </insert>
+
+
+<!-- 음식 등록
+<insert id="addTourFood">
+    INSERT INTO tour_food
+      	( foodCode
+	     ,foodTypeId
+         ,foodAddr1
+         ,foodAreacode
+         ,foodSigunguCode
+         ,foodFirstimage
+         ,foodFirstimage2
+         ,foodMapx
+         ,foodMapy
+         ,foodTitle
+         ,foodReadCount
+         ,foodDbComplete
+         ,foodFirstMenu
+         ,foodTreatMenu
+         ,foodTel
+         ,foodOpenTime
+         ,foodParking
+         ,foodReservation
+         ,foodRestDate
+         ,foodPacking
+         ,foodHomepage
+         ,foodOverView
+         ,foodRegDate)
+	VALUES 
+    <foreach collection="itemFoodList" item="itemFood"  separator=",">
+        ( #{itemFood.contentid}
+         ,#{itemFood.contenttypeid}
+         ,#{itemFood.addr1}
+         ,#{itemFood.areacode}
+         ,#{itemFood.sigungucode}
+         ,#{itemFood.firstimage}
+         ,#{itemFood.firstimage2}
+         ,#{itemFood.mapx}
+         ,#{itemFood.mapy}
+         ,#{itemFood.title}
+         ,#{itemFood.readcount}
+         ,#{itemFood.dbComplete}
+         ,#{itemFood.firstmenu}
+         ,#{itemFood.treatmenu}
+         ,#{itemFood.infocenterfood}
+         ,#{itemFood.opentimefood}
+         ,#{itemFood.parkingfood}
+         ,#{itemFood.reservationfood}
+         ,#{itemFood.restdatefood}
+         ,#{itemFood.packing}
+         ,#{itemFood.homepage}
+         ,#{itemFood.overview}
+         ,NOW() )
+    </foreach>
+   
+
+</insert> -->
 
 
 

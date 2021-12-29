@@ -26,6 +26,7 @@ const fileFilter = (req, file, callback) =>{
     }
 }
 
+
 //이미지 업로드
 const multer  = require('multer');
 var sftpStorage = require('multer-sftp')
@@ -33,30 +34,22 @@ var sftpStorage = require('multer-sftp')
 
 
 // 파일 경로 및 이름 설정 옵션
-const storage = sftpStorage({
-    sftp: {
-        host: 'joy4.ddns.net',
-        port: 22,
-        username: 'dshive',
-        password: 'dshive!@#$'
-      },
+const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, __dirname+'/../../public/uploads_push') // 파일 업로드 경로
+        cb(null, 'public/uploads_push/') // cb 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
     },
     filename: function (req, file, cb) {
         const typeArray = file.mimetype.split('/');
         const fileType = typeArray[1]; // 이미지 확장자 추출
         cb(null, file.fieldname  +'_'+Date.now()+ '.' + fileType) //파일 이름 설정
-        console.log("check1");
     }
-  })
+})
 
 const upload = multer({ 
     storage : storage,
-    limits: { fileSize: 10 *1024 * 1024 },
-    dest: __dirname+'/../../public/uploads_push', // 이미지 업로드 경로
+    //limits: limits, // 이미지 업로드 제한 설정
     fileFilter : fileFilter // 이미지 업로드 필터링 설정
-}).fields([{name:'pushFile'}]);
+});
 
 
 
@@ -71,7 +64,7 @@ router.get('/memberDel', memberController.memberDel);
 router.get('/memberEdit', memberController.memberEdit); //수정페이지
 router.post('/editMember', memberController.editMember); //수정에서 수정버튼 클릭할때 
 router.get('/sendNotice', memberController.sendNotice);   //공지보내기
-router.post('/noticeImg',upload,memberController.noticeImg);   //공지보낼때 - 이미지업로드
+router.post('/noticeImg',upload.fields([{name:'pushFile'}]),memberController.noticeImg);   //공지보낼때 - 이미지업로드
 router.post('/noticeSend',memberController.noticeSend);   //공지보낼때
 router.post('/delPushImg', memberController.delPushImg); //수정에서 수정버튼 클릭할때 
 

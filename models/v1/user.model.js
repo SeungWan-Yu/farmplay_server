@@ -131,6 +131,20 @@ module.exports = {
         return rows;
     },
     
+    getPhoneCheck :async function(phone){
+        const connection = await pool.getConnection();
+        try{ 
+            var query = mybatisMapper.getStatement('userMapper', 'getPhoneCheck', phone, format);
+            console.log(query);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
     getLoginCheck :async function(userId){
         const connection = await pool.getConnection();
         try{

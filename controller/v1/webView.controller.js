@@ -1,7 +1,6 @@
 
 const {webViewModel} = require("../../models/v1");
 var path = require('path');
-var axios = require('axios');
 var payModule = require("../../custom_modules/payModule");
 const pool = require('../../configs/mysql2-db');
 

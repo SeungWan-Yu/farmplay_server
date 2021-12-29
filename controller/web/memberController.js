@@ -107,8 +107,8 @@ exports.noticeImg = function (req, res) {
     var content  =  body.content
     var imgurl = "";
     if(pushFile != null){
-        //imgurl = "http://192.168.1.24:3000/public/uploads_push/"+req.file.filename; 
-        //imgurl = "http://14.63.223.217/public/uploads_push/"+req.file.filename; 
+        //imgurl = "http://192.168.1.24:3000/public/uploads_push/"+pushFile[0].filename; 
+      
         imgurl = "http://joy4.ddns.net:3000/public/uploads_push/"+pushFile[0].filename; 
     }
     console.log("이미지유알엘>>>"+imgurl);

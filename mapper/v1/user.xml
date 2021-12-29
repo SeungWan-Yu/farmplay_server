@@ -126,6 +126,21 @@
             </if>
     </select>
 
+     <!-- 유저 연락처체크-->
+    <select id="getPhoneCheck">
+        SELECT 
+            count(*) AS count
+        FROM
+            users 
+        WHERE
+            userPhone = #{phone};	 
+        <if test="singupState == 'findPw'">
+        AND
+            userId = #{userId};	 
+        </if>
+
+    </select>
+
      <!-- 유저 비번 업데이트-->
     <update id="updateUserPw">
         UPDATE users
@@ -183,14 +198,9 @@
          SELECT 
             count(*) AS count
         FROM 
-            users
+            certifi
         WHERE
-        userPhone = #{phone};
-        <if test="singupState == 'findPw'">
-            AND
-            userId = #{userId};	 
-        </if>
-
+        phone = #{phone};
     </select>
 
     <!-- 인증정보 업데이트 -->
