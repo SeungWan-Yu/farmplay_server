@@ -13,7 +13,8 @@ exports.getFarmplerList = async (req,res) => {
         results.message = error.message;
         console.log(error)
     }
-    console.log(results)
+    console.log("결과값");
+    console.log(results);
     res.send(results); 
 };
 

@@ -254,12 +254,14 @@ exports.getCertification = async (req,res) => {
                 results.result = "fail";
                 results.message = "연락처중복";
                 res.send(results);
+                return false;
             }
         }else{
             if(r1[0].count==0){
                 results.result = "fail";
                 results.message = "연락처없음";
                 res.send(results);
+                return false;
             }
         }
         

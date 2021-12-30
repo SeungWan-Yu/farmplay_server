@@ -27,10 +27,15 @@
     <!-- 참여 팜플러 리스트 가져오기(모집코드)-->
     <select id="getFarmplerList">
     <include refid="selectBoardColumn"></include>
+            , u.userProfileImg AS enterUserPhoto
         FROM 
-            farmpler 
-        WHERE 
-            enterRecuritCode = #{recruitcode}
+            farmpler AS f
+	    INNER JOIN
+            users AS u
+	    ON
+            f.enterUserId = u.userId
+	    WHERE
+            f.enterRecuritCode = #{recruitcode}
     </select>
     
     <!-- 업데이트 유저가 참가취소-->

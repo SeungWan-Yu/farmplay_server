@@ -13,6 +13,7 @@
     .area_list01 li img{display: block; width:100%; height: 240px; object-fit: cover;}
     .area_list01 li span{position: relative; top:0px; left:0px; display: block;}
     .farmTable{font-size: 12px;}
+    #introTextDiv{color: red; margin-bottom: 20px;}
 </style>
 
 <script type="text/javascript">
@@ -22,32 +23,48 @@
 
 
     var cnt = 1;
-    $('#btnUpdate').click(function(){
+    $('#btnGetFood').click(function(){
         var timer = setInterval(function(){
             $('#resTime').text("응답시간 :"+ (cnt++)+"초");
         }, 1000)
 
         $.ajax({
-        contentType: "application/json; charset=utf-8",
-        type:"post",
-        dataType:'json',
-        url: '/admin/tour/tourApiUpdate',	    
-        success: function(data) {
-            alert("성공");
-            console.log(data);
-            clearTimeout(timer);
-            $('#resResult').text("결과 : 성공");
-            console.log("성공 끝");
-        },
-        error: function searchError(xhr, err) {
-            alert("에러");
-            alert(err);
-            clearTimeout(timer);
-            ('#resResult').text("결과 : 실패");
-        }
-    });
+            contentType: "application/json; charset=utf-8",
+            type:"post",
+            dataType:'json',
+            url: '/admin/tour/tourApiGetFood',	    
+            success: function(data) {
+                alert("성공");
+                console.log(data);
+                clearTimeout(timer);
+                $('#resResult').text("결과 : 성공");
+                console.log("성공 끝");
+            },
+            error: function searchError(xhr, err) {
+                alert("에러");
+                alert(err);
+                clearTimeout(timer);
+                ('#resResult').text("결과 : 실패");
+            }
+        });
     });
 
+    $('#btnDelFood').click(function(){
+        $.ajax({
+            contentType: "application/json; charset=utf-8",
+            type:"post",
+            dataType:'json',
+            url: '/admin/tour/tourApiDelFood',	    
+            success: function(data) {
+                alert("성공");
+                console.log(data);
+            },
+            error: function searchError(xhr, err) {
+                alert("에러");
+                console.log(err);
+            }
+        });
+    });
    
    
 });
@@ -56,7 +73,11 @@
 </script>
 
 <h1>투어페이지</h1>
-<button class="btn btn-primary" id="btnUpdate">업데이트</button>
+<div id="introTextDiv">
+    <span>*업데이트를 하려면 정보를 삭제 후 가져오세요!</span>
+</div>
+<button class="btn btn-primary" id="btnGetFood">음식정보가져오기</button>
+<button class="btn btn-danger" id="btnDelFood">음식정보삭제</button>
 <div>
     <span id="resTime">응답시간  </span>
 </div>

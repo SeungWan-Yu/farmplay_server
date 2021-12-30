@@ -47,6 +47,19 @@ module.exports = {
         return r3;
     },
     
+    removeTourFood :async function(foodCodeListMap){
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('webTourMapper','removeFoodAll',foodCodeListMap);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
     addTourFood :async function(itemFoodListMap){
         const connection = await pool.getConnection();
         try{
@@ -60,8 +73,22 @@ module.exports = {
         return rows;
     },
 
+    addFoodImgList :async function(itemFoodImgListMap){
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('webTourMapper','addFoodImgList',itemFoodImgListMap);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
     getFoodCodeList :async function(){
         const connection = await pool.getConnection();
+        console.log("모델체크");
         try{
             var query = mybatisMapper.getStatement('webTourMapper','getFoodCodeList',format);
             var [rows] = await connection.query(query);
@@ -86,12 +113,23 @@ module.exports = {
         return rows;
     },
 
-    updateFoodList :async function(itemFoodUpdateListMap){
+    updateFoodList :async function(itemFoodUpdateListMap,itemFoodImgListMap){
         const connection = await pool.getConnection();
+        await connection.beginTransaction();
+        var rows=[];
         try{
-            var query = mybatisMapper.getStatement('webTourMapper','updateFoodList',itemFoodUpdateListMap);
-            var [rows] = await connection.query(query);
+            var q1 = mybatisMapper.getStatement('webTourMapper','updateFoodList',itemFoodUpdateListMap);
+            var [r1] = await connection.query(q1);
+            
+            var q2 = mybatisMapper.getStatement('webTourMapper','addFoodImgList',itemFoodImgListMap);
+            var [r2] = await connection.query(q2);
+            
+            rows.push(r1);
+            rows.push(r2);
+            await connection.commit();
+
         }catch(err){
+            await connection.rollback();
             throw err;
         }finally{
             connection.release();

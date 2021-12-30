@@ -3,22 +3,10 @@
 <mapper namespace="webTourMapper">
 
 <sql id="selectBoardColumn">
-    SELECT 
-          foodCode
-        , foodTypeId
-        , foodAddr1
-        , foodAreacode
-        , foodSigunguCode
-        , foodFirstimage
-        , foodFirstimage2
-        , foodMapx
-        , foodMapy
-        , foodTitle
-        , foodReadCount
-        , foodRegDate
+ 
 </sql>    
 
-<!-- 푸드코드 가져오기 -->
+<!-- 푸드코드 리스트 가져오기 -->
 <select id="getFoodCodeList">
     SELECT 
         foodCode
@@ -26,17 +14,21 @@
         tour_food
 </select>
 
-<!-- 푸드코드 가져오기 -->
+<!-- DB업데이트 안된 푸드코드만 가져오기 -->
 <select id="getFoodCodeDbList">
     SELECT 
         foodCode
 	FROM
         tour_food
     WHERE
-        foodDbComplete = 'N';
+        foodDbIntro = 'N' 
+        OR
+        foodDbCommon = 'N'
+        OR
+        foodDbImg = 'N'
 </select>
 
-<!-- 푸드코드 업데이트 -->
+<!-- 푸드 상세정보 업데이트 -->
 <update id="updateFoodList">
     <foreach collection="itemFoodUpdateList" item="itemFood"  separator=";">
     UPDATE tour_food
@@ -51,7 +43,9 @@
 		foodPacking     =   #{itemFood.packing},
 		foodHomepage    =   #{itemFood.homepage},
 		foodOverView    =   #{itemFood.overview},
-		foodDbComplete  =   #{itemFood.dbComplete}
+		foodDbIntro     =   #{itemFood.dbIntro},
+        foodDbCommon    =   #{itemFood.dbCommon},
+        foodDbImg       =   #{itemFood.dbImg}
 	WHERE
         foodCode        =   #{itemFood.foodCode} 
     </foreach>
@@ -114,7 +108,9 @@
          ,foodMapy
          ,foodTitle
          ,foodReadCount
-         ,foodDbComplete
+         ,foodDbIntro
+         ,foodDbCommon
+         ,foodDbImg
          ,foodRegDate)
 	VALUES 
     <foreach collection="itemFoodList" item="itemFood"  separator=",">
@@ -129,12 +125,34 @@
          ,#{itemFood.mapy}
          ,#{itemFood.title}
          ,#{itemFood.readcount}
-         ,#{itemFood.dbComplete}
+         ,#{itemFood.dbIntro}
+         ,#{itemFood.dbCommon}
+         ,#{itemFood.dbImg}
          ,NOW() )
     </foreach>
    
 
 </insert>
+
+
+<!-- 음식 이미지 등록 -->
+<insert id="addFoodImgList">
+    INSERT INTO tour_food_img
+	    ( foodImgFoodCode
+        , foodImgContent
+        , foodImgDivision
+        , foodImgRegDate )
+	VALUES 
+    <foreach collection="itemFoodImgList" item="itemFoodImg"  separator=",">
+        ( #{itemFoodImg.foodCode}
+        , #{itemFoodImg.originimgurl}
+        , #{itemFoodImg.imgDivision}
+        , NOW())
+    </foreach>
+
+</insert>
+
+
 
 
 <!-- 음식 등록

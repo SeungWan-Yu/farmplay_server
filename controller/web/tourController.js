@@ -82,8 +82,29 @@ exports.tourList = function (req, res) {
 }
 
 
+exports.tourApiDelFood = async(req,res) => {
+  console.log("델");
+  var results = {result:"success" ,data:[] ,message:"empty"};
+  try {
+    var r1  =  await tourModel.getFoodCodeList();
+    if(r1.length>0){
+      var mapR1 = {"r1":r1};
+      console.log("현재 삭제 막음");
+      results.data =  await tourModel.removeTourFood(mapR1);
+   }
+   
+    
+    //results.data = await tourModel.getFarmCheck(body);
+  } catch (error) {
+      results.result = "fail";
+      results.message = error.message;
+      console.log(error);
+  }
+  res.send(results);
+}
 
-exports.tourApiUpdate =async (req, res) => {
+
+exports.tourApiGetFood =async (req, res) => {
   console.log("투어리스트컨트롤러234");
   var results = {result:"success" ,data:[] ,message:"empty"};
   //전역변수
@@ -94,7 +115,8 @@ exports.tourApiUpdate =async (req, res) => {
   var itemFoodUpdateList = [];
   var itemFoodUpdateListMap = {};
 
-
+  var itemFoodImgList = [];
+  var itemFoodImgListMap = {};
 
   //컬럼들
   const key = "wu%2BQr1R6El1Ivc8biRdmj9V4JZClWc8t%2Ff%2BA8eG82vy3Kt4txZmfSA92MBenRvoPyNLIkQUb81%2F%2BiuLX9j%2FDpw%3D%3D";
@@ -110,7 +132,8 @@ exports.tourApiUpdate =async (req, res) => {
   var contentFood = '&' + encodeURIComponent('contentTypeId') + '=' + encodeURIComponent('39');
   var defaultYN = '&' + encodeURIComponent('defaultYN') + '=' + encodeURIComponent('Y');
   var overviewYN = '&' + encodeURIComponent('overviewYN') + '=' + encodeURIComponent('Y');
-  
+  var imageY =   '&' + encodeURIComponent('imageYN') + '=' + encodeURIComponent('Y');
+  var imageN =   '&' + encodeURIComponent('imageYN') + '=' + encodeURIComponent('N');
   
   // //******************************지역 코드 api (안씀)***********************************//
 
@@ -138,17 +161,22 @@ exports.tourApiUpdate =async (req, res) => {
 
     //공통정보조회 url
   const url4 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?";
+
+
+  const url5 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailImage?";
   
   //지역코드로 지역기반 관광정보 불러오기
   var queryParams2 = serviceKey + pageNo + numOfRows + mobileApp + mobileOS + arrange + contentFood  + type;
   
+  
   try {
+    
     var obj2 = await axios.get(url2+queryParams2);
     var item2 = obj2.data.response.body.items.item;
     var item2Length = item2.length;
 
     var r1= await tourModel.getFoodCodeList();
-    var r2= await tourModel.getFoodCodeDbList();
+   
     console.log(r1.length);
     console.log(item2Length);
     console.log(r2);
@@ -168,20 +196,32 @@ exports.tourApiUpdate =async (req, res) => {
         foodMap.mapy            = item2[i].mapy+"";
         foodMap.title           = item2[i].title+"";
         foodMap.readcount       = item2[i].readcount+"";
-        foodMap.dbComplete      = "N";
+        foodMap.dbIntro         = "N";
+        foodMap.dbCommon        = "N";
+        foodMap.dbImg           = "N";
         itemFoodList.push(foodMap);
       }
       itemFoodListMap.itemFoodList = itemFoodList;
       console.log(itemFoodList);
       results.data = await tourModel.addTourFood(itemFoodListMap);
-
     };
+
+
+    var r2= await tourModel.getFoodCodeDbList();
+    if(r2.length==0){
+      console.log("가져올것 없음");
+      res.json(results);
+      return false;
+    };
+
     //var j in r2
     for(var j in r2){
-      //소개정보
+      var dbIntro = "N";
+      var dbCommon = "N";
+      var dbImg = "N";
       console.log("체크>>"+r2[j].foodCode);
       var queryParams3 = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(r2[j].foodCode) + contentFood + type;
-      var obj3 = await axios.get(url3+queryParams3,{timeout: 3000,});
+      var obj3 = await axios.get(url3+queryParams3,{timeout: 5000,});
       var item3 = obj3.data.response.body.items.item;
       if(item3==undefined){
         console.log("언디파인");
@@ -194,12 +234,29 @@ exports.tourApiUpdate =async (req, res) => {
         item3.reservationfood="undefined";
         item3.restdatefood="undefined";
         item3.packing="undefined";
+        
         console.log(item3);
       };
+      dbIntro = "Y";
+
       //공통정보
       var queryParams4 = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(r2[j].foodCode) + contentFood + defaultYN + overviewYN +type;
-      var obj4 = await axios.get(url4+queryParams4,{timeout: 3000,});
+      var obj4 = await axios.get(url4+queryParams4,{timeout: 5000,});
       var item4 = obj4.data.response.body.items.item;
+      dbCommon="Y";
+
+     
+
+      var queryParams5 = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(r2[j].foodCode) + imageY;
+      var queryParams6 = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(r2[j].foodCode) + imageN;
+
+      var obj5 = await axios.get(url5+queryParams5,{timeout: 5000,});
+      var item5 = obj5.data.response.body.items.item;
+      
+      var obj6 = await axios.get(url5+queryParams6,{timeout: 5000,});
+      var item6 = obj6.data.response.body.items.item;
+      dbImg="Y";
+
 
       var foodUpdateMap = {};
       foodUpdateMap.foodCode        = r2[j].foodCode;
@@ -211,86 +268,86 @@ exports.tourApiUpdate =async (req, res) => {
       foodUpdateMap.reservationfood = item3.reservationfood+"";
       foodUpdateMap.restdatefood    =  item3.restdatefood+"";
       foodUpdateMap.packing         = item3.packing+"";
-      foodUpdateMap.homepage         = item4.homepage+"";
-      foodUpdateMap.overview         = item4.overview+"";
-      foodUpdateMap.dbComplete       = "Y";
+      foodUpdateMap.homepage        = item4.homepage+"";
+      foodUpdateMap.overview        = item4.overview+"";
+      foodUpdateMap.dbIntro         = dbIntro;
+      foodUpdateMap.dbCommon        = dbCommon;
+      foodUpdateMap.dbImg           = dbImg;
       itemFoodUpdateList.push(foodUpdateMap);
-      console.log("끝??")
+      
+      if(item5!=undefined){
+        if(Array.isArray(item5)){
+          for(var k in item5){
+            foodImgMap = {};
+            foodImgMap.foodCode = r2[j].foodCode;
+            foodImgMap.originimgurl = item5[k].originimgurl+"";
+            foodImgMap.imgDivision = "content";
+            itemFoodImgList.push(foodImgMap);
+          };
+        }else{
+          if(item5.originimgurl!=undefined){
+            foodImgMap = {};
+            foodImgMap.foodCode = r2[j].foodCode;
+            foodImgMap.originimgurl = item5.originimgurl+"";
+            foodImgMap.imgDivision = "content";
+            itemFoodImgList.push(foodImgMap);
+          }
+        }
+      }
+     
+
+      if(item6!=undefined){
+        if(Array.isArray(item6)){
+          for(var l in item6){
+            foodImgMap2 = {};
+            foodImgMap2.foodCode = r2[j].foodCode;
+            foodImgMap2.originimgurl = item6[l].originimgurl+"";
+            foodImgMap2.imgDivision = "menu";
+            itemFoodImgList.push(foodImgMap2);
+          };
+        }else{
+          if(item6.originimgurl!=undefined){
+            foodImgMap2 = {};
+            foodImgMap2.foodCode = r2[j].foodCode;
+            foodImgMap2.originimgurl = item6.originimgurl+"";
+            foodImgMap2.imgDivision = "menu";
+            itemFoodImgList.push(foodImgMap2);
+          }
+        }
+      }
+      
+      
+    
       console.log("카운터"+j+"/"+r2.length);
+
     }
+
+    // console.log("리스트확인");
+    // console.log(itemFoodImgList);
+
+    //푸드 정보 테이블
     itemFoodUpdateListMap.itemFoodUpdateList = itemFoodUpdateList;
+    itemFoodImgListMap.itemFoodImgList = itemFoodImgList;
+    var r3= await tourModel.updateFoodList(itemFoodUpdateListMap,itemFoodImgListMap);
 
-    var r3= await tourModel.updateFoodList(itemFoodUpdateListMap);
 
-    // //for(var i in item2)
-    // for(var i in item2){  
-    //   //소개정보 
-    //   console.log(item2[i].contentid);
-    //   var queryParams3 = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(item2[i].contentid) + contentFood + type;
-    //   var obj3 = await axios.get(url3+queryParams3);
-    //   var item3 = obj3.data.response.body.items.item;
-    //   if(item3==undefined){
-    //     console.log("언디파인");
-    //     item3 = {};
-    //     item3.firstmenu="undefined";
-    //     item3.infocenterfood="undefined";
-    //     item3.opentimefood="undefined";
-    //     item3.parkingfood="undefined";
-    //     item3.treatmenu="undefined";
-    //     item3.reservationfood="undefined";
-    //     item3.restdatefood="undefined";
-    //     item3.packing="undefined";
-    //     console.log(item3);
-    //   }
+    //푸드 이미지 정보 테이블
+    //var r4= await tourModel.addFoodImgList(itemFoodImgListMap);
 
-    //   //공통정보
-    //   var queryParams4 = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(item2[i].contentid) + contentFood + defaultYN + overviewYN +type;
-    //   var obj4 = await axios.get(url4+queryParams4);
-    //   var item4 = obj4.data.response.body.items.item;
 
-    //   var foodMap = {};
-    //   foodMap.contentid       = item2[i].contentid;
-    //   foodMap.contenttypeid   = item2[i].contenttypeid+"";
-    //   foodMap.addr1           = item2[i].addr1+"";
-    //   foodMap.areacode        = item2[i].areacode+"";
-    //   foodMap.sigungucode     = item2[i].sigungucode+"";
-    //   foodMap.firstimage      = item2[i].firstimage+"";
-    //   foodMap.firstimage2     = item2[i].firstimage2+"";
-    //   foodMap.mapx            = item2[i].mapx+"";
-    //   foodMap.mapy            = item2[i].mapy+"";
-    //   foodMap.title           = item2[i].title+"";
-    //   foodMap.readcount       = item2[i].readcount+"";
-    //   foodMap.firstmenu       = item3.firstmenu+"";
-    //   foodMap.infocenterfood  = item3.infocenterfood+"";
-    //   foodMap.opentimefood    =  item3.opentimefood+"";
-    //   foodMap.parkingfood     = item3.parkingfood+"";
-    //   foodMap.treatmenu       = item3.treatmenu+"";
-    //   foodMap.reservationfood = item3.reservationfood+"";
-    //   foodMap.restdatefood    =  item3.restdatefood+"";
-    //   foodMap.packing         = item3.packing+"";
-    //   foodMap.homepage         = item4.homepage+"";
-    //   foodMap.overview         = item4.overview+"";
-
-    //   itemFoodList.push(foodMap);
-    //   console.log("카운터"+i+"/"+item2Length);
-
-    //   if(i % 100==0){
-    //     await timer(3000);
-    //   }
-
-    // }
-    // itemFoodListMap.itemFoodList = itemFoodList;
-    // console.log(itemFoodListMap);
-    // console.log(itemFoodListMap.itemFoodList.length);
-    // console.log(itemFoodListMap.itemFoodList[0].firstimage);
-    // results.data = await tourModel.setFoodList(itemFoodListMap);
-    // if(results.data.affectedRows!=0)results.message = "exist";
+    
 
   } catch (error) {
     console.log("에러화면");
     console.log(itemFoodUpdateList);
+
+
     itemFoodUpdateListMap.itemFoodUpdateList = itemFoodUpdateList;
-    var r4= await tourModel.updateFoodList(itemFoodUpdateListMap);
+    itemFoodImgListMap.itemFoodImgList = itemFoodImgList;
+    var r4= await tourModel.updateFoodList(itemFoodUpdateListMap,itemFoodImgListMap);
+
+
+
     results.result = "fail";
     results.message = error.message;
     console.log(error);

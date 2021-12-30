@@ -2,7 +2,6 @@ var express = require('express');
 var multer = require('multer'); // multer모듈 적용 (for 파일업로드)
 
 
-
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/uploads/') // cb 콜백함수를 통해 전송된 파일 저장 디렉토리 설정
@@ -36,9 +35,11 @@ var date = now.toString()
 // }, 60000);
 
 
-router.use('/v1', require('./V1'))
-router.use('/admin', require('./Web'))
-
+router.use('/v1', require('./V1'));
+router.use('/admin', require('./Web'));
+router.get('/', (req, res, next) => {
+  return res.render("../pages/main");
+});
 
 var results = {
     result : "성공"
