@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { tourController } = require('../../controller/v1');
 
-router.get('/food',tourController.getFoodList);
+router.post('/food',tourController.getFoodList);
 router.get('/lodgment',tourController.getLodgmentList);
 router.get('/attractions',tourController.getAttractionsList);
 router.get('/culture',tourController.getCultureList);

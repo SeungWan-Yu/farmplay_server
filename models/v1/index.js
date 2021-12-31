@@ -4,7 +4,7 @@ const recruitModel = require('./recruit.model');
 const reviewModel = require('./review.model');
 const userModel = require('./user.model');
 const webViewModel = require('./webView.model');
-
+const tourModel = require('./tour.model');
 
 module.exports = {
   farmModel,
@@ -13,4 +13,5 @@ module.exports = {
   reviewModel,
   userModel,
   webViewModel,
+  tourModel,
 }

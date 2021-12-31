@@ -1,74 +1,25 @@
+const {tourModel} = require("../../models/v1");
 
-exports.getFoodList = ( req,res,next) => {
-    const marker = [
-        {
-            name : "대성 짬뽕",
-            contents:"전라북도 전주시 덕진구 반룡로 109 A동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 10,
-            img : "food.jpeg"
-        },
-        {
-            name : "대성 국수",
-            contents:"전라북도 전주시 덕진구 반룡로 109 B동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 12,
-            img : "food.jpeg"
-        },{
-            name : "대성 짬뽕",
-            contents:"전라북도 전주시 덕진구 반룡로 109 A동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 10,
-            img : "food.jpeg"
-        },
-        {
-            name : "대성 국수",
-            contents:"전라북도 전주시 덕진구 반룡로 109 B동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 12,
-            img : "food.jpeg"
-        },{
-            name : "대성 짬뽕",
-            contents:"전라북도 전주시 덕진구 반룡로 109 A동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 10,
-            img : "food.jpeg"
-        },
-        {
-            name : "대성 국수",
-            contents:"전라북도 전주시 덕진구 반룡로 109 B동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 12,
-            img : "food.jpeg"
-        },{
-            name : "대성 짬뽕",
-            contents:"전라북도 전주시 덕진구 반룡로 109 A동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 10,
-            img : "food.jpeg"
-        },
-        {
-            name : "대성 국수",
-            contents:"전라북도 전주시 덕진구 반룡로 109 B동",
-            latitude : 35.82430626863803,
-            longitude : 127.14801122677846,
-            like : 12,
-            img : "food.jpeg"
-        }
-    ]
-    console.log(marker)
-    res.send(marker)
+
+exports.getFoodList = async(req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    var body = req.body;
+    console.log("바디체크");
+    console.log(body);
+    try {
+        results.data = await tourModel.getTourFoodList(body);
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }
+    res.send(results); 
 };
 
-exports.getLodgmentList = ( req,res,next) => {
 
+exports.getLodgmentList = ( req,res,next) => {
+    
     const marker = [
         {
             name : "대성 호텔",

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tourMapper">
+
+
+    <sql id="selectBoardColumn">
+        SELECT 
+             foodCode
+            ,foodTypeId
+            ,foodAddr1
+            ,foodAreacode
+            ,foodSigunguCode
+            ,foodFirstimage
+            ,foodFirstimage2
+            ,foodMapx
+            ,foodMapy
+            ,foodTitle
+            ,foodReadCount
+            ,foodFirstMenu
+            ,foodTreatMenu
+            ,foodTel
+            ,foodOpenTime
+            ,foodParking
+            ,foodReservation
+            ,foodRestDate
+            ,foodPacking
+            ,foodHomepage
+            ,foodOverView
+    </sql>    
+
+    <!-- 위치기반 음식점 가져오기 30km 반경내-->
+    <select id="getTourFoodList">
+        SELECT 
+             TbB.foodCode
+            ,IFNULL(TbD.foodContentImg,'undefined') AS foodContentImg
+	        ,IFNULL(TbD.foodMenuImg,'undefined') AS foodMenuImg
+            ,TbB.foodTypeId
+            ,TbB.foodAddr1
+            ,TbB.foodAreacode
+            ,TbB.foodSigunguCode
+            ,TbB.foodFirstimage
+            ,TbB.foodFirstimage2
+            ,TbB.foodMapx
+            ,TbB.foodMapy
+            ,TbB.foodTitle
+            ,TbB.foodReadCount
+            ,TbB.foodFirstMenu
+            ,TbB.foodTreatMenu
+            ,TbB.foodTel
+            ,TbB.foodOpenTime		
+            ,TbB.foodParking		
+            ,TbB.foodReservation		
+            ,TbB.foodRestDate		
+            ,TbB.foodPacking		
+            ,TbB.foodHomepage		
+            ,TbB.foodOverView													
+            ,TbB.foodDistance
+            ,TbB.foodTitle 
+
+        From
+            (SELECT 
+                foodCode
+                ,foodTypeId
+                ,foodAddr1
+                ,foodAreacode
+                ,foodSigunguCode
+                ,foodFirstimage
+                ,foodFirstimage2
+                ,foodMapx
+                ,foodMapy
+                ,foodTitle
+                ,foodReadCount
+                ,foodFirstMenu
+                ,foodTreatMenu
+                ,foodTel
+                ,foodOpenTime
+                ,foodParking
+                ,foodReservation
+                ,foodRestDate
+                ,foodPacking
+                ,foodHomepage
+                ,foodOverView
+                ,ROUND((6371*acos(cos(RADIANS(#{uLatitude}))*cos(RADIANS(foodMapy))
+                *cos(RADIANS(foodMapx) -RADIANS(#{uLongitude}))
+                +sin(RADIANS(#{uLatitude}))*sin(RADIANS(foodMapy)))),1) AS
+                foodDistance 
+            FROM 
+                tour_food 
+            WHERE 
+                foodCode IN 
+                    (SELECT foodCode From
+                        (SELECT 
+                            ROUND((6371*acos(cos(RADIANS(#{uLatitude}))*cos(RADIANS(foodMapy))
+                            *cos(RADIANS(foodMapx) -RADIANS(#{uLongitude}))
+                            +sin(RADIANS(#{uLatitude}))*sin(RADIANS(foodMapy)))),1) 
+                            AS foodDistance, 
+                            foodCode
+                        FROM 
+                            tour_food 
+                        <![CDATA[ HAVING foodDistance <= 30]]>) 
+                    AS TbA)
+            ) AS TbB
+            
+        LEFT JOIN
+            
+            (SELECT 
+                foodImgFoodCode
+                ,GROUP_CONCAT(DISTINCT foodImgDivision order by foodImgFoodCode) AS foodImgDivision
+                ,GROUP_CONCAT(DISTINCT if(foodImgDivision='content',(foodImgContent),NULL)  order by foodImgFoodCode) AS foodContentImg
+                ,GROUP_CONCAT(DISTINCT if(foodImgDivision='menu',(foodImgContent),NULL) order by foodImgFoodCode) AS foodMenuImg
+            FROM 
+                tour_food_img 
+            WHERE 
+                foodImgFoodCode IN 
+                    (SELECT foodCode From
+                        (SELECT 
+                            ROUND((6371*acos(cos(RADIANS(#{uLatitude}))*cos(radians(foodMapy))
+                            *cos(radians(foodMapx) -RADIANS(#{uLongitude}))
+                            +sin(RADIANS(#{uLatitude}))*sin(radians(foodMapy)))),1) 
+                            AS foodDistance, 
+                            foodCode
+                        FROM 
+                            tour_food 
+                        <![CDATA[ HAVING foodDistance <= 30]]>)
+                    AS TbC)
+            
+            GROUP BY 
+                foodImgFoodCode
+            ) AS TbD
+        ON
+            TbB.foodCode = TbD.foodImgFoodCode
+        ORDER BY foodDistance
+
+
+<!-- 
+         <include refid="selectBoardColumn"></include>
+            ,ROUND((6371*acos(cos(radians(#{uLatitude}))*cos(radians(foodMapy))
+            *cos(radians(foodMapx) -radians(#{uLongitude}))
+            +sin(radians(#{uLatitude}))*sin(radians(foodMapy)))),1) 
+            AS foodDistance
+        FROM 
+            tour_food 
+        <![CDATA[ HAVING foodDistance <= 30]]>
+        ORDER BY foodDistance; -->
+    </select>
+
+  
+
+</mapper>
