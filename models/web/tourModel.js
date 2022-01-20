@@ -60,6 +60,52 @@ module.exports = {
         return rows;
     },
 
+    addTour :async function(itemListMap){
+        console.log("모델체크");
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('webTourMapper','addTour',itemListMap);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            console.log(err);
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
+    getDbTourList :async function(){
+        console.log("모델체크");
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('webTourMapper','getDbTourList');
+            var [rows] = await connection.query(query);
+        }catch(err){
+            console.log(err);
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
+    addTourLodgment :async function(itemLodgmentListMap){
+        console.log("모델체크");
+        console.log(itemLodgmentListMap);
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('webTourMapper','addTourLodgment',itemLodgmentListMap);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            console.log(err);
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
     addTourFood :async function(itemFoodListMap){
         const connection = await pool.getConnection();
         try{
@@ -77,6 +123,20 @@ module.exports = {
         const connection = await pool.getConnection();
         try{
             var query = mybatisMapper.getStatement('webTourMapper','addFoodImgList',itemFoodImgListMap);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
+    getLodgmentCodeList :async function(){
+        const connection = await pool.getConnection();
+        console.log("모델체크");
+        try{
+            var query = mybatisMapper.getStatement('webTourMapper','getLodgmentCodeList',format);
             var [rows] = await connection.query(query);
         }catch(err){
             throw err;

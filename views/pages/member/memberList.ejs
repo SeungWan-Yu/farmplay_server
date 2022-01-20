@@ -14,11 +14,14 @@
         
     // });
     var data = "<%-data%>";
-    if(data=="실패"){
-        var msg = "<%-msg.message%>";
-        alert("에러메세지 콘솔창 확인");
-        console.log(msg);
+    var result = "<%-result%>";
+    var message = "<%-message%>";
+
+    if(result=="fail"){
+        alert("서버에러 : "+message);
+        console.log(message);
     }
+    
     
 
     /****************************** 삭제 버튼 클릭이벤트******************************/    
@@ -39,9 +42,37 @@
     $('.delUser').click(function(){
         var msg = $('#message-text').val();
             if(msg=="삭제"){
-                location.href = "/admin/member/memberDel?id="+setId+""
+
+                var delUrl = "/admin/member/memberDel";
+                var sendData = {"id":setId};
+
+                $.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    type:"post",
+                    dataType:'json',
+                    data: JSON.stringify(sendData),
+                    url: delUrl,
+                    success: function(data) {
+                        console.log(data);
+                        if(data.result=="success"){
+                            if(data.message=="exist"){
+                                location.href = "/admin/member/memberList"
+                            }else{
+                                alert("실패 : 삭제되지 않음(affectedRows zero");
+                            }
+                        }else{
+                            alert("실패 관리자에게문의 : 서버에러-"+data.message);
+                            console.log(data.message);
+                        }
+                    },
+                    error: function searchError(xhr, err) {
+                        alert("통신에러"+err);
+                        console.log(err);
+                    }
+                }); 
+    
             }else{
-                
+                alert("입력이 잘못되었습니다");
             };
     });
     /****************************** 삭제 버튼 클릭이벤트 끝******************************/  
@@ -115,26 +146,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% for(var i in data){ %>
-                        <tr>
-                            <td class="uid"><%=data[i].user_id%></td>
-                            <td><%=data[i].user_name%></td>
-                            <td><%=data[i].user_phone%></td>
-                            <td><%=data[i].user_adress%></td>
-                            <td><%=data[i].user_adress_detail%></td>
-                            <td><%=data[i].farm_code%></td>
-                            <td style="text-align: center;">
-                                <a href="#" class="btn btn-info editBtn">
-                                    <i class="fas fa-wrench"></i>
-                                </a> 
-                            </td>
-                            <td style="text-align: center;">
-                                <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo">
-                                    <i class="fas fa-trash"></i>
-                                </a>     
-                            </td>
-                        </tr>
-                        <% } %>
+                        <% if(data != null && data.length > 0){ %>
+                            <% for(var i in data){ %>
+                            <tr>
+                                <td class="uid"><%=data[i].userId%></td>
+                                <td><%=data[i].userName%></td>
+                                <td><%=data[i].userPhone%></td>
+                                <td><%=data[i].userAdress%></td>
+                                <td><%=data[i].userAdressDetail%></td>
+                                <td><%=data[i].userFarmCode%></td>
+                                <td style="text-align: center;">
+                                    <a href="#" class="btn btn-info editBtn">
+                                        <i class="fas fa-wrench"></i>
+                                    </a> 
+                                </td>
+                                <td style="text-align: center;">
+                                    <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo">
+                                        <i class="fas fa-trash"></i>
+                                    </a>     
+                                </td>
+                            </tr>
+                            <% } %>
+                        <% }%>
                     </tbody>
                 </table>
             </div>

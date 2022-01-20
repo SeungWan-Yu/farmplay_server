@@ -4,8 +4,12 @@ const { tourController } = require('../../controller/web')
 // Route 는 오직 Controller 에만 의존 합니다.
 
 router.get('/tourList', tourController.tourList);
+router.post('/tourApiGet', tourController.tourApiGet);
+router.post('/tourApiTest', tourController.tourApiTest);
+router.post('/tourApiDetailGet', tourController.tourApiDetailGet);
 router.post('/tourApiGetFood', tourController.tourApiGetFood);
 router.post('/tourApiDelFood', tourController.tourApiDelFood);
+router.post('/tourApiGetLodgment', tourController.tourApiGetLodgment);
 router.get('/restaurant', tourController.getRestaurant);
 router.post('/restaurantCrawl', tourController.getRestaurantCrawl);
 

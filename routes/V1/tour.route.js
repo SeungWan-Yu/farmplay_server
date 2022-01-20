@@ -7,6 +7,6 @@ router.get('/lodgment',tourController.getLodgmentList);
 router.get('/attractions',tourController.getAttractionsList);
 router.get('/culture',tourController.getCultureList);
 router.get('/shopping',tourController.getShoppingList);
-
+router.post('/tour',tourController.getTour);
 
 module.exports = router;

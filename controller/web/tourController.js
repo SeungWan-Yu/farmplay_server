@@ -1,6 +1,7 @@
 const tourModel = require("../../models/web/tourModel");
 const axios = require('axios');
 const timer = ms => new Promise(res=>setTimeout(res,ms));
+var tourApiModule = require("../../custom_modules/tourApiModule");
 // const puppeteer = require('puppeteer');
 
 //전역함수
@@ -104,6 +105,200 @@ exports.tourApiDelFood = async(req,res) => {
 }
 
 
+exports.tourApiTest = async(req,res) => {
+  console.log("바디체크");
+  console.log(req.body);
+  console.log("테스트페이지");
+  var tpyeId = 39;
+  var mapx = "126.981611";
+  var mapy = "37.568477";
+  var pageNo = 1;
+
+  var results = {result:"success" ,data:[] ,message:"empty"};
+  try {
+    var api1 = await tourApiModule.getTourLocation(tpyeId,mapx,mapy,pageNo);
+    if(api1.result=="success"){
+      results.data = api1.data;
+      results.message = "exist";
+    }else{
+      throw Error("api Error");
+    }
+    console.log("결과값");
+    // console.log(api1);
+
+  } catch (error) {
+      console.log("에러테스트");
+      results.result = "fail";
+      results.message = error.message;
+      console.log(error);
+  }
+  console.log("최종결과값 출력");
+  console.log(results);
+  res.send(results);
+}
+
+
+exports.tourApiGet = async(req,res) => {
+  console.log("관광메인정보가져오기");
+  var results = {result:"success" ,data:[] ,message:"empty"};
+  try {
+    //1. 지역기반 숙박 정보 가져오기 (전체 가져오려면 명소대신 관광 넣고 아래 for문 주석제거)
+    var api1 = await tourApiModule.getTourArea("명소");
+    var d1 = api1.data;
+    console.log("호출끝");
+    if(api1.result=="success"){
+
+      // for(i in d1){
+      //   //39:음식 , 32:숙박 , 38: 쇼핑, 14: 문화 , 12: 명소
+      //   if(d1[i].contenttypeid!=39 || d1[i].contenttypeid!=32 || d1[i].contenttypeid!=38 || d1[i].contenttypeid!=14 || d1[i].contenttypeid!=12 ){
+      //       d1.splice(i,1);
+      //   };
+      // };
+      
+      api1.data = d1;
+      console.log(d1);
+      console.log("데이터가공끝");
+      console.log(d1.length)
+      r1 = await tourModel.addTour(api1);
+      console.log("r1결과값");
+      console.log(r1);
+
+    }else{
+      console.log("에이파이에러");
+      results.result = "fail";
+      results.message = api1.message;
+      console.log(api1.message);
+
+      // //타임아웃 로직
+      // if(api1.message.includes("timeout")){
+      //   console.log("타임아웃");
+      //   exports.tourApiGet();
+      // }
+      
+    }
+
+  } catch (error) {
+    console.log("DB에러");
+    results.result = "fail";
+    results.message = error.message;
+    console.log(error);
+    return false
+  }
+  res.send(results);
+}
+
+exports.tourApiDetailGet = async(req,res) => {
+  console.log("관광상세정보가져오기");
+  var results = {result:"success" ,data:[] ,message:"empty"};
+  try {
+    r1 = await tourModel.getDbTourList(); 
+    console.log(r1);
+    
+    // var i=0;i<4;i++
+    // var i in r1
+    for(var i=0;i<4;i++){
+      var contentId  = getConId(r1[i].tourContentId);
+
+      var dataMap = {}
+      var api1 = await tourApiModule.getTourIntro(r1[i].tourContentTypeId,contentId);
+      var api2 = await tourApiModule.getTourCommon(r1[i].tourContentTypeId,contentId);
+
+      if(api1.result=="success" && api2.result=="success"){
+        console.log("db저장");
+
+      }else{
+        console.log("에러");
+        //타임아웃 로직
+        if(api1.message.includes("timeout") || api2.message.includes("timeout")){
+          console.log("타임아웃");
+          exports.tourApiGet();
+        }
+      }
+      
+      console.log(j+"/"+r2.length);
+
+
+
+    }
+
+
+
+    //소개정보
+  } catch (error) {
+    console.log("DB에러");
+    results.result = "fail";
+    results.message = error.message;
+    console.log(error);
+    return false
+  }
+  res.send(results);
+}
+
+
+
+exports.tourApiGetLodgment = async(req,res) => {
+  console.log("숙박 에이피아이");
+  var results = {result:"success" ,data:[] ,message:"empty"};
+  var itemLodgmentList = [];
+  var itemLodgmentListMap = {};
+  try {
+
+    //1. 지역기반 숙박 정보 가져오기
+    var api1 = await tourApiModule.getTourArea("숙박");
+    var d1 = api1.data;
+    console.log(api1.data.length);
+    if(d1.length==0){
+      if(api1.result=="success"){
+        for(var i in d1){  
+          var LodgmentMap = {};
+          LodgmentMap.contentid       = d1[i].contentid;
+          LodgmentMap.contenttypeid   = d1[i].contenttypeid+"";
+          LodgmentMap.addr1           = d1[i].addr1+"";
+          LodgmentMap.areacode        = d1[i].areacode+"";
+          LodgmentMap.sigungucode     = d1[i].sigungucode+"";
+          LodgmentMap.firstimage      = d1[i].firstimage+"";
+          LodgmentMap.mapx            = d1[i].mapx+"";
+          LodgmentMap.mapy            = d1[i].mapy+"";
+          LodgmentMap.title           = d1[i].title+"";
+          LodgmentMap.readcount       = d1[i].readcount+"";
+          LodgmentMap.tel             = d1[i].tel+"";     
+          LodgmentMap.dbIntro         = "N";
+          LodgmentMap.dbCommon        = "N";
+          LodgmentMap.dbImg           = "N";
+          itemLodgmentList.push(LodgmentMap);
+        }
+        itemLodgmentListMap.itemLodgmentList = itemLodgmentList;
+        r1 = await tourModel.addTourLodgment(itemLodgmentListMap);
+      }else{
+        throw Error("api1Error");
+      }
+    }
+
+    //2. 소개정보 가져오기
+    r2 = await tourModel.getLodgmentCodeList(); 
+    console.log(r2);   
+    for(var j in r2){
+      var contentId  = getConId(r2[j].code);
+
+      var api2 = await tourApiModule.getTourIntro("숙박",contentId);
+      var api3 = await tourApiModule.getTourCommon("숙박",contentId);
+
+      console.log(j+"/"+r2.length);
+
+
+
+    }
+
+  
+
+   
+  } catch (error) {
+    console.log(error);
+  }
+  res.send(results);
+}
+
+
 exports.tourApiGetFood =async (req, res) => {
   console.log("투어리스트컨트롤러234");
   var results = {result:"success" ,data:[] ,message:"empty"};
@@ -159,10 +354,10 @@ exports.tourApiGetFood =async (req, res) => {
    //소개정보조회 url
   const url3 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailIntro?";
 
-    //공통정보조회 url
+  //공통정보조회 url
   const url4 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?";
 
-
+  //이미지정보조회 url
   const url5 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailImage?";
   
   //지역코드로 지역기반 관광정보 불러오기

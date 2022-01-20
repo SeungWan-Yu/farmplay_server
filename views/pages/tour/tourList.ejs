@@ -14,6 +14,8 @@
     .area_list01 li span{position: relative; top:0px; left:0px; display: block;}
     .farmTable{font-size: 12px;}
     #introTextDiv{color: red; margin-bottom: 20px;}
+    #timer{margin-top: 50px;}
+    .getApi{margin-top: 20px;}
 </style>
 
 <script type="text/javascript">
@@ -23,47 +25,66 @@
 
 
     var cnt = 1;
-    $('#btnGetFood').click(function(){
+    $('.btnGetApi').click(function(){
+        var tourUrl = "";
+        var btnText = $(this).text();
+        
+        //타이머 시작
         var timer = setInterval(function(){
             $('#resTime').text("응답시간 :"+ (cnt++)+"초");
         }, 1000)
-
-        $.ajax({
-            contentType: "application/json; charset=utf-8",
-            type:"post",
-            dataType:'json',
-            url: '/admin/tour/tourApiGetFood',	    
-            success: function(data) {
-                alert("성공");
-                console.log(data);
-                clearTimeout(timer);
-                $('#resResult').text("결과 : 성공");
-                console.log("성공 끝");
-            },
-            error: function searchError(xhr, err) {
-                alert("에러");
-                alert(err);
-                clearTimeout(timer);
-                ('#resResult').text("결과 : 실패");
-            }
+        
+        if(btnText=="관광메인정보가져오기"){
+            tourUrl = '/admin/tour/tourApiGet';
+        }else if(btnText=="음식정보가져오기"){
+            // tourUrl = '/admin/tour/tourApiGetFood';
+        }else if(btnText=="숙박정보가져오기"){
+            tourUrl = '/admin/tour/tourApiGetLodgment';
+        }else if(btnText=="관광세부정보가져오기"){
+            tourUrl = '/admin/tour/tourApiDetailGet';
+        }else if(btnText=="관광테스트"){
+            tourUrl = '/admin/tour/tourApiTest';
+        }
+        
+        console.log("에이작스시작")
+        console.log(tourUrl);
+         $.ajax({
+                contentType: "application/json; charset=utf-8",
+                type:"post",
+                dataType:'json',
+                url: tourUrl,	    
+                success: function(data) {
+                    alert("성공");
+                    console.log(data);
+                    clearTimeout(timer);
+                    $('#resResult').text("결과 : 성공");
+                    console.log("성공 끝");
+                },
+                error: function searchError(xhr, err) {
+                    alert("에러");
+                    alert(err);
+                    clearTimeout(timer);
+                    ('#resResult').text("결과 : 실패");
+                }
         });
+       
     });
 
-    $('#btnDelFood').click(function(){
-        $.ajax({
-            contentType: "application/json; charset=utf-8",
-            type:"post",
-            dataType:'json',
-            url: '/admin/tour/tourApiDelFood',	    
-            success: function(data) {
-                alert("성공");
-                console.log(data);
-            },
-            error: function searchError(xhr, err) {
-                alert("에러");
-                console.log(err);
-            }
-        });
+    $('.btnDelApi').click(function(){
+        // $.ajax({
+        //     contentType: "application/json; charset=utf-8",
+        //     type:"post",
+        //     dataType:'json',
+        //     url: '/admin/tour/tourApiDelFood',	    
+        //     success: function(data) {
+        //         alert("성공");
+        //         console.log(data);
+        //     },
+        //     error: function searchError(xhr, err) {
+        //         alert("에러");
+        //         console.log(err);
+        //     }
+        // });
     });
    
    
@@ -76,9 +97,31 @@
 <div id="introTextDiv">
     <span>*업데이트를 하려면 정보를 삭제 후 가져오세요!</span>
 </div>
-<button class="btn btn-primary" id="btnGetFood">음식정보가져오기</button>
-<button class="btn btn-danger" id="btnDelFood">음식정보삭제</button>
-<div>
+
+<div class="getApi">
+    <button class="btn btn-primary btnGetApi">관광테스트</button>
+</div>
+
+<div class="getApi">
+    <button class="btn btn-primary btnGetApi">관광메인정보가져오기</button>
+    <button class="btn btn-danger btnDelApi">관광메인정보삭제</button>
+</div>
+
+<div class="getApi">
+    <button class="btn btn-primary btnGetApi">관광세부정보가져오기</button>
+    <button class="btn btn-danger btnDelApi">관광세부정보삭제</button>
+</div>
+
+
+<div class="getApi">
+    <button class="btn btn-primary btnGetApi">음식정보가져오기</button>
+    <button class="btn btn-danger btnDelApi">음식정보삭제</button>
+</div>
+<div class="getApi">
+    <button class="btn btn-primary btnGetApi">숙박정보가져오기</button>
+    <button class="btn btn-danger btnDelApi">숙박정보삭제</button>
+</div>
+<div id="timer">
     <span id="resTime">응답시간  </span>
 </div>
 

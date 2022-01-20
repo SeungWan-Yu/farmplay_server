@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webRecruitMapper">
+
+    <sql id="selectBoardColumn">
+        SELECT 
+            recuritCode
+            ,recuritFarmCode
+            ,recuritState
+            ,recuritUserId
+            ,recuritStart
+            ,recuritEnd
+            ,recuritJobStart
+            ,recuritJobEnd
+            ,recuritJobKind
+            ,recuritMealProvide
+            ,recuritMealVeget
+            ,recuritMealMemo
+            ,recuritChkFampler
+            ,recuritChkPeriod
+            ,recuritChkMinor
+            ,recuritChkMinorMemo
+            ,recuritChkMax
+            ,recuritChkSummary
+            <!-- ,recuritRegDate
+            ,recuritEndDate -->
+    </sql>    
+
+
+    
+
+    <!-- 모집 리스트 가져오기 -->
+    <select id="getRecruitList">
+    <include refid="selectBoardColumn"></include>
+            ,farmState
+            ,farmAskDate
+            ,farmRegDate
+            ,farmImg
+            ,farmName
+            ,farmStartOpen
+            ,farmProduce
+            ,farmType
+            ,farmerIntro
+            ,farmAddr
+            ,farmAddrDetail
+            ,farmRoomInternet
+            ,farmRoomSite
+            ,farmRoomInfo
+            ,farmRoom
+            ,farmRoomUnisex
+            ,farmRoomEtc
+            ,userName
+            ,farmRating
+            ,farmReviewCnt
+        FROM
+            farm_recurit
+    </select>
+    
+
+
+
+</mapper>

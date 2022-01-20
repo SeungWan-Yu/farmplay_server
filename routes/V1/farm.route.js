@@ -5,7 +5,7 @@ const { farmController } = require('../../controller/v1');
 
 
 //#getFarmList
-router.get('/', farmController.getFarmList);
+router.post('/', farmController.getFarmList);
 
 //#addFarm
 router.post('/',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),farmController.addFarm);

@@ -1,6 +1,6 @@
 const memberModel = require("../../models/web/memberModel");
-
-
+const pool = require('../../configs/mysql2-db');
+const fs = require( "fs" );
 
 //파일 삭제함수
 function dFile(path){
@@ -22,76 +22,84 @@ function dFile(path){
 }
 
 
-exports.memberList = async function(){
-    var results = {result:"", msg:"성공"};
+exports.memberList = async (req,res) => {
+    console.log("멤버리스트");
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
     try {
-        results.result = await memberModel.getUserList();
+        results.data = await memberModel.getUserList(con);
+        if(results.data.length>0)results.message = "exist";
     } catch (error) {
-        results.result = "실패";
-        results.msg = error;
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
+        res.render("../pages/member/memberList",results);
     }
-    console.log("리턴값체크");
-    console.log(results);
-    return results;
+
 }
 
-// exports.memberList = function (req, res) {
-//     memberModel.getUserList().then(function(data){
-//         console.log("하이");
-//         console.log(data)
-//         res.render("../pages/member/memberList",{data:data});
-//     })
-   
-// }
-
-exports.memberDel = function (req, res) {
-    
-    var uId = req.param("id");
-    console.log("아아디>>>"+uId);
-
-    memberModel.delUser(uId).then(function(data){
-        console.log(data);
-    })
-
-    res.redirect("/admin/member/memberList");
+exports.memberDel = async (req,res) => {
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        var body = req.body;
+        console.log(body);
+        results.data = await memberModel.removeUser(con,body);
+        if(results.data.affectedRows!=0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
+        res.send(results);
+    }
 }
 
-exports.memberEdit = async function (req, res) {
-    
-    var uId = req.param("id");
-    console.log("아아디>>>"+uId);
-
-    var data = await memberModel.getOneUser(uId);
-    console.log("여깅>>>>"+data);
-    console.log(data);
-    res.render("../pages/member/memberEdit",{data:data});
-    
-    //async를 사용하면 콜백지옥에서 벗어날 수 있어 data를 전역변수로 쓸수 있다 await 기다렸다가 아래 코드가 실행된다
-    //조건처리해서 모델을 두번 이상 호출할때는 호출코드에 await를 또 붙여서 사용하면 된다.
-
-    
+exports.memberEdit = async (req,res) => {
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        var id = {"id" : req.param("id")};
+        console.log(id);
+        results.data = await memberModel.getOneUser(con,id);
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
+        res.render("../pages/member/memberEdit",results);
+    }
 }
 
 
 exports.editMember = async function (req, res) {
     console.log("수정페이지")
-    var user = req.body;
-    console.log(user.uId);
-
-
-    var data = await memberModel.updateUser(user);
-    console.log("업데이트 완료>>>>"+data);
-    console.log(data);
-    res.redirect("/admin/member/memberList");
-    
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        var body = req.body;
+        console.log(body);
+        results.data = await memberModel.updateUser(con,body);
+        if(results.data.changedRows!=0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        console.log(results);
+        con.release();
+        res.redirect("/admin/member/memberList");
+    }
 }
 
 exports.sendNotice = function (req, res) {
-    console.log("공지보내기11");
-
-   
-    const fs = require( "fs" );
-    const file = fs.readdirSync("public/uploads_push","utf8")
+    console.log("공지보내기");
+    const file = fs.readdirSync("public/uploads_push","utf8");
     console.log("파일길이>>"+file.length);
     res.render("../pages/member/sendNotice",{fileLen:file.length});
 }

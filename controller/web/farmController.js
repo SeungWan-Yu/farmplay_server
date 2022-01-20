@@ -245,7 +245,7 @@ exports.farmConfirm =async function (req, res) {
                 message : JSON.stringify({
                     type:'farmConfirm',
                     title: '농가등록완료',
-                    content: '신청하신 농가 등록이 완료되었습니다.',
+                    content: '신청하신 농가 등록이 완료되었습니다. 다시 로그인 해주세요',
                     imgUrl : '',
                 })  
             },
@@ -261,6 +261,6 @@ exports.farmConfirm =async function (req, res) {
 
 
     }
-
+    
     res.json(resString);
 }

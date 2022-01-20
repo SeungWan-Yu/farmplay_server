@@ -78,8 +78,11 @@ exports.getFarmCheck = async(req,res) => {
 
 exports.getFarmList = async(req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
+    var body = req.body;
+    console.log("바디체크");
+    console.log(body);
     try {
-        results.data = await farmModel.getFarmList();
+        results.data = await farmModel.getFarmList(body);
         if(results.data.length>0)results.message = "exist";
     } catch (error) {
         results.result = "fail";
@@ -226,6 +229,7 @@ exports.updateFarm = async(req,res) => {
             console.log(error);
         }
     }
+    console.log(results);
     res.send(results); 
 };
 

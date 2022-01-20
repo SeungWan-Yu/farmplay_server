@@ -45,10 +45,10 @@ exports.getUserImgRating = async (req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
     var farmstate = body.farmstate;
     try {
-        if(farmstate=="1"){
+        if(farmstate=="1" || farmstate=="3"){
             console.log("일반유저");
             results.data = await userModel.getUserImgRating(body);
-        }else if(farmstate=="2"){
+        }else if(farmstate=="2" || farmstate=="4"){
             console.log("농가유저");
             results.data = await userModel.getUserImgRatingFarm(body);
         }
@@ -122,6 +122,7 @@ exports.getIdCheck = async (req,res) => {
 
 
 exports.addUser = async (req,res) => {
+    console.log("유저등록");
     var body = req.body;
     var results = {result:"success" ,data:[] ,message:"empty"};
     try {
@@ -375,6 +376,36 @@ exports.getCertification = async (req,res) => {
 
 };
 
+exports.updateChkToken = async (req,res) => {
+    var body = req.body;
+    console.log("바디체크합니다")
+    console.log(body);
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        r1 = await userModel.getUserToken(body);
+        var token = r1[0].userToken
+        console.log(r1);
+        console.log(r1[0].userToken);
+        if(token != body.token){
+            console.log("다름 업데이트시작")
+            results.data = await userModel.updateUserToken(body);
+            if(results.data.changedRows>0)results.message = "exist";
+            console.log("체인지로우>>>"+results.data.changedRows);
+        }else{
+            results.message = "equals";
+            console.log("같음 무시");
+        }
+        
+        // if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }
+    console.log("결과체크")
+    console.log(results)
+    res.send(results);
+};
 
 
 

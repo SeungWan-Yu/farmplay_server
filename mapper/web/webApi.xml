@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webApiMapper">
+
+    <sql id="selectBoardColumn">
+        SELECT 
+             apiCode
+            ,apiDivision
+            ,apiCrud
+            ,apiName
+            ,apiCnt
+            ,apiExplan
+            ,apiUrl
+            ,apiMethod
+            ,apiReqParam
+            ,apiReqParamKor
+            ,apiResParam
+            ,apiResParamKor
+            ,apiDetailExplan
+            ,apiRegDate
+    </sql>    
+
+    <!-- api 등록 -->
+    <insert id ="addApi">
+        INSERT INTO api
+            ( apiDivision
+            , apiCrud
+            , apiName
+            , apiCnt
+            , apiExplan
+            , apiUrl
+            , apiMethod
+            , apiReqParam
+            , apiReqParamKor
+            , apiResParam
+            , apiResParamKor
+            , apiDetailExplan
+            , apiRegDate )
+        VALUES 
+            ( #{apiDivision}
+            , #{apiCrud}
+            , #{apiName}
+            , #{apiCnt}
+            , #{apiExplan}
+            , #{apiUrl}
+            , #{apiMethod}
+            , #{apiReqParam}
+            , #{apiReqParamKor}
+            , #{apiResParam}
+            , #{apiResParamKor}
+            , #{apiDetailExplan}
+            , NOW() )
+
+    </insert>
+
+    <select id="apiAllList">
+        <include refid="selectBoardColumn"></include>
+        FROM api
+    </select>
+
+    <select id="apiListCrud">
+        <include refid="selectBoardColumn"></include>
+        FROM 
+            api
+        WHERE 
+            apiCrud = #{crud};
+    </select>
+
+
+</mapper>

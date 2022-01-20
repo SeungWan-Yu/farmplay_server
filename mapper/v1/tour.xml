@@ -11,7 +11,6 @@
             ,foodAreacode
             ,foodSigunguCode
             ,foodFirstimage
-            ,foodFirstimage2
             ,foodMapx
             ,foodMapy
             ,foodTitle
@@ -27,6 +26,7 @@
             ,foodHomepage
             ,foodOverView
     </sql>    
+    
 
     <!-- 위치기반 음식점 가져오기 30km 반경내-->
     <select id="getTourFoodList">
@@ -39,7 +39,6 @@
             ,TbB.foodAreacode
             ,TbB.foodSigunguCode
             ,TbB.foodFirstimage
-            ,TbB.foodFirstimage2
             ,TbB.foodMapx
             ,TbB.foodMapy
             ,TbB.foodTitle
@@ -65,7 +64,6 @@
                 ,foodAreacode
                 ,foodSigunguCode
                 ,foodFirstimage
-                ,foodFirstimage2
                 ,foodMapx
                 ,foodMapy
                 ,foodTitle

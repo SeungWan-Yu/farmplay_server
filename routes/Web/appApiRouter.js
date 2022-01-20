@@ -3,13 +3,15 @@ const router = express.Router()
 const { appApiController } = require('../../controller/web') 
 // Route 는 오직 Controller 에만 의존 합니다.
 
-router.get('/appApiInsert', appApiController.appApiInsert) 
-router.post('/addApi', appApiController.addApi) 
-router.get('/apiInsert', appApiController.apiInsert) 
-router.get('/apiInsertt', appApiController.apiInsertt) 
-router.get('/appApiList', appApiController.appApiList) 
-router.get('/appApiDel', appApiController.appApiDel) 
-router.get('/apiSelect', appApiController.apiSelect) 
+router.get('/appApiList', appApiController.appApiList); 
+router.get('/appApiAdd', appApiController.appApiAdd); 
+router.post('/addApi', appApiController.addApi); 
+
+router.get('/apiInsert', appApiController.apiCrud); 
+router.get('/apiUpdate', appApiController.apiCrud);
+router.get('/apiDelete', appApiController.apiCrud); 
+router.get('/apiSelect', appApiController.apiCrud); 
+
 
 
 

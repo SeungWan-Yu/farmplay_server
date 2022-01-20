@@ -1,72 +1,32 @@
-const pool = require('../../configs/mysql2-db');
 const mybatisMapper = require('mybatis-mapper');
 const format = {language: 'sql', indent: ''};
-mybatisMapper.createMapper(['./mapper/web/user.xml']);
+mybatisMapper.createMapper(['./mapper/web/webUser.xml']);
 
 
 module.exports = {
     
-    getUserList : function(){
-        // const connection = await con;
-        // var param ={};
-        // var query = mybatisMapper.getStatement('webUserMapper', 'getUserList', param, format);
-        // return new Promise((resolve,reject) =>{       
-        //     console.log("결과1>>"+con)
-        //     con.query(query, 
-        //     function (err, result, fields) {
-        //         if(err){
-        //             console.log("모델에러발생");
-        //             reject(err)
-        //         }else{
-        //             console.log("결과>>"+result)
-        //             resolve(result)
-        //         }
-        //     });
-        // });
+    getUserList : async function(con){
+        var query = mybatisMapper.getStatement('webUserMapper','getUserList');
+        var [rows] = await con.query(query);
+        return rows;
     },
 
-    delUser : function(id){
-        // return new Promise((resolve,reject) =>{
-        //     console.log("아이디값>>"+id)
-        //     con.query("DELETE FROM users WHERE user_id ="+"'"+id+"'", 
-        //     function (err, result, fields) {
-        //         if(err){
-        //             reject(err)
-        //         }else{
-        //             console.log("결과>>"+result)
-        //             resolve(result)
-        //         }
-        //     });
-        // });
+    removeUser :async function(con,body){
+        var query = mybatisMapper.getStatement('webUserMapper','removeUser',body);
+        var [rows] = await con.query(query);
+        return rows;
     },
 
-    getOneUser : function(id){
-        return new Promise((resolve,reject) =>{         
-            console.log("아이디값>>"+id)
-            con.query("SELECT * FROM users WHERE user_id ="+"'"+id+"'", 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            });
-        });
+    getOneUser :async function(con,id){
+        var query = mybatisMapper.getStatement('webUserMapper','getOneUser',id);
+        var [rows] = await con.query(query);
+        return rows;
     },
 
-    updateUser : function(user){
-        return new Promise((resolve,reject) =>{
-            con.query("UPDATE ussers SET user_name="+"'"+user.uName+"', user_phone="+"'"+user.uPhone+"', user_adress="+"'"+user.uAddr+"', user_adress_detail="+"'"+user.uAddrDetail+"'  WHERE  user_id = "+"'"+user.uId+"'", 
-            function (err, result, fields) {
-                if(err){
-                    reject(err)
-                }else{
-                    console.log("결과>>"+result)
-                    resolve(result)
-                }
-            }); 
-        });
+    updateUser :async function(con,body){
+        var query = mybatisMapper.getStatement('webUserMapper','updateUser',body);
+        var [rows] = await con.query(query);
+        return rows;
     },
 
 }

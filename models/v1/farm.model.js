@@ -115,10 +115,10 @@ module.exports = {
         return rows;
     },
 
-    getFarmList : async function(){
+    getFarmList : async function(body){
         const connection = await pool.getConnection();
         try{
-            var query = mybatisMapper.getStatement('farmMapper','getFarmList',format);
+            var query = mybatisMapper.getStatement('farmMapper','getFarmList',body);
             var [rows] = await connection.query(query);
         }catch(err){
             throw err;
@@ -129,6 +129,8 @@ module.exports = {
     },
 
     addFarm : async function(farm,roomImg){
+        console.log("팜체크");
+        console.log
         const connection = await pool.getConnection();
         var rows = [];
         try{
@@ -218,6 +220,18 @@ module.exports = {
                     rows.push(r3);
                 }
             }
+            //유저 farmState 4으로 변경 (4은 재신청할경우)
+            if(farm.farmState!="4"){
+                var id = {"id":farm.userName};
+                var q4 = mybatisMapper.getStatement('farmMapper','updateUserFarmState',id,format);   
+                var [r4] = await connection.query(q4);
+                if(r4.changedRows!=1){
+                    rowCheck = true;
+                }else{
+                    rows.push(r4);
+                }
+            }
+          
             if(rowCheck){
                 await connection.rollback();
                 throw Error("affectedRows");

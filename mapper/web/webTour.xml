@@ -14,6 +14,27 @@
         tour_food
 </select>
 
+<!-- 숙박 리스트 가져오기 -->
+<select id="getLodgmentCodeList">
+    SELECT 
+        lodgmentCode as code
+	FROM
+        tour_lodgment
+</select>
+
+<!-- DB업데이트 안된 관광정보 가져오기 -->
+<select id="getDbTourList">
+    SELECT 
+         tourContentId
+        ,tourContentTypeId
+	FROM
+        tour
+    WHERE 
+        tourDbIntro = 'N' OR tourDbCommon = 'N' OR tourDbImg = 'N'
+    ORDER BY
+        tourContentTypeId    
+</select>
+
 <!-- DB업데이트 안된 푸드코드만 가져오기 -->
 <select id="getFoodCodeDbList">
     SELECT 
@@ -61,6 +82,44 @@
          </foreach>
     )
 </delete>
+
+
+ <!-- 관광 등록 -->
+<insert id="addTour">
+    INSERT INTO tour
+        ( tourContentId
+        , tourContentTypeId
+        , tourFirstImage
+        , tourMapx
+        , tourMapy
+        , tourAreaCode
+        , tourSigunguCode
+        , tourTitle
+        , tourReadCount
+        , tourAddr1
+        , tourDbIntro
+        , tourDbCommon
+        , tourDbImg
+        , tourRegDate )
+	VALUES 
+    <foreach collection="data" item="i"  separator=",">
+        ( #{i.contentid}
+        , #{i.contenttypeid}
+        , #{i.firstimage}
+        , #{i.mapx}
+        , #{i.mapy}
+        , #{i.areacode}
+        , #{i.sigungucode}
+        , #{i.title}
+        , #{i.readcount}
+        , #{i.addr1}
+        , 'N'
+        , 'N'
+        , 'N'
+        , NOW() )
+    </foreach>
+
+</insert>
 
 <!-- 음식 등록 -->
 <insert id="addTourFoodFor">
@@ -128,6 +187,46 @@
          ,#{itemFood.dbIntro}
          ,#{itemFood.dbCommon}
          ,#{itemFood.dbImg}
+         ,NOW() )
+    </foreach>
+   
+
+</insert>
+
+<!-- 숙소 등록 -->
+<insert id="addTourLodgment">
+    INSERT INTO tour_lodgment
+	    ( lodgmentCode
+         ,lodgmentTypeId
+         ,lodgmentAddr1
+         ,lodgmentAreacode
+         ,lodgmentSigunguCode
+         ,lodgmentFirstimage
+         ,lodgmentMapx
+         ,lodgmentMapy
+         ,lodgmentTitle
+         ,lodgmentReadCount
+         ,lodgmentTel
+         ,lodgmentDbIntro
+         ,lodgmentDbCommon
+         ,lodgmentDbImg
+         ,lodgmentRegDate )
+         VALUES
+    <foreach collection="itemLodgmentList" item="itemLodgment"  separator=",">
+        ( #{itemLodgment.contentid}
+         ,#{itemLodgment.contenttypeid}
+         ,#{itemLodgment.addr1}
+         ,#{itemLodgment.areacode}
+         ,#{itemLodgment.sigungucode}
+         ,#{itemLodgment.firstimage}
+         ,#{itemLodgment.mapx}
+         ,#{itemLodgment.mapy}
+         ,#{itemLodgment.title}
+         ,#{itemLodgment.readcount}
+         ,#{itemLodgment.tel}
+         ,#{itemLodgment.dbIntro}
+         ,#{itemLodgment.dbCommon}
+         ,#{itemLodgment.dbImg}
          ,NOW() )
     </foreach>
    

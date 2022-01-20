@@ -150,6 +150,16 @@
             userId = #{id};
     </update>
 
+
+    <!-- 유저 토큰 업데이트-->
+    <update id="updateUserToken">
+        UPDATE users
+        SET
+            userToken = #{token}
+        WHERE 
+            userId = #{id};
+    </update>
+
      <!-- 유저 이미지 업데이트-->
     <update id="updateUserImg">
         UPDATE users
@@ -169,6 +179,17 @@
 	        users
         WHERE
 	        userPhone = #{phone};
+    </select>
+
+
+    <!-- 유저 토큰 가져오기(연락처)-->
+    <select id="getUserToken">
+        SELECT
+	         userToken
+        FROM
+	        users
+        WHERE
+	        userId = #{id};
     </select>
 
      <!-- 카카오유저 체크 -->

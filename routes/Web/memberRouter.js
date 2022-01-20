@@ -4,14 +4,6 @@ const { memberController } = require('../../controller/web')
 // Route 는 오직 Controller 에만 의존 합니다.
 
 
-// async function extendTimeout( req,res,next )  { 
-//     console.log("타임아웃");
-//     const wait = (timeToDelay) => new Promise((resolve) => setTimeout(resolve, timeToDelay))
-//     await wait(5000);
-//     console.log("셋타임아웃");
-//     next();
-// } 
-
 
 
 //필터 
@@ -53,14 +45,8 @@ const upload = multer({
 
 
 
-
-router.get('/memberList',async (req,res) =>{
-    var data =await memberController.memberList();
-    res.render("../pages/member/memberList",{data:data.result,msg:data.msg});
-}); 
-
-//router.get('/memberList', memberController.memberList); 
-router.get('/memberDel', memberController.memberDel);
+router.get('/memberList', memberController.memberList); 
+router.post('/memberDel', memberController.memberDel);
 router.get('/memberEdit', memberController.memberEdit); //수정페이지
 router.post('/editMember', memberController.editMember); //수정에서 수정버튼 클릭할때 
 router.get('/sendNotice', memberController.sendNotice);   //공지보내기

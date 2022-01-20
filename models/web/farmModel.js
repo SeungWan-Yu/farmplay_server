@@ -197,11 +197,11 @@ module.exports = {
             var result1  = r1[0][0].userFarmCode;
             console.log(result1);
             console.log("r1>>"+r1);
-            if(result1==0){
-                var params2 = [farmCodeList,userId];
-                var r2 = await connection.query("UPDATE users SET userFarmCode=? ,userFarmState=2 WHERE userId=?",params2);
-                console.log("r2>>"+r2);
-            }
+   
+            var params2 = [farmCodeList,userId];
+            var r2 = await connection.query("UPDATE users SET userFarmCode=? ,userFarmState=2 WHERE userId=?",params2);
+            console.log("r2>>"+r2);
+            
             var r3 = await connection.query("UPDATE farm SET farmState='등록완료',farmRegDate=NOW() WHERE farmCode IN("+farmCodeList+")");
             console.log("r3>>"+r3);
             await connection.commit();

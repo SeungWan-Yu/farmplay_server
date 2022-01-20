@@ -5,6 +5,36 @@ mybatisMapper.createMapper(['./mapper/v1/user.xml']);
 
 module.exports = {
 
+    updateUserToken :async function(body){
+        const connection = await pool.getConnection();
+        try{ 
+            var query = mybatisMapper.getStatement('userMapper','updateUserToken',body, format);
+            console.log(query);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
+
+    getUserToken :async function(body){
+        const connection = await pool.getConnection();
+        try{ 
+            var query = mybatisMapper.getStatement('userMapper','getUserToken',body, format);
+            console.log(query);
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
+
     updateUserImg :async function(body){
         const connection = await pool.getConnection();
         try{ 

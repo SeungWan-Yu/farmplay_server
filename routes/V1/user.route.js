@@ -46,5 +46,10 @@ router.post('/certification', userController.getCertification);
 router.post('/certificationcode', userController.getCertificationCode);
 
 
+//#updateChkToken
+router.post('/updateChkToken', userController.updateChkToken);
+
+
+
 
 module.exports = router;

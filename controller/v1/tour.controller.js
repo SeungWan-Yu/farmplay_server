@@ -1,5 +1,5 @@
 const {tourModel} = require("../../models/v1");
-
+var tourApiModule = require("../../custom_modules/tourApiModule");
 
 exports.getFoodList = async(req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
@@ -16,6 +16,35 @@ exports.getFoodList = async(req,res) => {
     }
     res.send(results); 
 };
+
+exports.getTour = async(req,res) => {
+    console.log("바디체크");
+    var body = req.body;
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+      var api1 = await tourApiModule.getTourLocation(body.tpyeId,body.mapx,body.mapy,body.pageNo);
+      if(api1.result=="success"){
+        results.data = api1.data;
+        results.message = "exist";
+      }else{
+        console.log("통신에러 메세지 출력")
+        console.log(api1.message);
+        if(api1.message!="notData"){
+            throw Error("api Error");
+        }
+        
+      }
+      // console.log(api1);
+  
+    } catch (error) {
+        console.log("에러테스트");
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }
+    console.log("최종결과값 출력");
+    res.send(results);
+  }
 
 
 exports.getLodgmentList = ( req,res,next) => {

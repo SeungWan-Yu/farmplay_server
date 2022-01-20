@@ -1,7 +1,7 @@
 const mainModel = require('./mainModel')
 const memberModel = require('./memberModel')
 const farmModel = require('./farmModel')
-const recuritModel = require('./recuritModel')
+const recruitModel = require('./recruitModel')
 const farmplerModel = require('./farmplerModel')
 const appApiModel = require('./appApiModel')
 const tourModel = require('./tourModel')
@@ -10,7 +10,7 @@ module.exports = {
     mainModel,
     memberModel,
     farmModel,
-    recuritModel,
+    recruitModel,
     farmplerModel,
     appApiModel,
     tourModel,

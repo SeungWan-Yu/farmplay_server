@@ -24,32 +24,32 @@ $(function(){
                 <div class="col-lg-7">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4"><span><%=data[0].user_id%></span>님 정보수정</h1>
+                            <h1 class="h4 text-gray-900 mb-4"><span><%=data[0].userId%></span>님 정보수정</h1>
                         </div>
                         <form class="user" action="/admin/member/editMember" method="POST">
                             <div class="form-group input-group">
                                 <span class="addon" >아이디 </span>
-                                <input type="text" name="uId" class="form-control form-control-user" value= '<%=data[0].user_id%>' readonly>
+                                <input type="text" name="uId" class="form-control form-control-user" value= '<%=data[0].userId%>' readonly>
                             </div>
                         
                             <div class="form-group input-group">
                                 <span class="addon" >비밀번호 </span>
-                                <input type="password" name="uPw" class="form-control form-control-user" value= '<%=data[0].user_pw%>' readonly>
+                                <input type="password" name="uPw" class="form-control form-control-user" value= '<%=data[0].userPw%>' readonly>
                             </div>
                             
                             <div class="form-group input-group">
                                 <span class="addon" >이름 </span>
-                                <input type="text" name="uName" class="form-control form-control-user" value= '<%=data[0].user_name%>'>
+                                <input type="text" name="uName" class="form-control form-control-user" value= '<%=data[0].userName%>'>
                             </div>
 
                             <div class="form-group input-group">
                                 <span class="addon" >핸드폰 </span>
-                                <input type="text" name="uPhone" class="form-control form-control-user" value= '<%=data[0].user_phone%>'>
+                                <input type="text" name="uPhone" class="form-control form-control-user" value= '<%=data[0].userPhone%>'>
                             </div>
 
                             <div class="form-group input-group">
                                 <span class="addon" >주소 </span>
-                                <input type="text" name="uAddr" class="form-control form-control-user" value= '<%=data[0].user_adress%>'>
+                                <input type="text" name="uAddr" class="form-control form-control-user" value= '<%=data[0].userAdress%>'>
                                 <a href="#" class="btn btn-info editBtn" style="padding-top: 14px;">
                                     <i class="fas fa-search"></i>
                                 </a>  
@@ -57,7 +57,7 @@ $(function(){
 
                             <div class="form-group input-group">
                                 <span class="addon" >상세주소 </span>
-                                <input type="text" name="uAddrDetail" class="form-control form-control-user" value= '<%=data[0].user_adress_detail%>'>
+                                <input type="text" name="uAddrDetail" class="form-control form-control-user" value= '<%=data[0].userAdressDetail%>'>
                             </div>
 
                     

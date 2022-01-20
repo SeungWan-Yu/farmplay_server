@@ -113,6 +113,10 @@
     <!-- 농장리스트 가져오기(등록완료) -->
     <select id="getFarmList">
         <include refid="selectBoardColumn"></include>
+        ,ROUND((6371*acos(cos(RADIANS(#{uLongitude}))*cos(radians(farmMapx))
+			*cos(radians(farmMapy) -RADIANS(#{uLatitude}))
+			+sin(RADIANS(#{uLongitude}))*sin(radians(farmMapx)))),1) 
+			AS farmDistance
         FROM 
             farm 
         WHERE 
@@ -136,7 +140,9 @@
             , farmRoom
             , farmRoomUnisex
             , farmRoomEtc
-            , userName )
+            , userName
+            , farmMapx
+            , farmMapy)
 	    VALUES 
             ( #{farmImg}
             , #{farmName}
@@ -152,7 +158,9 @@
             , #{farmRoom}
             , #{farmRoomUnisex}
             , #{farmRoomEtc}
-            , #{userName} )
+            , #{userName}
+            , #{farmMapx}
+            , #{farmMapy} )
     </insert>
 
 
@@ -179,6 +187,15 @@
             </foreach>
 	</delete>
 
+     <!-- 농장수정 -->
+    <update id="updateUserFarmState">
+        UPDATE users
+        SET
+            userFarmState=4
+        WHERE 
+            userId = #{id};
+    </update>
+
 
     <!-- 농장수정 -->
     <update id="updateFarm">
@@ -201,6 +218,8 @@
 		    ,farmRoomUnisex  = #{farmRoomUnisex}
 		    ,farmRoomEtc     = #{farmRoomEtc}
 		    ,userName        = #{userName}
+            ,farmMapx        = #{farmMapx}
+            ,farmMapy        = #{farmMapy}
             <if test="farmImg != null">
             ,farmImg         = #{farmImg}
             </if>

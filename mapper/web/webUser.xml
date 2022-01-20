@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webUserMapper">
+
+<sql id="selectBoardColumn">
+    SELECT 
+          userId
+        , userPw
+        , userName
+        , userPhone
+        , userAdress
+        , userAdressDetail
+        , userToken
+        , userFarmCode
+        , userFarmState
+        , userReviewCnt
+        , userImg
+        , userRating
+        , userProfileImg
+</sql>    
+
+<!-- 유저리스트 -->
+<select id="getUserList">
+    <include refid="selectBoardColumn"></include>
+    FROM 
+        users;
+</select>
+
+<!-- 유저삭제 -->
+<delete id="removeUser">
+    DELETE FROM users 
+    WHERE 
+        userId = #{id};
+</delete>
+
+<!-- 유저 한명 리스트 -->
+<select id="getOneUser">
+    <include refid="selectBoardColumn"></include>
+    FROM 
+        users
+    WHERE 
+        userId = #{id};
+</select>
+
+<!-- 유저 업데이트 -->
+<update id="updateUser">
+    UPDATE users
+    SET
+         userName            = #{uName}
+        ,userPhone           = #{uPhone}
+        ,userAdress          = #{uAddr}
+        ,userAdressDetail    = #{uAddrDetail}
+    WHERE 
+        userId              = #{uId};
+</update>
+
+
+
+</mapper>

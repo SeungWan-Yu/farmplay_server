@@ -1,70 +1,103 @@
 const appApiModel = require("../../models/web/appApiModel");
+const pool = require('../../configs/mysql2-db');
 
 
 // 앱api등록 화면 컨트롤러
-exports.appApiInsert = function (req, res) {
+exports.appApiAdd = function (req, res) {
     console.log("컨트롤러")
-    res.render("../pages/appApi/appApiInsert");
+    res.render("../pages/appApi/appApiAdd");
 }
 
-// 앱 api insert 화면 컨트롤러
-exports.apiInsert = function (req, res) {
-
-    res.render("../pages/appApi/apiInsert");
-}
 
 // 앱api 등록 버튼 클릭시 등록되는 컨트롤러
-exports.addApi = function (req, res) {
-    console.log("에드에이피아이 컨트롤러");
-    var body = req.body;
-    console.log("바디체크");
-    console.log(body);
-    appApiModel.addApi(body).then(function(data){
-        console.log(data)
+exports.addApi = async (req,res) => {
+    console.log("api등록");
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        var body = req.body;
+        results.data = await appApiModel.addApi(con,body);
+        if(results.data.affectedRows!=0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
         res.redirect("/admin/apiApp/appApiList");
-    });
-
-}
-
-// 앱api insert페이지 컨트롤러
-exports.apiInsertt = function (req, res) {
-    var apiCrud = "Insert";
-    appApiModel.apiList(apiCrud).then(function(data){
-        console.log(data)
-        res.render("../pages/appApi/apiInsertt",{data:data});
-    });
-
-}
-
-// 앱api 리스트페이지 컨트롤러
-exports.appApiList = function (req, res) {
-    appApiModel.apiAllList().then(function(data){
-        console.log("리스트 출력")
-        console.log(data)
-        res.render("../pages/appApi/appApiList",{data:data});
-    });
+    }
 }
 
 
+// 앱api 등록 버튼 클릭시 등록되는 컨트롤러
+exports.appApiList = async (req,res) => {
+    console.log("api리스트");
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        results.data = await appApiModel.apiAllList(con);
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
+        res.render("../pages/appApi/appApiList",results);
+    }
+}
 
-// 앱api 삭제 컨트롤러
-exports.appApiDel = function (req, res) {
-    console.log("에이피아이 삭제 컨트롤러");
-    var apiCode = req.query.apiCode
-    console.log(apiCode);
-    appApiModel.appApiDel(apiCode).then(function(data){
-        console.log("리스트로 다시 출발")
-        res.redirect("/admin/apiApp/appApiList");
-    });
+// 앱api crud페이지 컨트롤러
+exports.apiCrud = async (req,res) => {
+    console.log("api리스트");
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        var url = req.url+"";
+        var crudMap = {"crud":""};
+        if(url.includes("Insert")){
+            crudMap.crud = "Insert";
+        }else if(url.includes("Update")){
+            crudMap.crud = "Update";
+        }else if(url.includes("Delete")){
+            crudMap.crud = "Delete";
+        }else if(url.includes("Select")){
+            crudMap.crud = "Select";
+        }      
+        console.log("맵확인>?>"+crudMap);
+        results.data = await appApiModel.apiListCrud(con,crudMap);
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
+        res.render("../pages/appApi/apiCrud",results);
+    }
 }
 
 
-// 앱api 인서트 화면
-exports.apiSelect = function (req, res) {
-    var apiCrud = "Select";
-    appApiModel.apiList(apiCrud).then(function(data){
-        console.log("데이터체크")
-        console.log(data);
-        res.render("../pages/appApi/apiSelect",{data:data});
-    });
-}
+
+// exports.apiCrud = function (req, res) {
+//     var url = req.url+"";
+//     var crud = "";
+//     crud.includes
+//     if(url.includes("Insert")){
+//         crud = "Insert";
+//     }else if(url.includes("Update")){
+//         crud = "Update";
+//     }else if(url.includes("Delete")){
+//         crud = "Delete";
+//     }else if(url.includes("Select")){
+//         crud = "Select";
+//     }      
+
+   
+//     appApiModel.apiList(crud).then(function(data){
+//         console.log(data)
+//         res.render("../pages/appApi/apiCrud",{data:data});
+//     });
+
+// };
+
