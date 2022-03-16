@@ -8,5 +8,6 @@ router.get('/attractions',tourController.getAttractionsList);
 router.get('/culture',tourController.getCultureList);
 router.get('/shopping',tourController.getShoppingList);
 router.post('/tour',tourController.getTour);
+router.post('/tourDetail',tourController.getTourDetail);
 
 module.exports = router;

@@ -60,7 +60,7 @@
             ,userReviewCnt
             ,userProfileImg 
         FROM 
-            users 
+            users_review 
         WHERE 
             userId = #{id};
     </select>
@@ -75,9 +75,9 @@
             ,f.farmRating
             ,f.farmReviewCnt 
         FROM 
-            users AS u 
+            users_review AS u 
         LEFT JOIN 
-            farm AS f 
+            farm_review AS f 
         ON 
             u.userId = f.userName 
         WHERE 
@@ -133,7 +133,7 @@
         FROM
             users 
         WHERE
-            userPhone = #{phone};	 
+            userPhone = #{phone}	 
         <if test="singupState == 'findPw'">
         AND
             userId = #{userId};	 

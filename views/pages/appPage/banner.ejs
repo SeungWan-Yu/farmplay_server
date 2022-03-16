@@ -1,0 +1,497 @@
+
+<style>
+    .uptd{text-align: center; vertical-align:middle !important;}
+    #reloadBtn{margin-bottom: 10px;}
+    .bannerImg,.bannerEditImg{height: 80px !important; width: 141px !important; vertical-align: middle; object-fit: cover !important;}
+    .bannerSelectImg{height: 300px !important; width: 528px !important; object-fit: cover !important;}
+    .bannerEditImg{display: none;}
+    td, th{vertical-align: middle !important;}
+    #rowInfo{margin-left: 10px; color: red; font-size: 14px; font-weight: bold;}
+    .hide{display: none !important;}
+    .upload-name {
+        display: inline-block;
+        height: 35px;
+        font-size:16px; 
+        padding: 0 10px;
+        vertical-align: middle;
+        background-color: #f5f5f5;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+    }
+    .jb-wrap {
+        width: 50%;
+        position: relative;
+    }
+    .jb-text {
+        padding: 5px 10px;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate( -50%, -50% );
+    }
+</style>
+<script type="text/javascript">
+    $(function(){
+
+        var result = "<%-result%>";     //서버 통신결과
+        var data = "<%-data%>";         //서버에서 넘어온 데이터
+        var message = "<%-message%>";   //서버 통신 결과 메세지
+
+        var delBannerCodeList = [];     //델버튼 클릭시 선택한 bannerCode담는 변수
+        var delBannerImgList = [];      //삭제할 banner 담기 (수정,삭제)
+
+        var currentModelId = "";       //현제 모달창 input file Id 확인 .. class =fileInput
+        var imgChoiceBtnClick = 0; //클릭체크 변수
+
+
+        if(result=="fail"){
+            alert("서버에러 : "+message);
+            console.log(message);
+        };
+        
+
+        //농장 이미지 미리보기 함수()
+        function setImageFromFile(input, expression) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(expression).attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        //파일정리 클릭 이벤트
+        $(document).on('click','#fileDelBtn',function(){
+            $.ajax({
+                type : "POST",
+                url : '/admin/app/bannerImgOrganize', 
+                dataType : "json", 
+                success : function(data) {
+                    console.log(data);
+                    $('#dataLen').text(data.dataLen);
+                    alert("파일이 정리되었습니다");
+                },
+                error : function(err) {
+                    alert('에러발생');
+                    console.log(err);
+                }
+            }); 
+        });
+
+         //농장이미지 변경되었을때 실행되는 함수
+         $(document).on('change','.fileInput',function(){
+            var index = $('.fileInput').index(this);
+            console.log("인덱트체크>>>"+index);
+            imgLen = $(this)[0].files.length;
+            if(imgLen==0){
+                $('.upload-name').val("파일선택");
+            }else if(imgLen==1){
+                $('.upload-name').val($(this)[0].files[0].name);
+            }
+            for(var i=0;i<imgLen;i++){
+                var type = $(this)[0].files[i].type;
+                if(!type.includes("image")){
+                    alert("이미지 파일만 업로드 가능");
+                    $(this).val("");
+                    $('.upload-name').val("파일선택");
+                    return false
+                }
+            };  
+            console.log(this);
+            setImageFromFile(this, '.bannerSelectImg');        
+        });
+
+        
+   
+        
+        //로우 순번 지정해주는 함수
+        function rowNumber(){
+            var rowCnt = 1; 
+            $('.rowUp').each(function (index, item) {
+                var chkActive = $(this).parent().parent().hasClass("activeList");
+                if(chkActive){
+                    console.log("트루");
+                    $(this).parent().parent().find('.bannerNumber').text(rowCnt);
+                    // $(this).parent().parent().find('.fileInput').attr("name","bannerImgFile"+(rowCnt-1));
+                    // $(this).parent().parent().find('.fileInput').attr("id","bannerFile"+(rowCnt-1));
+                    rowCnt++;
+                }
+            });	
+        }
+        
+
+
+        //배너 리스트 삭제 이벤트
+        $(document).on('click','.delBtn',function(){
+            var bannerCode = $(this).parent().parent().find('.bannerCode').text();
+            var rowCnt  = $('.old').length;
+            console.log("길이>>>"+rowCnt);
+            if(bannerCode=="신규"){
+                $(this).parent().parent().remove();
+                $('.new').each(function(index,item){
+                    console.log("여기입니당>>>"+index);
+                    $(this).find(".fileInput").attr("name","bannerImgFile"+(rowCnt+index));
+                    $(this).find(".fileInput").attr("id","bannerFile"+(rowCnt+index));
+                });
+            }else{
+                var index = $('.delBtn').index(this);
+                var bannerImgUrl =  $(this).parent().parent().find('.bannerImg').attr("src");
+                var bannerImg = bannerImgUrl.replace("/public/uploads_banner/","");
+                $(this).parent().parent().attr("class","delete old");
+                $(this).parent().parent().css('background-color', 'gray');
+                $('.imgEditBtn').eq(index).addClass("hide");
+                $('.rowUp').eq(index).addClass("hide");
+            }
+            console.log("츸>"+delBannerImgList);
+            rowNumber();    //함수호출
+        });
+
+
+        //모달창 -배너이미지 플러스버튼 클릭이벤트  
+        $(document).on('click','.imgEditBtn',function(){
+            var file =  $(this).parent().parent().find('.fileInput');
+            currentModelId = $(this).parent().parent().find('.fileInput').attr("id");
+            var inputFile = file[0];
+            var idVal = $('#'+currentModelId+'').val();
+            $('#labelFarmFile').attr("for",currentModelId);
+            if(idVal==""){
+                imgChoiceBtnClick = 0;
+                $('.upload-name').val("파일선택");
+                $('.bannerSelectImg').attr("src","");
+            }else{
+                imgChoiceBtnClick = 1;
+                $('.upload-name').val(inputFile.files[0].name);
+                setImageFromFile(inputFile,'.bannerSelectImg'); 
+            }
+            console.log("아이디쳌");
+            console.log(currentModelId)
+       
+        });
+       
+        //모달 - 숨김 이벤트  
+        $('#imgEditAddModal').on('hidden.bs.modal', function () {
+            var currentModelIdVal =  $('#'+currentModelIdVal+'').val();
+            if(imgChoiceBtnClick==0){
+                var idVal = $('#'+currentModelId+'').val("");
+            }
+        });
+       
+       /****************************** 삭제 버튼 클릭이벤트 끝******************************/  
+   
+   
+        //테이블 로우 위화살표 클릭이벤트
+        $(document).on('click','.rowUp',function(){
+            var index = $('.rowUp').index(this);
+            var row =  $(this).parent().parent();
+            console.log(row);
+            if(index == 0) {
+                alert("최상단입니다.");
+                return false;
+            }else{
+                row.prev().before(row);
+                rowNumber();
+            }
+        });
+        
+        //새로고침 버튼 클릭이벤트
+        $('#reloadBtn').click(function(){
+            location.reload();
+        });
+        
+        //행추가 버튼 클릭이벤트
+        $('#addRowBtn').click(function(){
+            var index = $('.activeList').length;
+            var row = $('.bannerCode').length;
+            if(index>=5){
+                return false;
+            }else{
+                var inHtml = "";
+                var tbody = $('.table tbody');
+                inHtml += '<tr class="activeList new">';
+                inHtml += '<td class="uptd"><button type="button" class="btn btn-secondary rowUp">▲</button></td>';
+                inHtml += '<td class="bannerCode">신규</td>';
+                inHtml += '<td class="bannerNumber">'+index+'</td>';
+                inHtml += '<td></td>';
+                inHtml += '<td class="url">';
+                inHtml += '<img class="bannerEditImg">';    
+                inHtml += '<input type="file" name="bannerImgFile" id="bannerFile'+(row)+'" class="fileInput" accept="image/jpeg, image/png, image/jpg" style="display: none;">';
+                inHtml += '<a class="btn btn-success imgEditBtn" data-toggle="modal"  data-target="#imgEditAddModal" data-whatever="@mdo">';
+                inHtml += '<i class="fas fa-plus"></i>';
+                inHtml += '</a>';
+                inHtml += '</td>';
+                inHtml += '<td></td>';
+                inHtml += '<td style="text-align: center;">';
+                inHtml += '<a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo">';
+                inHtml += '<i class="fas fa-trash"></i>';
+                inHtml += '</a>';
+                inHtml += '</td>';
+                inHtml += '</tr>';    
+                tbody.append(inHtml);
+            } 
+            
+            rowNumber();
+        });
+
+        //파일 선택 후 확인 버튼 클릭 이벤트
+        $(document).on('click','.imgChoiceBtn',function(){
+            imgChoiceBtnClick = 1;
+            var file = $('#'+currentModelId+'');
+            var fileVal = $('#'+currentModelId+'').val();
+            var url = $('.bannerSelectImg').attr("src");
+            console.log(url);
+            var bannerEditImg  = file.parent().find('.bannerEditImg');
+            if(fileVal==""){
+                alert("수정내용이 없습니다");
+                return false;
+            }else{
+                
+                bannerEditImg.css("display","inline");
+                bannerEditImg.attr("src",url);
+            }
+        });
+
+        
+
+        //배너 객체 생성
+        function Banner(bannerCode, bannerNumber, bannerUrl){
+            this.bannerCode = bannerCode;
+            this.bannerNumber = bannerNumber;
+            this.bannerUrl = bannerUrl;
+        };
+
+
+        
+
+        //저장버튼 클릭 이벤트
+        $(document).on('click','#sendBtn',function(){
+            var editBannerList = [];     //수정할 배너객체 담는 변수
+            var addBannerList = [];      //추가할 배너객체 담는 변수
+            var bannerImgList = [];      //이미지 수정,추가된 객체만 담는 변수
+            var delBannerList = [];      //삭제할 배너 코드 담는 변수
+            var delBannerImgList = [];   //삭제할 이미지 이름 담는 변수 (삭제,수정)
+            var returnChk = false;
+  
+            var length =  $('.activeList').length;
+            var chk =  $('.activeList').eq(0);
+            //1. delete 할것
+            $('.delete').each(function(index,item){
+                //삭제할 배너코드
+                var delBannerMap = {};
+                var delBannerCode  = $(this).find(".bannerCode").text();
+                delBannerMap.bannerCode = delBannerCode; 
+                delBannerList.push(delBannerMap);
+                //삭제할 이미지
+                var delImgMap = {};
+                var delImgUrl = $(this).find(".bannerImg").attr("src");
+                var delImg = delImgUrl.replace("/public/uploads_banner/","");
+                delImgMap.bannerUrl = delImg;
+                delBannerImgList.push(delImgMap);  
+            });
+
+            //2. insert,update 할것
+            $('.activeList').each(function(index,item){
+                var banner = {};
+                var fileOriName = "";
+                var fileName = "";
+                var dbFname = "";
+                var check = $(this).hasClass("new");
+                var inputFile = $(this).find(".fileInput");
+                var inputFileVal = inputFile.val();
+                var dbFilename = $(this).find(".bannerImg").attr("src");
+                if(dbFilename!=undefined){          //기존파일
+                    dbFname = dbFilename.replace("/public/uploads_banner/","");
+                    fileOriName = dbFname;
+                    if(inputFileVal==""){
+                        fileName = dbFname;
+                    }else{
+                        var delImgMap = {};
+                        delImgMap.bannerUrl = dbFname;
+                        delBannerImgList.push(delImgMap);     //수정으로 인해 삭제할 파일
+                    }
+                }
+                if(inputFileVal!=""){
+                    fileOriName = inputFile[0].files[0].name;
+                }
+                // console.log(dbFname);
+                // if(inputFileVal!= "" && dbFilename==undefined){     //신규이면
+                //     filename =  $(this).find(".fileInput").attr("name")+".jpg";
+                // }else{
+                //     var dbFname2 = dbFname.replace(".jpg","");
+                //     inputFile.attr("name",dbFname2);
+                //     filename = dbFname;
+                // }
+                    
+                banner.bannerCode = $(this).find(".bannerCode").text();
+                banner.bannerNumber =  $(this).find(".bannerNumber").text();
+                banner.bannerOriUrl = fileOriName;
+                banner.bannerUrl  =  fileName;
+    
+
+                if(check){
+                    if(inputFileVal==""){
+                        alert("이미지 파일이 없습니다");
+                        returnChk = true;
+                        return false;
+                    }
+                    addBannerList.push(banner);
+                }else{
+                    editBannerList.push(banner);
+                }
+                
+                if(inputFileVal!=""){
+                    bannerImgList.push(banner);
+                }
+            });
+
+            if(returnChk){
+                return false;
+            }
+
+            var formMap = {};
+            formMap.add = addBannerList;
+            formMap.edit = editBannerList;
+            formMap.delete = delBannerList;
+            formMap.img = bannerImgList;
+            formMap.delImg = delBannerImgList;
+            console.log("폼맵출력");
+            console.log(formMap);
+            var jsonData = JSON.stringify(formMap)
+
+            var form = $('#uploadForm')[0];
+            var formData = new FormData(form);
+            formData.append("add",JSON.stringify(addBannerList));
+            formData.append("edit",JSON.stringify(editBannerList));
+            formData.append("delete",JSON.stringify(delBannerList));
+            formData.append("img",JSON.stringify(bannerImgList));
+            formData.append("delImg",JSON.stringify(delBannerImgList));
+
+            $.ajax({
+                type : "POST",
+                url : '/admin/app/banner', 
+                data : formData,
+                contentType : false,
+                processData : false  ,
+                success : function(data) {
+                    location.reload();
+                },
+                error : function(err) {
+                    alert('에러발생');
+                    console.log(err);
+                }
+            }); 
+        
+        });
+   
+   });
+   
+   </script>
+
+
+    <!-- 이미지 수정/등록 모달창 레이아웃  -->
+    <div class="modal fade" id="imgEditAddModal" tabindex="-1" role="dialog" aria-labelledby="imgEditAddModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">  
+                <div class="singleUpload">
+                    <label for="" class="btn btn-warning" id="labelFarmFile">업로드</label> 
+                    <input class="upload-name" value="파일선택" readonly>
+                </div>     
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="farmBody" style="height: 750px; overflow: auto;">
+                <div class="jb-wrap">
+                    <div class="jb-image"><img class=bannerSelectImg></div>
+                    <div class="jb-text">
+                        <p>이미지 미리보기</p>
+                    </div>
+                </div>  
+                <ul class="area_list01">
+                </ul>
+                <button type="button" class="btn btn-primary btn-block imgChoiceBtn" style="margin-top: 20px;" data-dismiss="modal">확인</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+  
+   
+   
+   
+    <!-- 데이터 테이블 -->
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800"></h1>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">배너페이지</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-warning" id="reloadBtn">새로고침</button>
+                <span id="rowInfo">*행추가 최대 5개</span>
+                <div class="table-responsive">
+                    <form id="uploadForm">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <button type="button" type="button" class="btn btn-primary" id="addRowBtn">행추가</button>
+                                    </th>
+                                    <th>배너코드</th>
+                                    <th>배너순번</th>
+                                    <th>배너이미지</th>
+                                    <th>수정이미지</th>
+                                    <th>배너등록일</th>
+                                    <th style="width: 7%;">Del</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(data != null && data.length > 0){ %>
+                                    <% for(var i in data){ %>
+                                    <tr class="activeList old">
+                                        <td class="uptd"><button type="button" class="btn btn-secondary rowUp">▲</button></td>
+                                        <td class="bannerCode"><%=data[i].bannerCode%></td>
+                                        <td class="bannerNumber"><%=data[i].bannerNumber%></td>
+                                        <td>
+                                            <img src="/public/uploads_banner/<%=data[i].bannerUrl%>" class="bannerImg"> 
+                                        </td>
+                                        <td class="url">
+                                            <img class="bannerEditImg"> 
+                                            <input type="file" name="bannerImgFile"  id="bannerFile<%=i%>" class="fileInput" accept="image/jpeg, image/png, image/jpg" style="display: none;">
+                                            <a class="btn btn-success imgEditBtn" data-toggle="modal"  data-target="#imgEditAddModal" data-whatever="@mdo">
+                                                <i class="fas fa-plus"></i>
+                                            </a>    
+                                        </td>
+                                        <td><%=data[i].bannerRegDate%></td>
+                                        <td style="text-align: center;">
+                                            <a class="btn btn-danger delBtn" data-toggle="modal">
+                                                <i class="fas fa-trash"></i>
+                                            </a>     
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                <% }%>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <button type="button" class="col-lg-6 btn btn-primary" id="sendBtn">저장</button>
+    
+        <div style="margin-top: 50px;">
+            <hr>
+            <span> 서버이미지수 : <span id="dataLen"><%=dataLen%></span>개</span>
+            <div style="margin-top: 20px;">
+                <button type="button" class="col-lg-1 btn btn-danger" id="fileDelBtn">파일정리</button>
+            </div>
+        </div>
+        <hr>
+</div>

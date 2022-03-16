@@ -15,10 +15,15 @@ router.post('/end', recruitController.updateReruitState);
 //#getRecruit
 router.post('/code', recruitController.getRecruit);
 
-//#postRecruitname                 <-- 사용안하는거 같음
-router.post('/name', recruitController.getRecuritListId);
+//#getRecruitReviewRoomImg
+router.post('/reviewRoomImg', recruitController.getRecruitReviewRoomImg);
 
-//#postRecruitcodeall               <-- 사용안하는거 같음
+
+
+//#postRecruitname                 <-- 사용안하는거 같음
+router.post('/name', recruitController.getRecruitListId);
+
+//#postRecruitcodeall              
 router.post('/code/all', recruitController.getRecruitListFarmcode);
 
 

@@ -16,8 +16,10 @@ var tossPayments = TossPayments(clientKey)
 console.log(tossPayments)
 
 const url = new URL(window.location.href);
-
+console.log("유알엘체크");
+console.log(url);
 // URLSearchParams 객체  
+const rootUrl = url.origin;
 const urlParams = url.searchParams;
 var pay = urlParams.get('pay');
 var price = Number(urlParams.get('price'));
@@ -41,8 +43,8 @@ tossPayments.requestPayment(pay, {
   orderId: oId,
   orderName: oName,
   customerName: uName,
-  successUrl: 'http://192.168.1.24:3000/v1/webView/tossSuccess',
-  failUrl: 'http://192.168.1.24:3000/v1/webView/tossFail'
+  successUrl: rootUrl+'/v1/webView/tossSuccess',
+  failUrl: rootUrl+'/v1/webView/tossFail'
   // successUrl: 'http://joy4.ddns.net:3000/v1/webView/tossSuccess',
   // failUrl: 'http://joy4.ddns.net:3000/v1/webView/tossFail'
 })

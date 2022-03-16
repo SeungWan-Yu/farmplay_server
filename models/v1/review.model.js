@@ -4,6 +4,7 @@ const format = {language: 'sql', indent: ''};
 mybatisMapper.createMapper(['./mapper/v1/review.xml']);
 
 module.exports = {
+
     addReviewFarm :async function(review){
         const connection = await pool.getConnection();
         var rowCheck = false;
@@ -150,6 +151,19 @@ module.exports = {
             var query = mybatisMapper.getStatement('reviewMapper','getReview',body, format);
             var [rows] = await connection.query(query);
             console.log("결과값")
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
+
+    getFarmReviewList :async function(body){
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('reviewMapper','getFarmReviewList',body,format);
+            var [rows] = await connection.query(query);
         }catch(err){
             throw err;
         }finally{

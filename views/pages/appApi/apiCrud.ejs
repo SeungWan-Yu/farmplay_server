@@ -89,11 +89,14 @@
             var reqParamKor = selectData.apiReqParamKor;
             var resParam = selectData.apiResParam;
             var resParamKor = selectData.apiResParamKor;
-            reqParamList = reqParam.split(',');
-            reqParamKorList = reqParamKor.split(',');
-            resParamList = resParam.split(',');
-            resParamKorList = resParamKor.split(',');
-            
+            if(reqParam!=null && reqParamKor!=null){
+                reqParamList = reqParam.split(',');
+                reqParamKorList = reqParamKor.split(','); 
+            }else if (resParam !=null && resParamKor!=null){
+                resParamList = resParam.split(',');
+                resParamKorList = resParamKor.split(',');
+            }
+           
             console.log("리스트체크>>"+reqParamList);
             console.log("리스트길이>>"+reqParamList.length);
 

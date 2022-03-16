@@ -7,7 +7,7 @@ const { userController } = require('../../controller/v1');
 //login과  /id/ifo와 같음 나중에 하나 삭제할것
 
 //#img
-router.post('/profile_img',upload.single('profileImgFile'), userController.updateUserImg);
+router.post('/profile_img',upload("업로드").single('profileImgFile'), userController.updateUserImg);
 
 //#getLoginCheck
 router.post('/login', userController.getLoginCheck);

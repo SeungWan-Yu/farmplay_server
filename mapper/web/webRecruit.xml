@@ -4,26 +4,26 @@
 
     <sql id="selectBoardColumn">
         SELECT 
-            recuritCode
-            ,recuritFarmCode
-            ,recuritState
-            ,recuritUserId
-            ,recuritStart
-            ,recuritEnd
-            ,recuritJobStart
-            ,recuritJobEnd
-            ,recuritJobKind
-            ,recuritMealProvide
-            ,recuritMealVeget
-            ,recuritMealMemo
-            ,recuritChkFampler
-            ,recuritChkPeriod
-            ,recuritChkMinor
-            ,recuritChkMinorMemo
-            ,recuritChkMax
-            ,recuritChkSummary
-            <!-- ,recuritRegDate
-            ,recuritEndDate -->
+            recruitCode
+            ,recruitFarmCode
+            ,recruitState
+            ,recruitUserId
+            ,recruitStart
+            ,recruitEnd
+            ,recruitJobStart
+            ,recruitJobEnd
+            ,recruitJobKind
+            ,recruitMealProvide
+            ,recruitMealVeget
+            ,recruitMealMemo
+            ,recruitChkFampler
+            ,recruitChkPeriod
+            ,recruitChkMinor
+            ,recruitChkMinorMemo
+            ,recruitChkMax
+            ,recruitChkSummary
+            <!-- ,recruitRegDate
+            ,recruitEndDate -->
     </sql>    
 
 
@@ -53,7 +53,7 @@
             ,farmRating
             ,farmReviewCnt
         FROM
-            farm_recurit
+            farm_recruit
     </select>
     
 

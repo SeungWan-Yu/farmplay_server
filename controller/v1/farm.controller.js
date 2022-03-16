@@ -4,6 +4,24 @@ var fileDel = require('../../custom_modules/fileDelete');
 var errorJson = new ErrorJson();
 
 
+exports.getBannerList = async(req,res) => {
+    console.log("배너리스트 체크");
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        results.data = await farmModel.getBannerList();
+        if(results.data.length>0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }
+    console.log(results);
+    res.send(results); 
+};
+
+
+
+
 exports.getRoomImgListFarmCode = async(req,res) => {
     var body = req.body;
     var farmRoomImg = errorJson.farmRoomImg();
@@ -41,6 +59,10 @@ exports.getFarmRoom = async(req,res) => {
     try {
         var [r1] = await farmModel.getFarm(body);
         var r2 = await farmModel.getFarmRoomImg(body);
+        console.log("체크");
+        console.log(body);
+        console.log(r1);
+        console.log(r2);
         if([r1].length >0){
             results.message = "exist";
             if(r2.length ==0) results.message = "emptyImg";
@@ -98,11 +120,10 @@ exports.addFarm = async(req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
     console.log("농장등록시작");
     var body = req.body;
-    console.log(body);
     var farmImg = req.files.farmImgFile;     //농가이미지 파일
     var roomImg = req.files.roomImgFile;     //숙소이미지 파일
     body.farmImg = farmImg[0].filename;      //농가이미지 이름 body객체에 넣기
-    
+    console.log(body);
     // /*** 농가이미지 리스트맵 만들기  ***/
     // var roomImgMap = {};                    
     // var roomImgList = [];

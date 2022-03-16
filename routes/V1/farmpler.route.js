@@ -21,7 +21,12 @@ router.post('/id', farmplerController.getFarmplerId);
 //#getFarmpler         
 router.post('/entercode', farmplerController.getFarmpler);       
 
+//#getFarmpler         
+router.post('/remove', farmplerController.removeFarmpler);       
 
+
+//#getFarmpler         
+router.post('/recruitCodeUserId', farmplerController.getEnterRecruitCodeUserId);       
 
 
 module.exports = router;

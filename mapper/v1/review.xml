@@ -15,6 +15,7 @@
         ,reviewContent
         ,reviewRegDate
     </sql>   
+    
 
     <!-- 리뷰등록 -->
     <insert id="addReview">
@@ -112,6 +113,17 @@
             reviewEnterCode  = #{reviewEnterCode} 
             AND 
             reviewStandard   = #{reviewStandard};
+    </select>
+
+
+   <!-- 리뷰평점 계산해서 리뷰갯수,평점 가져오기 -->
+    <select id="getFarmReviewList">
+        <include refid="selectBoardColumn"></include>
+        FROM review 
+        WHERE 
+            reviewStandard  = '농장'
+            AND 
+            reviewFarmCode   = #{farmCode};
     </select>
 
 </mapper>

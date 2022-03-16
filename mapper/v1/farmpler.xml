@@ -6,7 +6,7 @@
         SELECT 
              enterCode
             ,enterfarmCode
-            ,enterRecuritCode
+            ,enterRecruitCode
             ,enterUserId
             ,enterUserName
             ,enterUserPhoto
@@ -24,6 +24,52 @@
     </sql>    
 
 
+    <!-- 모집코드,팜플러아이디로 참가정보 가져오기 -->
+    <select id="getEnterRecruitCodeUserId">
+        SELECT 
+             enterCode
+            ,enterStart
+            ,enterEnd
+            ,enterEditStart
+            ,enterEditEnd
+            ,enterState
+        FROM 
+            farmpler 
+        WHERE 
+            enterRecruitCode = #{recruitCode}
+            AND enterUserId = #{userId};
+    </select>
+
+    <!-- 업데이트 모집마감 팜플러 상태 변경-->
+    <update id="updateEnterListEdit">
+        UPDATE farmpler 
+        SET 
+             enterEditDate  = NOW()
+            ,enterEditReson = '농가취소(모집마감 또는 취소)'
+            ,enterState     = '참가취소됨'
+        WHERE enterCode IN
+            <foreach collection="enterList" item="enter" separator="," open="(" close=")">
+            #{enter.enterCode}
+            </foreach>
+    </update>
+
+
+    <!-- 스케쥴러 모집마감 팜플러 상태 변경할 리스트-->
+     <select id="getRecruitEndEnterList">
+        SELECT 
+             enterCode
+            ,enterRecruitCode
+            ,enterState
+	    FROM 
+            farmpler 
+        WHERE 
+            enterRecruitCode IN(
+                <foreach collection="recruitList" item="i" separator=" , "> 	
+			        #{i.recruitCode}
+		        </foreach>
+            ) 
+            AND enterState IN('참가수정요청','참가신청중')
+    </select>
     <!-- 참여 팜플러 리스트 가져오기(모집코드)-->
     <select id="getFarmplerList">
     <include refid="selectBoardColumn"></include>
@@ -35,7 +81,8 @@
 	    ON
             f.enterUserId = u.userId
 	    WHERE
-            f.enterRecuritCode = #{recruitcode}
+            f.enterRecruitCode = #{recruitcode}
+        ORDER BY f.enterReporting DESC 
     </select>
     
     <!-- 업데이트 유저가 참가취소-->
@@ -100,7 +147,7 @@
     <insert id="addFarmpler">
         INSERT INTO farmpler 
             ( enterfarmCode
-            , enterRecuritCode
+            , enterRecruitCode
             , enterUserId
             , enterUserName
             , enterStart
@@ -113,7 +160,7 @@
             , enterReview ) 
         VALUES 
             ( #{enterFarmCode}
-            , #{enterRecuritCode}
+            , #{enterRecruitCode}
             , #{enterUserId}
             , #{enterUserName}
             , #{enterStart}
@@ -143,5 +190,36 @@
         WHERE 
             enterCode = #{enterCode};
     </select>
+
+
+
+     <!-- 팜플러정보 가져오기 (참가코드))-->
+    <select id="getFarmplerListRecruit">
+        SELECT 
+            enterCode,enterUserId
+	    FROM 
+            farmpler 
+        WHERE 
+            enterRecruitCode = #{recruitCode}
+    </select>
+
+        
+    <!-- 팜플러삭제 -->
+    <delete id="removeFarmpler">
+        DELETE FROM 
+            farmpler 
+        WHERE 
+            enterCode = #{enterCode}
+    </delete>
+
+
+  <!-- 모집삭제 -->
+    <delete id="removeRecruit">
+        DELETE FROM 
+            recruit 
+        WHERE 
+            recruitCode = #{recruitCode}
+    </delete>
+
 
 </mapper>

@@ -38,7 +38,7 @@ var date = now.toString()
 router.use('/v1', require('./V1'));
 router.use('/admin', require('./Web'));
 router.get('/', (req, res, next) => {
-  return res.render("../pages/main");
+  return res.redirect("/admin");
 });
 
 var results = {

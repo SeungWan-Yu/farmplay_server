@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webAppMapper">
+
+<sql id="selectBannerColumn">
+    SELECT 
+         bannerCode
+        ,bannerNumber
+        ,bannerUrl
+        ,bannerRegDate
+</sql>    
+
+<!-- 배너 리스트 가져오기 -->
+<select id="getBannerList">
+    <include refid="selectBannerColumn"></include>
+    FROM banner
+    ORDER BY bannerNumber;
+</select>
+
+<!-- 배너 리스트 업데이트 -->
+<update id="updateBannerList">
+    <foreach collection="edit" item="i"  separator=";">
+    UPDATE banner
+	SET
+		 bannerNumber    =   #{i.bannerNumber}
+		,bannerUrl       =   #{i.bannerUrl}
+		,bannerRegDate   =   NOW()
+	WHERE 
+        bannerCode      =   #{i.bannerCode}
+    </foreach>
+</update>
+
+<!-- 배너 리스트 등록 -->
+<insert id="insertBannerList">
+    INSERT INTO banner
+	    ( bannerNumber
+        , bannerUrl
+        , bannerRegDate)
+	VALUES 
+    <foreach collection="add" item="i"  separator=",">
+        ( #{i.bannerNumber}
+        , #{i.bannerUrl}
+        , NOW())
+    </foreach>
+
+</insert>
+
+<!-- 배너 리스트 삭제 -->
+<delete id="deleteBannerList">
+    DELETE FROM banner 
+    WHERE bannerCode IN(
+        <foreach collection="del" item="i"  separator=",">
+            #{i.bannerCode}
+        </foreach>
+    )
+</delete>
+
+
+</mapper>

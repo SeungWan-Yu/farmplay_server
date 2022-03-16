@@ -9,6 +9,27 @@ exports.appApiAdd = function (req, res) {
 }
 
 
+// 앱api 삭제 컨트롤러
+exports.addApiDel = async (req,res) => {
+    console.log("api등록");
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    try {
+        var query = req.query;
+        console.log("쿼리체크");
+        console.log(query);
+        results.data = await appApiModel.addApiDel(con,query);
+        if(results.data.affectedRows!=0)results.message = "exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error);
+    }finally{
+        con.release();
+        res.redirect("/admin/apiApp/appApiList");
+    }
+}
+
 // 앱api 등록 버튼 클릭시 등록되는 컨트롤러
 exports.addApi = async (req,res) => {
     console.log("api등록");

@@ -131,7 +131,7 @@
             var initData = JSON.parse('<%-JSON.stringify(data)%>'); //넘어온 데이터 json으로 변환 
             gFarmCode = initData[index].farmCode;
             gUserId = initData[index].userName;
-            console.log(initData[index])
+            console.log(initData[index]);
             inHtml += '<div class="farmInfoDiv">'
             inHtml += '<img src="http://'+location.host+"/public/uploads/"+initData[index].farmImg+'" class="farmImg">'  
             inHtml += '<table class="table table-hover table-condensed farmTable">'
@@ -241,13 +241,13 @@
             var inHtml = ""; 
             inHtml += '<ul class="area_list01">'
             for(var i=0;i<roomList.length;i++){
-                inHtml += '<li class="imgctl">'
-                inHtml += '<span>'
-                inHtml += '<img src="http://'+location.host+"/public/uploads/"+roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">'
-                inHtml += '</span>'
-                inHtml += '</li>'
+                inHtml += '<li class="imgctl">';
+                inHtml += '<span>';
+                inHtml += '<img src="http://'+location.host+"/public/uploads/"+roomList[i].roomImgUrl+'" class="'+roomList[i].roomImgCode+'">';
+                inHtml += '</span>';
+                inHtml += '</li>';
             }
-            inHtml += '</ul>'    
+            inHtml += '</ul>';    
             $('#roomImgBody').append(inHtml);
         })
 

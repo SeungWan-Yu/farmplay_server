@@ -9,10 +9,10 @@ const { farmController } = require('../../controller/web');
 router.get('/farmList', farmController.farmList);
 router.post('/farmRoomImgList', farmController.farmRoomImgList);
 router.post('/farmRoomImgDel', farmController.farmRoomImgDel);
-router.post('/farmRoomImgInsert', upload.array('file'),farmController.farmRoomImgInsert);
+router.post('/farmRoomImgInsert', upload("업로드").array('file'),farmController.farmRoomImgInsert);
 router.get('/farmDel', farmController.farmDel); 
 router.get('/farmEdit', farmController.farmEdit);
-router.post('/editFarm',upload.fields([{name:'farmImgFile'},{name:'roomImgFile'}]),farmController.editFarm);
+router.post('/editFarm',upload("업로드").fields([{name:'farmImgFile'},{name:'roomImgFile'}]),farmController.editFarm);
 router.get('/farmAskList', farmController.farmAskList);
 router.post('/farmConfirm', farmController.farmConfirm);
 

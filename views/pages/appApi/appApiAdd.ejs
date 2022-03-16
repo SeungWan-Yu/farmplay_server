@@ -8,7 +8,19 @@
 
 <script type="text/javascript">
     $(function(){
+
+        function replaceEmty(name){
+            var inputVal = $('input[name='+name+']').val();
+            var replaceVal = inputVal.replace(/(\s*)/g, "");
+            $('input[name='+name+']').val(replaceVal);
+        }
+
         $('.apiBtn').click(function(){
+            replaceEmty("apiUrl");
+            replaceEmty("apiReqParam");
+            replaceEmty("apiReqParamKor");
+            replaceEmty("apiResParam");
+            replaceEmty("apiResParamKor");
             $('form').submit();
         });
 

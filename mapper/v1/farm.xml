@@ -6,6 +6,7 @@
         SELECT 
               farmCode
             , farmState
+            , farmService
             , farmAskDate
             , farmRegDate
             , farmImg
@@ -27,26 +28,40 @@
             , farmReviewCnt
     </sql>    
 
-    <sql id="recuritColumn">
-        , recuritCode
-        , recuritFarmCode
-        , recuritState
-        , recuritUserId
-        , recuritStart
-        , recuritEnd
-        , recuritJobStart
-        , recuritJobEnd
-        , recuritJobKind
-        , recuritMealProvide
-        , recuritMealVeget
-        , recuritMealMemo
-        , recuritChkFampler
-        , recuritChkPeriod
-        , recuritChkMinor
-        , recuritChkMinorMemo
-        , recuritChkMax
-        , recuritChkSummary
+    <sql id="recruitColumn">
+        , recruitCode
+        , recruitFarmCode
+        , recruitState
+        , recruitUserId
+        , recruitStart
+        , recruitEnd
+        , recruitJobStart
+        , recruitJobEnd
+        , recruitJobKind
+        , recruitMealProvide
+        , recruitMealVeget
+        , recruitMealMemo
+        , recruitChkFampler
+        , recruitChkPeriod
+        , recruitChkMinor
+        , recruitChkMinorMemo
+        , recruitChkMax
+        , recruitChkSummary
     </sql>   
+
+    <!-- 배너 리스트 가져오는 쿼리-->
+    <select id="getBannerList">
+        SELECT 
+             bannerCode
+            ,bannerNumber
+            ,bannerUrl
+            ,bannerRegDate
+	    FROM 
+            banner
+        ORDER BY 
+            bannerNumber
+    </select>
+
 
     <!-- 팜룸이미지코드 가져오기-->
     <select id="getRoomImgListFarmCode">
@@ -57,7 +72,7 @@
 	    FROM 
             farm_room_img
         WHERE 
-            roomImgFarmCode = #{farmcode};
+            roomImgFarmCode = #{farmCode};
     </select>
 
     <!-- 팜이미지명 가져오기-->
@@ -83,9 +98,9 @@
     <select id="getFarm">
         <include refid="selectBoardColumn"></include>
         FROM 
-            farm 
+            farm_review 
         WHERE 
-            farmCode = #{farmcode};
+            farmCode = #{farmCode};
     </select>
 
      <!-- 팜 숙소이미지 리스트 가져오기 (팜코드)-->
@@ -97,7 +112,7 @@
         FROM 
             farm_room_img
         WHERE 
-            roomImgFarmCode = #{farmcode};    
+            roomImgFarmCode = #{farmCode};    
     </select>
 
     <!-- 등록농장 있는지 체크(유저아이디) -->
@@ -118,7 +133,7 @@
 			+sin(RADIANS(#{uLongitude}))*sin(radians(farmMapx)))),1) 
 			AS farmDistance
         FROM 
-            farm 
+            farm_review
         WHERE 
             farmstate = '등록완료';
     </select>
@@ -128,6 +143,7 @@
         INSERT INTO farm
 	        ( farmImg 
             , farmName
+            , farmService
             , farmStartOpen
             , farmProduce
             , farmType
@@ -146,6 +162,7 @@
 	    VALUES 
             ( #{farmImg}
             , #{farmName}
+            , #{farmService}
             , #{farmStartOpen}
             , #{farmProduce}
             , #{farmType}
@@ -202,6 +219,7 @@
         UPDATE farm
         SET
              farmState       = '신청중'
+            ,farmService     = #{farmService}
             ,farmAskDate     = NOW()
             ,farmRegDate     = ''
 		    ,farmName        = #{farmName}
@@ -230,20 +248,21 @@
     <!-- 농장+모집테이블 가져오기) -->
     <select id="getFarmRecruitList">
         <include refid="selectBoardColumn"></include>
-        <include refid="recuritColumn"></include>
+        <include refid="recruitColumn"></include>
         FROM 
-            farm_recurit 
+            farm_recruit 
         WHERE 
-            farmCode = #{farmcode};
+            farmCode = #{farmCode}
+        ORDER BY recruitRegDate DESC   
     </select>
 
      <!-- 농장+모집+참가(팜플러) 테이블 가져오기) -->
     <select id="getFarmRecruitEnterList">
         <include refid="selectBoardColumn"></include>
-        <include refid="recuritColumn"></include>
+        <include refid="recruitColumn"></include>
             , enterCode
             , enterfarmCode
-            , enterRecuritCode
+            , enterRecruitCode
             , enterUserId
             , enterUserName
             , enterUserPhoto
@@ -261,7 +280,8 @@
         FROM 
             farm_recruit_farmpler 
         WHERE 
-            enterUserId = #{id};
+            enterUserId = #{id}
+        ORDER BY enterReporting DESC 
     </select>
 
 

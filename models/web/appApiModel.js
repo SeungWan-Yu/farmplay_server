@@ -6,6 +6,11 @@ mybatisMapper.createMapper(['./mapper/web/webApi.xml']);
 
 module.exports = {
 
+    addApiDel : async function(con,query){
+        var query = mybatisMapper.getStatement('webApiMapper','addApiDel',query);
+        var [rows] = await con.query(query);
+        return rows;
+    },
 
     apiListCrud : async function(con,crud){
         var query = mybatisMapper.getStatement('webApiMapper','apiListCrud',crud);

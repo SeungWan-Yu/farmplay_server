@@ -20,6 +20,16 @@
             ,apiRegDate
     </sql>    
 
+
+    <!-- 푸드삭제 -->
+    <delete id="addApiDel">
+        DELETE 
+            FROM api 
+        WHERE 
+            apiCode = #{apiCode};
+    </delete>
+
+
     <!-- api 등록 -->
     <insert id ="addApi">
         INSERT INTO api

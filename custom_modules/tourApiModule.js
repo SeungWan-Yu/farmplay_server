@@ -73,7 +73,199 @@ const url5 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detail
 //반복정보조회 url
 const url6 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailInfo?";
 
-//위치기반 관광정보 불러오기
+async function getTourDetail(contentTpyeId,contentid) {
+    console.log("타입아이디:"+contentTpyeId);
+    console.log("아이디:"+contentid);
+    var imgMainList = [];
+    var imgMenuList = [];
+    var mapList = [];
+    var results = {result:"success" ,data:"" ,message:""};
+
+    try {
+
+        var promiseList = [getTourIntro(contentTpyeId,contentid), getTourCommon(contentTpyeId,contentid), getTourImg(contentid,"Y")];
+        if(contentTpyeId==39){
+            promiseList.push(getTourImg(contentid,"N"));
+        }   
+        
+        var promiseRes =await Promise.all(promiseList);
+
+        var r1 = promiseRes[0];
+        var r2 = promiseRes[1];
+        var r3 = promiseRes[2];
+        var r4;
+        
+
+        if(contentTpyeId==39){
+            r4 =  promiseRes[3];
+            if(r4.data==undefined){
+                imgMenuList = null;
+            }else{
+                var chk1 =  Array.isArray(r4.data);
+                if(chk1){
+                    for(var j in r4.data){
+                        imgMenuList.push(r4.data[j].originimgurl);
+                    } 
+                }else{
+                    imgMenuList.push(r4.data.originimgurl);
+                }
+
+            }
+        }
+
+        
+        if(r3.data==undefined){
+            imgMainList = null;
+        }else{
+            var chk2 =  Array.isArray(r3.data);
+            if(chk2){
+                for(var k in r3.data){
+                    imgMainList.push(r3.data[k].originimgurl);
+                } 
+            }else{
+                imgMainList.push(r3.data.originimgurl);
+            }
+
+        }
+
+        if(r1.result!="success" && r2.result!="success" && r3.result!="success"){
+            throw Error("apiError");
+        }
+
+        var dataMap = {};
+        dataMap.overview        = r2.data.overview+"";
+        dataMap.homepage        = r2.data.homepage+"";
+        dataMap.mainImgList     = imgMainList;
+        if(contentTpyeId==39){
+            dataMap.menuImgList     = imgMenuList;
+        }
+        //식당
+        if(contentTpyeId==39){
+            dataMap.infocenter      = r1.data.infocenterfood+"";
+            dataMap.opentime    = r1.data.opentimefood+"";
+            dataMap.parking     = r1.data.parkingfood+"";
+            dataMap.firstmenu       = r1.data.firstmenu+"";
+            dataMap.treatmenu       = r1.data.treatmenu+"";
+            dataMap.reservation     = r1.data.reservationfood+"";
+            dataMap.restdate        = r1.data.restdatefood+"";
+            dataMap.packing         = r1.data.packing+"";
+        //숙박
+        }else if(contentTpyeId ==32){
+            dataMap.checkintime         = r1.data.checkintime+"";
+            dataMap.checkouttime        = r1.data.checkouttime+"";
+            dataMap.chkcooking          = r1.data.chkcooking+"";
+            dataMap.foodplace           = r1.data.foodplace+"";
+            dataMap.infocenter          = r1.data.infocenterlodging+"";
+            dataMap.parking             = r1.data.parkinglodging+"";
+            dataMap.reservation         = r1.data.reservationlodging+"";
+            dataMap.roomcount           = r1.data.roomcount+"";
+            dataMap.roomtype            = r1.data.roomtype+"";
+            dataMap.subfacility         = r1.data.subfacility+"";
+        //명소
+        }else if(contentTpyeId ==12){
+            dataMap.chkbabycarriage     = r1.data.chkbabycarriage+"";
+            dataMap.chkcreditcard       = r1.data.chkcreditcard+"";
+            dataMap.chkpet              = r1.data.chkpet+"";
+            dataMap.infocenter          = r1.data.infocenter+"";
+            dataMap.parking             = r1.data.parking+"";
+            dataMap.usetime             = r1.data.usetime+"";
+            dataMap.restdate            = r1.data.restdate+"";
+        //문화
+        }else if(contentTpyeId ==14){
+            dataMap.chkbabycarriage     = r1.data.chkbabycarriageculture+"";
+            dataMap.chkcreditcard       = r1.data.chkcreditcardculture+"";
+            dataMap.chkpet              = r1.data.chkpetculture+"";
+            dataMap.infocenter          = r1.data.infocenterculture+"";
+            dataMap.parking             = r1.data.parkingculture+"";
+            dataMap.usetime             = r1.data.usetimeculture+"";
+            dataMap.restdate            = r1.data.restdateculture+"";
+            dataMap.usefee              = r1.data.usefee+"";
+        //쇼핑    
+        }else if(contentTpyeId ==38){
+            dataMap.chkbabycarriage     = r1.data.chkbabycarriageshopping+"";
+            dataMap.chkcreditcard       = r1.data.chkcreditcardshopping+"";
+            dataMap.chkpet              = r1.data.chkpetshopping+"";
+            dataMap.infocenter          = r1.data.infocentershopping+"";
+            dataMap.parking             = r1.data.parkingshopping+"";
+            dataMap.restroom            = r1.data.restroom+"";
+            dataMap.restdate            = r1.data.restdateshopping+"";
+            dataMap.saleitemcost        = r1.data.saleitemcost+"";
+            dataMap.shopguide           = r1.data.shopguide+"";
+        };
+        mapList.push(dataMap);
+        results.data = mapList;
+            
+    }catch(error) {
+         console.log(error);
+        results.result = "fail";
+        results.data = error;
+        results.message = error.message;
+    }finally{
+        return results;
+    }
+
+
+
+}
+
+
+
+//위치기반 관광정보 리스트만
+async function getTourLocationList(tpyeId,mapx,mapy,pageNo) {
+    var results = {result:"success" ,data:"" ,message:""};
+    var dataList = [];
+    console.log("관광함수 리스트만");
+
+    try {
+        var contentTpyeId = getContentTpyeId(tpyeId);
+        var queryParams = serviceKey + getNumOfRows(10) + getPageNo(pageNo) + mobileOS + mobileApp + arrangeLocation + contentTpyeId +getMapx(mapx) +getMapy(mapy) +radius;
+
+        var obj = await axios.get(url1+queryParams);
+        var item =  obj.data.response.body.items.item;
+        var arrayChk = Array.isArray(item)
+        var mapList = [];
+        if(item==undefined){
+            throw Error("notData");
+        }
+
+        if(!arrayChk){
+            item = [item];
+        }
+        
+        for(var i in item){
+            var dataMap = {};
+            dataMap.contentid       = item[i].contentid;
+            dataMap.contenttypeid   = item[i].contenttypeid+"";
+            dataMap.addr1           = item[i].addr1+"";
+            dataMap.firstimage      = item[i].firstimage+"";
+            dataMap.dist            = item[i].dist+"";
+            dataMap.title           = item[i].title+"";
+            dataMap.readcount       = item[i].readcount+"";
+            dataMap.mapx            = item[i].mapx+"";
+            dataMap.mapy            = item[i].mapy+"";
+            mapList.push(dataMap);
+        }
+        
+        
+        results.data = mapList;
+
+    }catch (error) {
+        console.log(error);
+        results.result = "fail";
+        results.data = error;
+        results.message = error.message;
+    }finally{
+        console.log("결과값");
+        console.log(results);
+        return results;
+    }
+}
+
+
+
+
+
+//위치기반 관광정보 불러오기 리스트+상세내역
 async function getTourLocation(tpyeId,mapx,mapy,pageNo){
     var results = {result:"success" ,data:"" ,message:""};
     var dataList = [];
@@ -293,11 +485,15 @@ async function getTourArea(division){
 
 //소개정보 불러오기
 async function getTourIntro(contentTpyeId,contentId){
+    console.log("소개정보"+contentTpyeId);
+    console.log("소개정보"+contentId);
     var results = {result:"success" ,data:"" ,message:""};
     try {
-        var queryParams = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(contentId) + contentTpyeId + type;
+        var queryParams = serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(contentId) + getContentTpyeId(contentTpyeId) + type;
         var obj = await axios.get(url3+queryParams,{timeout: 5000,}); 
         var item = obj.data.response.body.items.item;
+        console.log("소개정보 결과");
+        console.log(url3+queryParams);
         results.data = item;
     } catch (error) {
         console.log(error);
@@ -315,7 +511,7 @@ async function getTourCommon(contentTpyeId,contentId){
     var results = {result:"success" ,data:"" ,message:""};
     try {
        
-        var queryParams =  serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(contentId) + contentTpyeId + defaultYN + overviewYN +type;
+        var queryParams =  serviceKey + numOfRows + pageNo + mobileOS + mobileApp + getConId(contentId) + getContentTpyeId(contentTpyeId)  + defaultYN + overviewYN +type;
         var obj = await axios.get(url4+queryParams,{timeout: 5000,}); 
         var item = obj.data.response.body.items.item;
         results.data = item;
@@ -383,4 +579,6 @@ module.exports = {
     getTourLocation,
     getTourImg,
     getTourRepeat,
+    getTourLocationList,
+    getTourDetail,
 };

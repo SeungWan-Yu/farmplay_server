@@ -7,6 +7,18 @@ mybatisMapper.createMapper(['./mapper/v1/farm.xml']);
 //List는 rows , List아닐 경우 rows[0]
 
 module.exports = {
+    getBannerList :async function(){
+        const connection = await pool.getConnection();
+        try{
+            var query = mybatisMapper.getStatement('farmMapper','getBannerList');
+            var [rows] = await connection.query(query);
+        }catch(err){
+            throw err;
+        }finally{
+            connection.release();
+        }
+        return rows;
+    },
 
     getFarmRecruitEnterList :async function(enterUserId){
         const connection = await pool.getConnection();
@@ -63,10 +75,11 @@ module.exports = {
         return rows[0];
     },
 
-    getFarm : async function(farmcode){
+    getFarm : async function(body){
         const connection = await pool.getConnection();
         try{
-            var query = mybatisMapper.getStatement('farmMapper','getFarm',farmcode,format);
+            var query = mybatisMapper.getStatement('farmMapper','getFarm',body,format);
+            console.log(query);
             var [rows] = await connection.query(query);
         }catch(err){
             throw err;
@@ -155,17 +168,21 @@ module.exports = {
                 await connection.rollback();
                 throw Error("affectedRows");
             }else{
-                console.log("리스트 확인");
-                var q2 = mybatisMapper.getStatement('farmMapper','addFarmRoomImg',roomImgMap,format);    //숙소이미지등록
-                var [r2] = await connection.query(q2);
-                console.log("r2찍어보깅");
-                if(r2.affectedRows!=roomImgList.length){
-                    await connection.rollback();
-                    throw Error("affectedRows");
+                if(farm.farmService=="숙박"){
+                    console.log("리스트 확인");
+                    var q2 = mybatisMapper.getStatement('farmMapper','addFarmRoomImg',roomImgMap,format);    //숙소이미지등록
+                    var [r2] = await connection.query(q2);
+                    console.log("r2찍어보깅");
+                    if(r2.affectedRows!=roomImgList.length){
+                        await connection.rollback();
+                        throw Error("affectedRows");
+                    }else{
+                        rows.push(r1);
+                        rows.push(r2); 
+                    }
                 }else{
                     rows.push(r1);
-                    rows.push(r2); 
-                }
+                } 
             };
             await connection.commit();
         }catch(err){
@@ -194,17 +211,20 @@ module.exports = {
             console.log("r1체크");
             console.log(r1);
             if(r1.changedRows!=1){
+                console.log("로우첵1");
                 rowCheck = true;
             }else{
                 rows.push(r1);
             }
             //농장 추가된 사진이 있다면 등록
             if(roomImgMap.roomImgList!=undefined){
+    
                 var q2 = mybatisMapper.getStatement('farmMapper','addFarmRoomImg',roomImgMap,format);    //숙소이미지등록
                 console.log("쿼리체크2")
                 console.log(q2)
                 var [r2] = await connection.query(q2);
                 if(r2.affectedRows!=roomImgMap.roomImgList.length){
+                    console.log("로우첵2");
                     rowCheck = true;
                 }else{
                     rows.push(r2);
@@ -214,7 +234,11 @@ module.exports = {
             if(roomImgDelMap.roomImgList!=undefined){
                 var q3 = mybatisMapper.getStatement('farmMapper','removeFarmRoomImg',roomImgDelMap,format);    //숙소이미지삭제
                 var [r3] = await connection.query(q3);
+                console.log("쿼리확인하기");
+                console.log(r3);
+                console.log(q3);
                 if(r3.affectedRows!=roomImgDelMap.roomImgList.length){
+                    console.log("로우첵3");
                     rowCheck = true;
                 }else{
                     rows.push(r3);
@@ -226,6 +250,7 @@ module.exports = {
                 var q4 = mybatisMapper.getStatement('farmMapper','updateUserFarmState',id,format);   
                 var [r4] = await connection.query(q4);
                 if(r4.changedRows!=1){
+                    console.log("로우첵4");
                     rowCheck = true;
                 }else{
                     rows.push(r4);
@@ -233,12 +258,14 @@ module.exports = {
             }
           
             if(rowCheck){
+                console.log("롤백체크1")
                 await connection.rollback();
                 throw Error("affectedRows");
             }else{
                 await connection.commit();
             }
         }catch(err){
+            console.log("롤백2");
             await connection.rollback();
             throw err;
         }finally{

@@ -1,6 +1,49 @@
 const {farmplerModel} = require("../../models/v1");
 const { RIPEMD160 } = require('crypto-js');
+const pool = require('../../configs/mysql2-db');
 
+
+
+exports.getEnterRecruitCodeUserId = async (req,res) => {
+    const con = await pool.getConnection();
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    var body = req.body;
+    console.log("바디체크");
+    console.log(body);
+    try {
+        results.data = await farmplerModel.getEnterRecruitCodeUserId(con,body);
+        if(results.data.length>0){
+            results.message="exist";
+        }
+      
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error)
+    }finally{
+        con.release();
+        console.log("결과값");
+        console.log(results);
+        res.send(results); 
+    }
+};
+
+
+exports.removeFarmpler = async (req,res) => {
+    var results = {result:"success" ,data:[] ,message:"empty"};
+    var body = req.body;
+    try {
+        results.data = await farmplerModel.removeFarmpler(body);
+        results.message="exist";
+    } catch (error) {
+        results.result = "fail";
+        results.message = error.message;
+        console.log(error)
+    }
+    console.log("결과값");
+    console.log(results);
+    res.send(results); 
+};
 
 exports.getFarmplerList = async (req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};

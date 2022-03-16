@@ -158,7 +158,6 @@ exports.updateUser = async (req,res) => {
 exports.updateUserPw = async (req,res) => {
     var results = {result:"success" ,data:[] ,message:"empty"};
     var body = req.body;
-    var results = {result :""};
     try {
         r1 = await userModel.getIdCheck(body);
         if(r1[0].count>0){
@@ -174,7 +173,7 @@ exports.updateUserPw = async (req,res) => {
         results.message = error.message;
         console.log(error);
     }
-
+    console.log(results);
     res.send(results);
 };
   
@@ -215,18 +214,23 @@ exports.getCertificationCode = async (req,res) => {
     try {
         r1 = await userModel.getCertificationCode(body);
         //유저가 입력한 코드와 DB에 가져온 코드가 같을 경우 아이디를 리턴
-        if(r1[0].code==body.code){
-            console.log("같음");
-            results.data = await userModel.getUserId(body);
-            if(results.data.length>0){
-                results.message = "exist"; 
-            }else{
-                console.log("여기엠티");
-                results.message = "empty"; 
+        console.log(r1);
+        if(r1.length==0){
+            results.message = "different"; 
+        }else{
+            if(r1[0].code==body.code){
+                console.log("같음");
+                results.data = await userModel.getUserId(body);
+                if(results.data.length>0){
+                    results.message = "exist"; 
+                }else{
+                    console.log("여기엠티");
+                    results.message = "empty"; 
+                }
+            }else{  //그러지 않을 경우 different또는 empty 발송
+                console.log("다름");
+                results.message = "different";   
             }
-        }else{  //그러지 않을 경우 different또는 empty 발송
-            console.log("다름");
-            results.message = "different";   
         }
     } catch (error) {
         console.log(error);
@@ -244,6 +248,8 @@ exports.getCertification = async (req,res) => {
     var body = req.body;
     var singupState  = body.singupState;
     console.log(singupState);
+    console.log("바디체크 유저컨트롤러")
+    console.log(body);
 
     try {
         r1 = await userModel.getPhoneCheck(body);

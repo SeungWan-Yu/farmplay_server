@@ -4,25 +4,53 @@
 
     <sql id="selectBoardColumn">
         SELECT 
-             recuritCode
-            ,recuritFarmCode
-            ,recuritState
-            ,recuritUserId
-            ,recuritStart
-            ,recuritEnd
-            ,recuritJobStart
-            ,recuritJobEnd
-            ,recuritJobKind
-            ,recuritMealProvide
-            ,recuritMealVeget
-            ,recuritMealMemo
-            ,recuritChkFampler
-            ,recuritChkPeriod
-            ,recuritChkMinor
-            ,recuritChkMinorMemo
-            ,recuritChkMax
-            ,recuritChkSummary
+             recruitCode
+            ,recruitFarmCode
+            ,recruitState
+            ,recruitUserId
+            ,recruitStart
+            ,recruitEnd
+            ,recruitJobStart
+            ,recruitJobEnd
+            ,recruitJobKind
+            ,recruitMealProvide
+            ,recruitMealVeget
+            ,recruitMealMemo
+            ,recruitChkFampler
+            ,recruitChkPeriod
+            ,recruitChkMinor
+            ,recruitChkMinorMemo
+            ,recruitChkMax
+            ,recruitChkSummary
+            ,recruitRegDate
+            ,recruitEndDate
     </sql>    
+
+
+    <!-- 모집리스트 모집완료 업데이트 -->
+    <select id="updateRecruitList">
+        UPDATE 
+            recruit 
+        SET 
+            recruitState    =  '모집완료' ,
+            recruitEndDate  = NOW()
+        WHERE 
+            recruitCode IN (
+                <foreach collection="recruitList" item="i" separator=" , "> 	
+			        #{i.recruitCode}
+		        </foreach>
+            )
+    </select>
+
+    <!-- 모집정보 마감예정 리스트 -->
+    <select id="getRecruitEndList">
+        SELECT 
+             recruitCode
+            ,recruitEnd
+        FROM
+             recruit 
+             <![CDATA[WHERE recruitEnd <= CURDATE() - INTERVAL 0 DAY AND recruitState = "모집중"]]>
+    </select>
 
     <!-- 모집정보 가져오기(모집코드)-->
     <select id="getRecruit">
@@ -30,7 +58,7 @@
         FROM 
             recruit 
         WHERE 
-            recuritCode = #{recruitcode};
+            recruitCode = #{recruitcode};
     </select>
 
     <!-- 모집정보 가져오기(팜코드)-->
@@ -39,57 +67,58 @@
         FROM 
             recruit
         WHERE 
-            recuritFarmCode = #{farmcode};
+            recruitFarmCode = #{farmCode}
+           ORDER BY recruitRegDate DESC   
     </select>
 
     <!-- 모집정보 가져오기(유저아이디)-->
-    <select id="getRecuritListId">
+    <select id="getrecruitListId">
         <include refid="selectBoardColumn"></include>
         FROM 
             recruit
         WHERE 
-            recuritUserId = #{userId};
+            recruitUserId = #{userId};
     </select>
 
     <!-- 모집등록 -->
     <insert id="addRecruit">
         INSERT INTO recruit 
-            ( recuritFarmCode
-            , recuritState
-            , recuritUserId
-            , recuritStart
-            , recuritEnd
-            , recuritJobStart
-            , recuritJobEnd
-            , recuritJobKind
-            , recuritMealProvide
-            , recuritMealVeget
-            , recuritMealMemo
-            , recuritChkFampler
-            , recuritChkPeriod
-            , recuritChkMinor
-            , recuritChkMinorMemo
-            , recuritChkMax
-            , recuritChkSummary 
-            ,recuritRegDate ) 
+            ( recruitFarmCode
+            , recruitState
+            , recruitUserId
+            , recruitStart
+            , recruitEnd
+            , recruitJobStart
+            , recruitJobEnd
+            , recruitJobKind
+            , recruitMealProvide
+            , recruitMealVeget
+            , recruitMealMemo
+            , recruitChkFampler
+            , recruitChkPeriod
+            , recruitChkMinor
+            , recruitChkMinorMemo
+            , recruitChkMax
+            , recruitChkSummary 
+            ,recruitRegDate ) 
         VALUES 
-            ( #{recuritFarmCode}
-            , #{recuritState}
-            , #{recuritUserId}
-            , #{recuritStart}
-            , #{recuritEnd}
-            , #{recuritJobStart}
-            , #{recuritJobEnd}
-            , #{recuritJobKind}
-            , #{recuritMealProvide}
-            , #{recuritMealVeget}
-            , #{recuritMealMemo}
-            , #{recuritChkFampler}
-            , #{recuritChkPeriod}
-            , #{recuritChkMinor}
-            , #{recuritChkMinorMemo}
-            , #{recuritChkMax}
-            , #{recuritChkSummary}
+            ( #{recruitFarmCode}
+            , #{recruitState}
+            , #{recruitUserId}
+            , #{recruitStart}
+            , #{recruitEnd}
+            , #{recruitJobStart}
+            , #{recruitJobEnd}
+            , #{recruitJobKind}
+            , #{recruitMealProvide}
+            , #{recruitMealVeget}
+            , #{recruitMealMemo}
+            , #{recruitChkFampler}
+            , #{recruitChkPeriod}
+            , #{recruitChkMinor}
+            , #{recruitChkMinorMemo}
+            , #{recruitChkMax}
+            , #{recruitChkSummary}
             , NOW());
     </insert>
 
@@ -97,22 +126,22 @@
     <update id="updateReruit">
         UPDATE recruit 
         SET 
-             recuritStart       = #{recuritStart}
-            ,recuritEnd         = #{recuritEnd}
-            ,recuritJobStart    = #{recuritJobStart}
-            ,recuritJobEnd      = #{recuritJobEnd}
-            ,recuritJobKind     = #{recuritJobKind}
-            ,recuritMealProvide = #{recuritMealProvide}
-            ,recuritMealVeget   = #{recuritMealVeget}
-            ,recuritMealMemo    = #{recuritMealMemo}
-            ,recuritChkFampler  = #{recuritChkFampler}
-            ,recuritChkPeriod   = #{recuritChkPeriod}
-            ,recuritChkMinor    = #{recuritChkMinor}
-            ,recuritChkMinorMemo= #{recuritChkMinorMemo}
-            ,recuritChkMax      = #{recuritChkMax}
-            ,recuritChkSummary  = #{recuritChkSummary}
+             recruitStart       = #{recruitStart}
+            ,recruitEnd         = #{recruitEnd}
+            ,recruitJobStart    = #{recruitJobStart}
+            ,recruitJobEnd      = #{recruitJobEnd}
+            ,recruitJobKind     = #{recruitJobKind}
+            ,recruitMealProvide = #{recruitMealProvide}
+            ,recruitMealVeget   = #{recruitMealVeget}
+            ,recruitMealMemo    = #{recruitMealMemo}
+            ,recruitChkFampler  = #{recruitChkFampler}
+            ,recruitChkPeriod   = #{recruitChkPeriod}
+            ,recruitChkMinor    = #{recruitChkMinor}
+            ,recruitChkMinorMemo= #{recruitChkMinorMemo}
+            ,recruitChkMax      = #{recruitChkMax}
+            ,recruitChkSummary  = #{recruitChkSummary}
         WHERE 
-             recuritCode        = #{recuritCode}
+             recruitCode        = #{recruitCode}
     </update>
 
      <!-- 모집마감 -->
@@ -120,10 +149,52 @@
         UPDATE 
             recruit 
         SET 
-            recuritState    = '모집완료' ,
-            recuritEndDate  = NOW()
+            recruitState    =  #{recruitState} ,
+            recruitEndDate  = NOW()
         WHERE 
-            recuritCode     = #{recruitcode}
+            recruitCode     = #{recruitcode}
     </update>
+
+
+    <!-- 모집마감 상태 변경 팜플러 정보 가져오기-->
+    <select id="getEnterEndFarmplerList">
+        SELECT 
+             enterCode
+            ,enterrecruitCode
+            ,enterUserId
+            ,enterState
+	    FROM 
+            farmpler 
+        WHERE 
+        enterrecruitCode = #{recruitcode}
+        <if test="recruitState=='모집완료'">
+            AND (enterState IN ("참가신청중","참가수정요청"))
+        </if>
+        
+    </select>
+
+
+      <!-- 업데이트 유저가 참가수정요청-->
+    <update id="updateEnterEdit">
+        UPDATE farmpler 
+        SET 
+             enterEditDate  = NOW()
+            ,enterEditReson = '농가취소(모집마감 또는 취소)'
+            ,enterState     = '참가취소됨'
+        WHERE enterCode IN
+            <foreach collection="enterList" item="enter" separator="," open="(" close=")">
+            #{enter.enterCode}
+            </foreach>
+    </update>
+
+    
+    <!-- 모집삭제 -->
+    <delete id="removeRecruit">
+        DELETE FROM 
+            recruit 
+        WHERE 
+            recruitCode = #{recruitcode}
+    </delete>
+
 
 </mapper>
