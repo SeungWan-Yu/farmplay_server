@@ -23,7 +23,7 @@
 <select id="getUserList">
     <include refid="selectBoardColumn"></include>
     FROM 
-        users;
+        users_review;
 </select>
 
 <!-- 유저삭제 -->
@@ -37,7 +37,7 @@
 <select id="getOneUser">
     <include refid="selectBoardColumn"></include>
     FROM 
-        users
+        users_review
     WHERE 
         userId = #{id};
 </select>

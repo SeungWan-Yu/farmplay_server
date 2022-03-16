@@ -110,6 +110,7 @@ exports.bannerImgOrganize = async(req,res) => {
            if(!chk){
                console.log("삭제할파일");
                console.log(file[j]);
+               
                fileDel("public/uploads_banner/"+file[j]);
            }
         }

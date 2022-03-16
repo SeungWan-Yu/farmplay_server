@@ -288,137 +288,179 @@
                 }        
             }
         });
-    
    });
    
    
    
 </script>
    
-   <!--농장정보 모달창 레이아웃  -->
-   <div class="modal fade" id="farmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!--농장정보 모달창 레이아웃  -->
+    <div class="modal fade" id="farmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+        <div class="modal-content">
         <div class="modal-header">
-          <h6 id="clickId" style="font-weight: bold;">농장정보</h6>
-          <form enctype="multipart/form-data" method="post" id="uploadForm">
-          </form>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h6 id="clickId" style="font-weight: bold;">농장정보</h6>
+            <form enctype="multipart/form-data" method="post" id="uploadForm">
+            </form>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body scroll_st" id="farmBody" style="height: 750px; overflow: auto;">
-         
+            
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
+    </div>
    
 
-     <!--숙박사진 모달창 레이아웃  -->
-   <div class="modal fade" id="roomImgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!--숙박사진 모달창 레이아웃  -->
+    <div class="modal fade" id="roomImgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+        <div class="modal-content">
         <div class="modal-header">
-          <h6 style="font-weight: bold;"><span>숙소이미지</h6>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h6 style="font-weight: bold;"><span>숙소이미지</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body" id="roomImgBody"  style="height: 700px; overflow: auto;" >
-    
+
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
+    </div>
    
    
    
    <!--삭제 모달창 레이아웃  -->
-   <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h6 style="font-weight: bold;"><span id="farmNameDel">농장명</span> 삭제</h6>
-           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-         </div>
-         <div class="modal-body">
-           <label for="message-text" class="control-label" style="font-size: 14px;">
-               정말 삭제하실려면 &nbsp;&nbsp; <strong style="text-decoration: underline;">'삭제'</strong> &nbsp;&nbsp; 를 입력후 확인버튼을 눌러주세요!
-           </label>
-           <textarea class="form-control" id="message-text"></textarea>
-         </div>
-         <div class="modal-footer">
-           <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-           <button type="button" class="btn btn-primary delFarm">확인</button>
-         </div>
-       </div>
-     </div>
-   </div>
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h6 style="font-weight: bold;"><span id="farmNameDel">농장명</span> 삭제</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+            <label for="message-text" class="control-label" style="font-size: 14px;">
+                정말 삭제하실려면 &nbsp;&nbsp; <strong style="text-decoration: underline;">'삭제'</strong> &nbsp;&nbsp; 를 입력후 확인버튼을 눌러주세요!
+            </label>
+            <textarea class="form-control" id="message-text"></textarea>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+            <button type="button" class="btn btn-primary delFarm">확인</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
    
+    <!-- 데이터 테이블 -->
+    <div class="container-fluid">
    
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800"></h1>
    
-   
-   
-   <!-- 데이터 테이블 -->
-   <div class="container-fluid">
-   
-       <!-- Page Heading -->
-       <h1 class="h3 mb-2 text-gray-800"></h1>
-   
-       <!-- DataTales Example -->
-       <div class="card shadow mb-4">
-           <div class="card-header py-3">
-               <h4 class="m-0 font-weight-bold text-primary" id="tSubject">농가리스트</h4>
-           </div>
-           <div class="card-body">
-               <div class="table-responsive">
-                   <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="font-size: 12px !important;">
-                       <thead>
-                           <tr>
-                               <th class="hide">인덱스</th>
-                               <th>농장코드</th>
-                               <th>농장명</th>
-                               <th>농장주소</th>
-                               <th>숙소위치</th>
-                               <th>숙소이미지</th>
-                               <th>아이디</th>
-                               <th style="width: 7%;">Edit</th>
-                               <th style="width: 7%;">Del</th>
-                           </tr>
-                       </thead>
-                       <tbody>
-                           <% for(var i in data){ %>
-                           <tr>
-                               <td class="hide index"><%=i%></td>
-                               <td class="farmCode">
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4 class="m-0 font-weight-bold text-primary" id="tSubject">농가리스트</h4>
+        </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="font-size: 12px !important;">
+                        <thead>
+                            <tr>
+                                <th class="hide">인덱스</th>
+                                <th>농장코드</th>
+                                <th>농장서비스</th>
+                                <th class="hide">농장상태</th>
+                                <th class="hide">농장신청일</th>
+                                <th class="hide">농장등록일</th>
+                                <th class="hide">농장이미지</th>
+                                <th class="hide">농장시작일</th>
+                                <th class="hide">농장작물</th>
+                                <th class="hide">농장형태</th>
+                                <th class="hide">농장주소개</th>
+                                <th>농장명</th>
+                                <th>농장주소</th>
+                                <th class="hide">농장상세주소</th>
+                                <th class="hide">숙소인터넷</th>
+                                <th>숙소위치</th>
+                                <th class="hide">숙소방</th>
+                                <th>숙소이미지</th>
+                                <th>아이디</th>
+                                <th>Edit</th>
+                                <th>Del</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hide">
+                                <td>0</td>
+                                <td>farmCode</td>
+                                <td>farmCode</td>
+                                <td>farmState</td>
+                                <td>farmAskDate</td>
+                                <td>farmRegDate</td>
+                                <td>farmImg</td>
+                                <td>farmStartOpen</td>
+                                <td>farmProduce</td>
+                                <td>farmType</td>
+                                <td>farmerIntro</td>
+                                <td>farmName</td>
+                                <td>farmAddr</td>
+                                <td>farmAddrDetail</td>
+                                <td>farmRoomInternet</td>
+                                <td>farmRoomSite</td>
+                                <td>farmRoomInfo</td>
+                                <td></td>
+                                <td>userName</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <% for(var i in data){ %>
+                            <tr>
+                                <td class="hide index"><%=i%></td>
+                                <td class="farmCode">
                                     <a href="#"  data-toggle="modal"  data-target="#farmModal" class="farmInfoBtn" >
                                         <%=data[i].farmCode%>
                                     </a>
                                 </td>
-                               <td class="farmName"><%=data[i].farmName%></td>
-                               <td><%=data[i].farmAddr%></td>
-                               <td><%=data[i].farmRoomSite%></td>
-                               <td><a href="#" data-toggle="modal"  data-target="#roomImgModal" class="btnRoomImg">숙소이미지</a></td>
-                               <td><%=data[i].userName%></td>
-                               <td style="text-align: center;">
+                                <td><%=data[i].farmService%></td>
+                                <td class="hide"><%=data[i].farmState%></td>
+                                <td class="hide"><%=data[i].farmAskDate%></td>
+                                <td class="hide"><%=data[i].farmRegDate%></td>
+                                <td class="hide"><%=data[i].farmImg%></td>
+                                <td class="hide"><%=data[i].farmStartOpen%></td>
+                                <td class="hide"><%=data[i].farmProduce%></td>
+                                <td class="hide"><%=data[i].farmType%></td>
+                                <td class="hide"><%=data[i].farmerIntro%></td>
+                                <td class="farmName"><%=data[i].farmName%></td>
+                                <td><%=data[i].farmAddr%></td>
+                                <td class="hide"><%=data[i].farmAddrDetail%></td>
+                                <td class="hide"><%=data[i].farmRoomInternet%></td>
+                                <td><%=data[i].farmRoomSite%></td>
+                                <td class="hide"><%=data[i].farmRoomInfo%></td>
+                                <td><a href="#" data-toggle="modal"  data-target="#roomImgModal" class="btnRoomImg">숙소이미지</a></td>
+                                <td><%=data[i].userName%></td>
+                                <td style="text-align: center; width: 7%;">
                                     <a href="#" class="btn btn-info editBtn">
                                         <i class="fas fa-wrench"></i>
                                     </a> 
                                 </td>
-                                <td style="text-align: center;">
+                                <td style="text-align: center; width: 7%;">
                                     <a class="btn btn-danger delBtn" data-toggle="modal"  data-target="#delModal">
                                         <i class="fas fa-trash"></i>
                                     </a>     
                                 </td>
-                           </tr>
-                           <% } %>
-                       </tbody>
-                   </table>
-               </div>
-           </div>
-       </div>
-   
-   </div>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>

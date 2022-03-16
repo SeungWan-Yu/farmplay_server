@@ -6,7 +6,7 @@ module.exports = {
         
         const connection = await pool.getConnection();
         try{
-            var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='등록완료'";
+            var sql1 = "SELECT farmCode,farmService, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='등록완료'";
             var [rows] = await connection.query(sql1);
         }catch(err){
             throw err;
@@ -174,7 +174,7 @@ module.exports = {
     getFarmAskList :async function(){
         const connection = await pool.getConnection();
         try{
-            var sql1 = "SELECT farmCode, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='신청중'";
+            var sql1 = "SELECT farmCode,farmService, farmState, farmAskDate, farmRegDate, farmImg, farmName, farmStartOpen, farmProduce, farmType, farmerIntro, farmAddr, farmAddrDetail, farmRoomInternet, farmRoomSite, farmRoomInfo, farmRoom, farmRoomUnisex, farmRoomEtc, userName FROM farm WHERE farmState ='신청중'";
             var [rows] = await connection.query(sql1);
             console.log("결과값");
             return rows;

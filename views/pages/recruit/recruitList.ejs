@@ -7,7 +7,7 @@
     height: 150px;
     object-fit: cover;
     }
-    .farmCtl,.recuritCtl{font-weight: bold; background-color:rgb(219, 219, 219); width: 20%;}
+    .farmCtl,.recruitCtl{font-weight: bold; background-color:rgb(219, 219, 219); width: 20%;}
     .area_list01{display: block; margin-top:2%; width:100%; text-align: center;}
     .area_list01 li{display: block; margin:1.5% 3% 1.5% 0; width:47%; float: left;}
     .area_list01 li img{display: block; width:100%; height: 240px; object-fit: cover;}
@@ -191,89 +191,89 @@
         $("#farmBody").scrollTop(0);
     });
 
-    $('#recuritModal').on("shown.bs.modal",function () {
-        $("#recuritBody").scrollTop(0);
+    $('#recruitModal').on("shown.bs.modal",function () {
+        $("#recruitBody").scrollTop(0);
     });
 
     //1. 모집코드 클릭이벤트
-    $(document).on('click','.recuritInfoBtn',function(){
+    $(document).on('click','.recruitInfoBtn',function(){
         var inHtml = "";
-        $('.recuritInfoDiv').remove();
+        $('.recruitInfoDiv').remove();
         var sindex = $(this).parent().parent().find('.index').text();
         var index = Number(sindex);
-        inHtml += '<div class="recuritInfoDiv">'
-        inHtml += '<table class="table table-hover table-condensed recuritTable">'
+        inHtml += '<div class="recruitInfoDiv">'
+        inHtml += '<table class="table table-hover table-condensed recruitTable">'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">모집코드</td>'  
-        inHtml += '<td>'+ initData[index].recuritCode+'</td>'         
+        inHtml += '<td class="recruitCtl">모집코드</td>'  
+        inHtml += '<td>'+ initData[index].recruitCode+'</td>'         
         inHtml += '</tr>'  
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">모집상태</td>'  
-        inHtml += '<td>'+ initData[index].recuritState+'</td>'         
+        inHtml += '<td class="recruitCtl">모집상태</td>'  
+        inHtml += '<td>'+ initData[index].recruitState+'</td>'         
         inHtml += '</tr>'  
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">아이디</td>'  
-        inHtml += '<td>'+ initData[index].recuritUserId+'</td>'         
+        inHtml += '<td class="recruitCtl">아이디</td>'  
+        inHtml += '<td>'+ initData[index].recruitUserId+'</td>'         
         inHtml += '</tr>'  
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">모집시작일</td>'  
-        inHtml += '<td>'+ initData[index].recuritStart+'</td>'         
+        inHtml += '<td class="recruitCtl">모집시작일</td>'  
+        inHtml += '<td>'+ initData[index].recruitStart+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">모집종료일</td>'  
-        inHtml += '<td>'+ initData[index].recuritEnd+'</td>'         
+        inHtml += '<td class="recruitCtl">모집종료일</td>'  
+        inHtml += '<td>'+ initData[index].recruitEnd+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">작업시작</td>'  
-        inHtml += '<td>'+ initData[index].recuritJobStart+'</td>'         
+        inHtml += '<td class="recruitCtl">작업시작</td>'  
+        inHtml += '<td>'+ initData[index].recruitJobStart+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">작업종료</td>'  
-        inHtml += '<td>'+ initData[index].recuritJobEnd+'</td>'         
+        inHtml += '<td class="recruitCtl">작업종료</td>'  
+        inHtml += '<td>'+ initData[index].recruitJobEnd+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">작업내용</td>'  
-        inHtml += '<td>'+ initData[index].recuritJobKind+'</td>'         
+        inHtml += '<td class="recruitCtl">작업내용</td>'  
+        inHtml += '<td>'+ initData[index].recruitJobKind+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">식사제공</td>'  
-        inHtml += '<td>'+ initData[index].recuritMealProvide+'</td>'         
+        inHtml += '<td class="recruitCtl">식사제공</td>'  
+        inHtml += '<td>'+ initData[index].recruitMealProvide+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">채식</td>'  
-        inHtml += '<td>'+ initData[index].recuritMealMemo+'</td>'         
+        inHtml += '<td class="recruitCtl">채식</td>'  
+        inHtml += '<td>'+ initData[index].recruitMealMemo+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">식사메모</td>'  
-        inHtml += '<td>'+ initData[index].recuritMealMemo+'</td>'         
+        inHtml += '<td class="recruitCtl">식사메모</td>'  
+        inHtml += '<td>'+ initData[index].recruitMealMemo+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">선호팜플러</td>'  
-        inHtml += '<td>'+ initData[index].recuritChkFampler+'</td>'         
+        inHtml += '<td class="recruitCtl">선호팜플러</td>'  
+        inHtml += '<td>'+ initData[index].recruitChkFampler+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">선호기간</td>'  
-        inHtml += '<td>'+ initData[index].recuritChkPeriod+'</td>'         
+        inHtml += '<td class="recruitCtl">선호기간</td>'  
+        inHtml += '<td>'+ initData[index].recruitChkPeriod+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">미성년자</td>'  
-        inHtml += '<td>'+ initData[index].recuritChkMinor+'</td>'         
+        inHtml += '<td class="recruitCtl">미성년자</td>'  
+        inHtml += '<td>'+ initData[index].recruitChkMinor+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">미성년자메모</td>'  
-        inHtml += '<td>'+ initData[index].recuritChkMinorMemo+'</td>'         
+        inHtml += '<td class="recruitCtl">미성년자메모</td>'  
+        inHtml += '<td>'+ initData[index].recruitChkMinorMemo+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">모집인원</td>'  
-        inHtml += '<td>'+ initData[index].recuritChkMax+'</td>'         
+        inHtml += '<td class="recruitCtl">모집인원</td>'  
+        inHtml += '<td>'+ initData[index].recruitChkMax+'</td>'         
         inHtml += '</tr>'
         inHtml += '<tr>'  
-        inHtml += '<td class="recuritCtl">한줄평</td>'  
-        inHtml += '<td>'+ initData[index].recuritChkSummary+'</td>'         
+        inHtml += '<td class="recruitCtl">한줄평</td>'  
+        inHtml += '<td>'+ initData[index].recruitChkSummary+'</td>'         
         inHtml += '</tr>'
         inHtml += '</table">'
         inHtml += '</div>'
-        $('#recuritBody').append(inHtml);
+        $('#recruitBody').append(inHtml);
 
     });
 
@@ -285,13 +285,13 @@
         $('.farmInfoDiv').remove();
         var sindex = $(this).parent().parent().find('.index').text();
         var index = Number(sindex);
-        clickFarmCode = initData[index].recuritFarmCode;
+        clickFarmCode = initData[index].recruitFarmCode;
         inHtml += '<div class="farmInfoDiv">'
         inHtml += '<img src="http://'+location.host+"/public/uploads/"+initData[index].farmImg+'" class="farmImg">'  
         inHtml += '<table class="table table-hover table-condensed farmTable">'
         inHtml += '<tr>'  
         inHtml += '<td class="farmCtl">농장코드</td>'  
-        inHtml += '<td>'+ initData[index].recuritFarmCode+'</td>'         
+        inHtml += '<td>'+ initData[index].recruitFarmCode+'</td>'         
         inHtml += '</tr>'  
         inHtml += '<tr>'  
         inHtml += '<td class="farmCtl">농장명</td>'  
@@ -402,15 +402,15 @@
         var farmplerList;
         var sindex = $(this).parent().parent().find('.index').text();
         var index = Number(sindex);
-        var recuritCode=  initData[index].recuritCode;
-        alert(recuritCode);
+        var recruitCode=  initData[index].recruitCode;
+        alert(recruitCode);
       
         $.ajax({
             type : "POST",
             url : '/admin/farmpler/farmplerRlist ', 
             async : false, 
             dataType : "json", 
-            data : {recuritCode:recuritCode},
+            data : {recruitCode:recruitCode},
             success : function(data) {
                 console.log(data);
                 farmplerList = data;
@@ -505,14 +505,14 @@
 </div>
 
  <!--모집정보 모달창 레이아웃  -->
- <div class="modal fade" id="recuritModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <div class="modal fade" id="recruitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h6 id="clickId" style="font-weight: bold;">모집정보</h6>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
-        <div class="modal-body scroll_st" id="recuritBody" style="height: 750px; overflow: auto;">
+        <div class="modal-body scroll_st" id="recruitBody" style="height: 750px; overflow: auto;">
         
         </div>
         <div class="modal-footer">
@@ -762,31 +762,31 @@
                         <tr>
                             <td class="hide index"><%=i%></td>
                             <td>
-                                <a href="#"  data-toggle="modal"  data-target="#recuritModal" class="recuritInfoBtn" >
-                                    <%=data[i].recuritCode%>
+                                <a href="#"  data-toggle="modal"  data-target="#recruitModal" class="recruitInfoBtn" >
+                                    <%=data[i].recruitCode%>
                                 </a>
                             </td>
-                            <td class="hide farmCode"><%=data[i].recuritFarmCode%></td>
+                            <td class="hide farmCode"><%=data[i].recruitFarmCode%></td>
                             <td>
                                 <a href="#"  data-toggle="modal"  data-target="#farmplerModal" class="farmplerInfoBtn" >
-                                    <%=data[i].recuritState%>
+                                    <%=data[i].recruitState%>
                                 </a>
                             </td>
-                            <td><%=data[i].recuritUserId%></td>
-                            <td><%=data[i].recuritStart%></td>
-                            <td><%=data[i].recuritEnd%></td>
-                            <td class="hide"><%=data[i].recuritJobStart%></td>
-                            <td class="hide"><%=data[i].recuritJobEnd%></td>
-                            <td class="hide"><%=data[i].recuritJobKind%></td>
-                            <td class="hide"><%=data[i].recuritMealProvide%></td>
-                            <td class="hide"><%=data[i].recuritMealVeget%></td>
-                            <td class="hide"><%=data[i].recuritMealMemo%></td>
-                            <td class="hide"><%=data[i].recuritChkFampler%></td>
-                            <td class="hide"><%=data[i].recuritChkPeriod%></td>
-                            <td class="hide"><%=data[i].recuritChkMinor%></td>
-                            <td class="hide"><%=data[i].recuritChkMinorMemo%></td>
-                            <td class="hide"><%=data[i].recuritChkMax%></td>
-                            <td class="hide"><%=data[i].recuritChkSummary%></td>
+                            <td><%=data[i].recruitUserId%></td>
+                            <td><%=data[i].recruitStart%></td>
+                            <td><%=data[i].recruitEnd%></td>
+                            <td class="hide"><%=data[i].recruitJobStart%></td>
+                            <td class="hide"><%=data[i].recruitJobEnd%></td>
+                            <td class="hide"><%=data[i].recruitJobKind%></td>
+                            <td class="hide"><%=data[i].recruitMealProvide%></td>
+                            <td class="hide"><%=data[i].recruitMealVeget%></td>
+                            <td class="hide"><%=data[i].recruitMealMemo%></td>
+                            <td class="hide"><%=data[i].recruitChkFampler%></td>
+                            <td class="hide"><%=data[i].recruitChkPeriod%></td>
+                            <td class="hide"><%=data[i].recruitChkMinor%></td>
+                            <td class="hide"><%=data[i].recruitChkMinorMemo%></td>
+                            <td class="hide"><%=data[i].recruitChkMax%></td>
+                            <td class="hide"><%=data[i].recruitChkSummary%></td>
                             <td class="hide"><%=data[i].farmState%></td>
                             <td class="hide"><%=data[i].farmAskDate%></td>
                             <td class="hide"><%=data[i].farmRegDate%></td>
